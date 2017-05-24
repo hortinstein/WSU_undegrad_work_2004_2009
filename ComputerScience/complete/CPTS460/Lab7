@@ -1,0 +1,46 @@
+/***********************************************************
+    Run pipe1.c under both Linux and MTX
+
+    EXPLAIN WHAT HAPPENS & WHY?______________
+
+***********************************************************/
+
+It deadlocks because the same process is both reader and writer
+
+
+/*************************************************************
+  Change N value to find out pipe size of Linux __________
+  
+  Repeat for :                            MTX ___________
+
+**************************************************************/
+
+Linux "In Linux, the pipe size is 4KB" notes
+Mtx 16984
+
+/********************** pipe3.c ****************************
+
+                CORRECT usage of pipe:
+
+ Parent : create pipe; fork a child to share the pipe
+          Each process must be either a READER or a WRITER but NOT BOTH !!!
+
+ parent : as pipe WRITER
+
+ child  : as pipe READER
+
+ ABNORMAL usage : broken pipe
+
+
+                     DO THESE : 
+
+1. Vary the value of N_READ to see what happens?__________________
+
+2. Uncomment the line   // exit(1);  in child's code.
+   WHAT HAPPENS and WHY?_________________________________________
+ 
+**********************************************/
+
+1) it just reads more bytes from the pipe
+
+2) Broken pipe error since there is no reader

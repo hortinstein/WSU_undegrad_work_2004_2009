@@ -1,0 +1,16 @@
+MTX=../mtximage
+DIR=../A
+
+echo compiling $1.c .....
+bcc -c  $1.c
+echo linking .......
+ld86 u.o $1.o mtxlib /usr/lib/bcc/libc.a  2> /dev/null
+
+
+mount -o loop $MTX  $DIR
+echo copying $1 
+cp a.out $DIR/bin/$1
+umount $DIR
+
+echo done
+

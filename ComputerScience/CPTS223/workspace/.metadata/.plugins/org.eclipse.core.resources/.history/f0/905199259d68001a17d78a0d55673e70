@@ -1,0 +1,123 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \author       Alex Hortin
+/// \date         11/29/05
+/// \brief        This is my test file used to test my implementation of a 
+///               Dictionary using a hash table.
+///
+/// I am creating a tree and this will be the file that I use to test all of
+/// the various functions contained within the Dictionary.  It will try to test 
+/// all of the options that the interface gives the user. 
+///
+/// REVISION HISTORY:
+///
+/// NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+// LOCAL INCLUDES
+//
+#include "Dictionary.h"                               
+#include "DatabaseWindow.h"   
+#include "BinaryTree.h"
+// FUNCTIONS
+
+//         /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/photo_database_browser
+
+
+int main (int argc, char *argv[])
+{
+   cout << "1 Testing various functions for basic binary tree" << endl;
+   BinaryTree<int> p(6);
+   BinaryTree<int>::Position root = p.root();
+   BinaryTree<int>::Position as = p.leftChild(root);
+   BinaryTree<int>::Position as2 = p.rightChild(root);
+   p.expandExternal(as);
+   p.expandExternal(as2);
+   p.replaceElement(as, 2);
+   p.replaceElement(as2, 7);
+   p.swapElements(as2,as);
+   p.print(p.root());
+   cout << endl;
+   p.swapElements(as2,as);
+   p.print(p.root());
+   cout << endl;
+   p.removeAboveExternal(p.rightChild(as2));
+   p.print(p.root());
+   cout << endl << "1 passed" << endl << endl;
+   
+   cout << "2 Testing various functions for binary search tree" << endl;
+   BinaryTree<int> j(11);
+   bst_insert(j,22);
+   bst_insert(j,1);
+   bst_insert(j,17);
+   bst_insert(j,3);
+   bst_insert(j,5);
+   j.print(j.root());
+   cout << endl;
+   root = j.root();
+   BinaryTree<int>::Position srch = bst_search(j,root,11);
+   if (! srch.isNull())
+   {
+      cout << srch.element() << endl;
+   }
+   bst_remove(j,root,11);
+   j.print(j.root());
+   cout << endl << "2 passed" << endl << endl;
+   
+   std::cout << "3 Testing insert with dictionary" << std::endl;
+   Dictionary<std::string, std::string> d;
+   Dictionary<std::string, std::string>::ElementIterator gh;
+   d.insertItem("woot","dxcving");
+   d.insertItem("woot","ding");
+   d.insertItem("woot","ding");
+   d.insertItem("woot","ding");
+   d.insertItem("woot","ding");
+   d.insertItem("woot","ding");
+   d.insertItem("w","ddsading");
+   d.insertItem("wo","dindasdsadg");
+   d.print();
+   std::cout << "1 passed" << std::endl << std::endl;
+   std::cout << "2 Testing remove" << std::endl;
+   try
+   {
+      d.removeElement("woot");
+   }
+   catch (std::logic_error)
+   {
+      std::cout << "No woot key found" << std::endl;//prints out the error
+   }
+   d.print();
+   std::cout << "2 passed" << std::endl << std::endl;
+   std::cout << "3 Testing remove without element" << std::endl;
+   try
+   {
+      d.removeElement("pen15");
+   }
+   catch (std::logic_error)
+   {
+      std::cout << "No key found...cant remove" << std::endl;//prints out the error
+   }
+   d.print();
+   std::cout << "3 passed" << std::endl << std::endl;
+   
+   
+   std::cout << "4 Testing removeAll" << std::endl;
+   d.removeAllElements("woot");
+   d.print();
+   std::cout << "4 passed" << std::endl << std::endl;
+   
+   std::cout << "5 Testing find, and findAll, and insert, and Element, Key, and Position iterators with Photo Database" << std::endl;
+   try
+   {
+      DatabaseWindow w("pics");//calls the window/player constructor with the argumnent of the files name
+      return Fl::run();//returns the FLTK windows if successfull.
+   }
+   catch (std::domain_error)
+   {
+      std::cout << "No Directry Found..try again" << std::endl;//prints out the error
+   }
+   std::cout << "5 passed" << std::endl << std::endl;
+}

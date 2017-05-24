@@ -1,0 +1,1191 @@
+#ifndef BINARYTREE_H    // include guard
+#define BINARYTREE_H
+
+//SYSTEM INCLUDES
+#include <iostream>
+#include <stdexcept>
+#include <vector>
+#include <string>
+#include <math.h>
+// LOCAL INCLUDES
+//
+#include "BinaryTree.h"
+// FORWARD REFERENCES
+//
+template <class Element> class BinaryTree;
+template <class Element> class btPosition;
+//FUNCTIONS
+//
+
+///////////////////////////////////////////////////////////////////////
+/// bst_insert
+/// \pre    A search Tree must exist to call it on
+/// \post   A new object will be inserted
+/// \param  A pair or other element
+/// \param  A tree
+/// \return None
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+void bst_insert( BinaryTree< Element > & T, Element i )
+{
+   btPosition< Element > temp = T.root();
+   if (T.isExternal(temp))
+   {
+      T.expandExternal(T.root());
+      T.replaceElement(T.root(),i);
+   }
+   else
+   {
+      while (T.isInternal(temp))
+      {
+         if (i < temp.element())
+         {
+            temp = T.leftChild(temp);
+         }
+         else
+         {
+            temp = T.rightChild(temp);
+         }
+      }
+      T.expandExternal(temp);
+      T.replaceElement(temp,i);
+   }
+}
+
+///////////////////////////////////////////////////////////////////////
+/// bst_search
+/// \pre    A search Tree must exist to call it on
+/// \post   A new object will be inserted
+/// \param  A pair or other element
+/// \param  A tree
+/// \return None
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+btPosition< Element > bst_search( BinaryTree< Element > & T, btPosition< Element > subtree,  Element i )
+{
+   btPosition< Element > temp;
+   if (T.isExternal(subtree))
+   {
+      return temp;
+   }
+   if (subtree.element() == i)
+   {
+      return subtree;
+   }
+   else 
+   {
+      if (subtree.element() < i)
+      {
+         temp = bst_search(T,T.rightChild(subtree),i);
+      }
+      if (subtree.element() >= i)
+      {
+         temp = bst_search(T,T.leftChild(subtree),i);
+      }
+
+   }
+   return temp;
+}
+
+///////////////////////////////////////////////////////////////////////
+/// bst_remove
+/// \pre    A search Tree must exist to call it on
+/// \post   A new object will be inserted
+/// \param  A pair or other element
+/// \param  A tree
+/// \return None
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+void bst_remove( BinaryTree< Element > & T, btPosition< Element > subtree,  Element i )
+{
+   btPosition< Element > temp = bst_search(T,rightChild(subtree));
+   if (T.isExternal(T.rightChild(temp)))
+   {
+      while (T.isInternal(T.leftChild(temp)))
+      {
+         temp = T.leftChild(temp);
+      }
+      T.swapElements(subtree,parent(temp));
+      T.removeAboveExternal(temp);
+   }
+   else
+   {
+      temp = T.rightChild(temp);
+      while (T.isInternal(T.leftChild(temp)))
+      {
+         temp = T.leftChild(temp);
+      }
+      T.swapElements(subtree,parent(temp));
+      T.removeAboveExternal(temp);
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \class        Node
+/// \author       Alex Hortin
+/// \date         10/17/05
+/// \brief        A node that makes up part of a tree
+///
+/// This class is one the stores each individual part of the tree. It stores 
+/// a element, a parent pointer, and an array of pointers to all of it's 
+/// children. 
+///       
+/// REVISION HISTORY:
+///
+///   NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+// LOCAL INCLUDES
+//
+
+// FORWARD REFERENCES
+//
+
+using std::cout;
+using std::endl;
+template <class Element> class BinaryTree;
+// CONSTANTS
+//
+
+//#ifndef ELEMENT_TYPE
+//#include <string>
+//typedef std::string Element;
+//#else
+//typedef ELEMENT_TYPE Element;
+//#endif
+
+template < class Element >
+class cNode
+{
+   public:
+// LIFECYCLE
+
+   /// Default constructor.
+   /// \pre    None
+   /// \post   An instance of the Node class is created.
+   /// \param  None
+   /// \throw  None
+   cNode( void );
+   
+   /// Copy Constructor.
+   /// \pre    An instance of Node needs to be present.
+   /// \post   Two instances of the same Node will exist.
+   /// \param  Node is the Node to copy from.
+   /// \throw  None
+   cNode( const cNode & from );
+
+   /// Destructor.
+   /// \pre    An instance of Node has been created.
+   /// \post   The instance of Node is destroyed.
+   ~cNode( void );
+
+// OPERATORS
+
+// OPERATIONS 
+
+// ACCESS and MUTATE
+ 
+// INQUIRY  
+   
+// MEMBER VARIABLES
+//private:
+   
+   //stored the element contained in the node
+   Element mElement;
+   
+   //stores the adress of the parent node
+   cNode* mParent;
+   
+   //stores all the nodes children
+   cNode* mLeftChild;
+   cNode* mRightChild;
+   
+}; // end of class Node
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// \class        Position
+/// \author       Alex Hortin
+/// \date         10/17/05
+/// \brief        A class that stores a pointer to the position.
+///
+/// This class is one the stores a position of a node in the BinaryTree.  It is an 
+/// interface tool for the client.
+///       
+/// REVISION HISTORY:
+///
+///   NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+// LOCAL INCLUDES
+//
+
+// FORWARD REFERENCES
+//
+template <class Element> class BinaryTree;
+
+// CONSTANTS
+//
+template < class Element >
+class btPosition
+{
+   public:
+   friend class BinaryTree< Element >;
+// LIFECYCLE
+
+   /// Default constructor.
+   /// \pre    None
+   /// \post   An instance of the Position class with 0 elements is created.
+   /// \param  None
+   /// \throw  None
+   btPosition( void );
+   
+   /// constructor with node input 
+   /// \pre    None
+   /// \post   An instance of the Position class with 1 element is created.
+   /// \param  A node pointer
+   /// \throw  None
+   btPosition( cNode< Element >* n);
+
+   /// Copy Constructor.
+   /// \pre    An instance of Position needs to be present.
+   /// \post   Two instances of the same Position will exist.
+   /// \param  Vec is the Position to copy from.
+   /// \throw  None
+   btPosition( const btPosition & from );
+
+   /// Destructor.
+   /// \pre    An instance of Position has been created.
+   /// \post   The instance of Position is destroyed.
+   ~btPosition( void );
+
+// OPERATORS
+
+// OPERATIONS 
+   
+
+// ACCESS and MUTATE
+
+   
+// INQUIRY
+   
+   /// element
+   /// \pre    There must be an positon to call it on
+   /// \post   None
+   /// \param  None
+   /// \return the element
+   Element element( void );
+   
+   /// isNull
+   /// \pre    There must be an positon to call it on
+   /// \post   None
+   /// \param  None
+   /// \return A bool whether or not their is an element
+   bool isNull( void);
+   
+   /// element (const)
+   /// \pre    There must be an positon to call it on
+   /// \post   None
+   /// \param  None
+   /// \return the element
+   Element element( void ) const;
+   
+   /// isNull  (const)
+   /// \pre    There must be an positon to call it on
+   /// \post   None
+   /// \param  None
+   /// \return A bool whether or not their is an element
+   bool isNull( void) const;
+   
+// MEMBER VARIABLES
+private:
+   
+   //stores the pointer to the position
+   cNode< Element > * mPosition;
+
+}; // end of class Position
+
+///////////////////////////////////////////////////////////////////////////////
+/// \class        BinaryTree
+/// \author       Alex Hortin
+/// \date         10/17/05
+/// \brief        A stan
+///
+/// This class is a vector that is built to act just like the standard library
+/// vector class.  It was built from a shell given to us by Kelly Fitz.  
+///       
+/// REVISION HISTORY:
+///
+///   NONE
+///
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+// LOCAL INCLUDES
+//
+
+// FORWARD REFERENCES
+//
+
+// CONSTANTS
+//
+template < class Element >
+class BinaryTree
+{
+   public:
+   typedef cNode<Element> Node;
+   typedef btPosition<Element> Position;
+
+// LIFECYCLE
+
+   /// Default constructor.
+   /// \pre    None
+   /// \post   An instance of the BinaryTree class with 0 elements is created.
+   /// \param  None
+   /// \throw  None
+   BinaryTree(void);
+   
+   /// Default constructor.
+   /// \pre    None
+   /// \post   An instance of the BinaryTree class with 0 elements is created.
+   /// \param  None
+   /// \throw  None
+   BinaryTree( Element e );
+
+   /// Copy Constructor.
+   /// \pre    An instance of BinaryTree needs to be present.
+   /// \post   Two instances of the same Vec will exist.
+   /// \param  Vec is the BinaryTree to copy from.
+   /// \throw  None
+   BinaryTree( const BinaryTree & from );
+
+   /// Destructor.
+   /// \pre    An instance of BinaryTree has been created.
+   /// \post   The instance of BinaryTree is destroyed.
+   ~BinaryTree( void );
+
+// OPERATORS
+
+   /// Assignment Operator
+   /// Provide access to the element at the specified rank.
+   /// \pre    there must be a BinaryTree to copy
+   /// \post   2 copies of the BinaryTree will exist
+   /// \param  a reference to a BinaryTree
+   /// \return a reference to a BinaryTree
+   BinaryTree& operator=( const BinaryTree & rhs );  
+
+// OPERATIONS 
+
+// ACCESS and MUTATE
+
+   /// replaceElement
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   The Position will be replaced with the element
+   /// \param  A position 
+   /// \param  An Element
+   /// \return None   
+   void replaceElement( Position v, Element e);
+   
+   /// swapElement
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   The Position will be replaced with the element
+   /// \param  A position to swap
+   /// \param  A position to swap
+   /// \return None   
+   void swapElements( Position v,  Position w) ;
+   
+   /// expandExternal
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   The Position will be replaced with the element
+   /// \param  A position 
+   /// \param  An Element
+   /// \return None   
+   void expandExternal( Position v);
+   
+   /// removeAboveExternal
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   The Position will be replaced with the element
+   /// \param  A position 
+   /// \param  An Element
+   /// \return None   
+   void removeAboveExternal( Position v);
+   
+// INQUIRY
+  
+   /// print
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  None
+   /// \return None
+   void print(Position v);
+   
+   /// root
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  None
+   /// \return The Position to the root of the BinaryTree
+   Position root( void ) const;
+   
+   /// isRoot
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  A position
+   /// \return bool if its a root
+   bool isRoot( Position& v) const;
+   
+   /// isExternal
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  A position
+   /// \return bool if its external
+   bool isExternal(Position& v) const;
+
+   /// isInternal
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  A position
+   /// \return bool if its internal
+   bool isInternal( Position& v) const;
+   
+   /// size
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  None
+   /// \return the size of a BinaryTree
+   unsigned int size( void) const ;
+   
+   /// parent
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  A position
+   /// \return the parent of a node   
+   Position parent(const Position& v) const;
+   
+   /// leftChild
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  A position
+   /// \return the left child of a node   
+   Position leftChild( Position& v ) const;
+   
+   /// rightChild
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  A position
+   /// \return the left child of a node   
+   Position rightChild( Position& v ) const;
+   
+   /// sibling
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  A position
+   /// \return the position of the parents other child   
+   Position sibling( Position& v ) const;
+   
+// MEMBER VARIABLES
+private:
+   Node* mRoot;
+   
+   unsigned int mSize;
+
+   /// deleteSubTree
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  None
+   /// \return an Iterator of Positions
+   void deleteSubtree( Node * p);
+   
+   /// copySubTree
+   /// \pre    There must be a BinaryTree to call it on
+   /// \post   None
+   /// \param  None
+   /// \return an Iterator of Positions
+   Node* copySubtree( Node * p);
+      
+}; // end of class BinaryTree
+
+///////////////////////////////////////////////////////////////////////////////
+/// \class        Node
+/// \author       Alex Hortin
+/// \date         10/17/05
+/// \brief        A node that makes up part of a BinaryTree
+///
+/// This class is one the stores each individual part of the BinaryTree. It stores 
+/// a element, a parent pointer, and an array of pointers to all of it's 
+/// children. 
+///       
+/// REVISION HISTORY:
+///
+///   NONE
+///         
+///////////////////////////////////////////////////////////////////////////////
+#include "BinaryTree.h"                                // class implemented
+
+// SYSTEM INCLUDES
+//
+
+// LOCAL INCLUDES
+//
+
+// PUBLIC 
+
+// LIFECYCLE 
+
+///////////////////////////////////////////////////////////////////////
+/// Default constructor.
+/// \pre    None
+/// \post   An instance of the Node class is created.
+/// \param  None
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+cNode< Element >::cNode( void )
+{
+   mParent = NULL;
+   mLeftChild = NULL;
+   mRightChild = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+/// Copy Constructor.
+/// \pre    An instance of Node needs to be present.
+/// \post   Two instances of the same Node will exist.
+/// \param  Node is the Node to copy from.
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+cNode< Element >::cNode( const cNode & from )
+{
+   mParent = from.mParent;
+   mElement = from.mElement;
+   mLeftChild = from.mLeftChild;
+   mRightChild = from.mRightChild;
+}
+
+///////////////////////////////////////////////////////////////////////
+/// Destructor.
+/// \pre    An instance of Node has been created.
+/// \post   The instance of Node is destroyed.
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+cNode< Element >::~cNode( void )
+{
+}
+
+// OPERATORS 
+
+// OPERATIONS 
+
+// ACCESS and MUTATE 
+
+// INQUIRY 
+
+// PROTECTED  
+
+// PRIVATE  
+
+///////////////////////////////////////////////////////////////////////////////
+/// \class        Position
+/// \author       Alex Hortin
+/// \date         10/17/05
+/// \brief        A class that stores a pointer to the position.
+///
+/// This class is one the stores a position of a node in the BinaryTree.  It is an 
+/// interface tool for the client.
+///       
+/// REVISION HISTORY:
+///
+///   NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+// LOCAL INCLUDES
+//
+
+// PUBLIC 
+
+// LIFECYCLE 
+
+///////////////////////////////////////////////////////////////////////
+/// Default constructor.
+/// \pre    None
+/// \post   An instance of the Position class with 0 elements is created.
+/// \param  None
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+btPosition< Element >::btPosition( void )
+{
+   this->mPosition = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////
+/// constructor with node input 
+/// \pre    None
+/// \post   An instance of the Position class with 1 element is created.
+/// \param  A node pointer
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+btPosition< Element >::btPosition( cNode< Element > * n)
+{
+   this->mPosition = n;
+}
+
+///////////////////////////////////////////////////////////////////////
+/// Copy Constructor.
+/// \pre    An instance of Position needs to be present.
+/// \post   Two instances of the same Position will exist.
+/// \param  Vec is the Position to copy from.
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+btPosition< Element >::btPosition( const btPosition & from )
+{
+   this->mPosition = from.mPosition;
+}
+
+///////////////////////////////////////////////////////////////////////
+/// Destructor.
+/// \pre    An instance of Position has been created.
+/// \post   The instance of Position is destroyed.
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+btPosition< Element >::~btPosition( void )
+{
+}
+
+// OPERATORS 
+
+// OPERATIONS 
+
+// ACCESS and MUTATE 
+
+// INQUIRY 
+
+///////////////////////////////////////////////////////////////////////
+/// element
+/// \pre    There must be an positon to call it on
+/// \post   None
+/// \param  None
+/// \return the element
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+Element btPosition< Element >::element( void )
+{
+   if (mPosition == NULL)
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   return (mPosition->mElement);
+}
+
+///////////////////////////////////////////////////////////////////////
+/// isNull
+/// \pre    There must be an positon to call it on
+/// \post   None
+/// \param  None
+/// \return A bool whether or not their is an element
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+bool btPosition< Element >::isNull( void )
+{
+   return (mPosition == NULL);
+}
+
+///////////////////////////////////////////////////////////////////////
+/// element (const)
+/// \pre    There must be an positon to call it on
+/// \post   None
+/// \param  None
+/// \return the element
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+Element btPosition< Element >::element( void ) const
+{
+   if (mPosition == NULL)
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   return (mPosition->mElement);
+}
+
+///////////////////////////////////////////////////////////////////////
+/// isNull(const)
+/// \pre    There must be an positon to call it on
+/// \post   None
+/// \param  None
+/// \return A bool whether or not their is an element
+///////////////////////////////////////////////////////////////////////
+template < class Element >
+bool btPosition< Element >::isNull( void ) const
+{
+   return (mPosition == NULL);
+}
+
+// PROTECTED  
+
+// PRIVATE  
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// \class        BinaryTree
+/// \author       Alex Hortin
+/// \date         10/17/05
+/// \brief        A stan
+///
+/// This class is a vector that is built to act just like the standard library
+/// vector class.  It was built from a shell given to us by Kelly Fitz.  
+///       
+/// REVISION HISTORY:
+///
+///   NONE
+///         
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+// LOCAL INCLUDES
+//
+
+// PUBLIC 
+
+// LIFECYCLE 
+
+///////////////////////////////////////////////////////////////////////////////
+/// Default constructor.
+/// \pre    None
+/// \post   An instance of the BinaryTree class with 0 elements is created.
+/// \param  None
+/// \throw  None
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+BinaryTree< Element >::BinaryTree( Element e )
+{
+   mSize = 1;
+   mRoot = new Node;
+   mRoot->mParent = NULL;
+   mRoot->mElement = e;
+   expandExternal(root());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// Default constructor.
+/// \pre    None
+/// \post   An instance of the BinaryTree class with 0 elements is created.
+/// \param  None
+/// \throw  None
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+BinaryTree< Element >::BinaryTree( void )
+{
+   mSize = 1;
+   mRoot = new Node;
+   mRoot->mParent = NULL;
+   //expandExternal(root());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// Copy Constructor.
+/// \pre    An instance of BinaryTree needs to be present.
+/// \post   Two instances of the same Vec will exist.
+/// \param  Vec is the BinaryTree to copy from.
+/// \throw  None
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+BinaryTree< Element >::BinaryTree( const BinaryTree & from )
+{
+   if (from.mRoot != this->mRoot)
+   {
+      this->mRoot = copySubTree(from.mRoot);
+   }
+   this->mSize = from.mSize;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// Destructor.
+/// \pre    An instance of BinaryTree has been created.
+/// \post   The instance of BinaryTree is destroyed.
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+BinaryTree< Element >::~BinaryTree( void )
+{
+   deleteSubtree(mRoot);
+}
+
+// OPERATORS
+
+///////////////////////////////////////////////////////////////////////////////
+/// Assignment Operator
+/// Provide access to the element at the specified rank.
+/// \pre    there must be a BinaryTree to copy
+/// \post   2 copies of the BinaryTree will exist
+/// \param  a reference to a BinaryTree
+/// \return a reference to a BinaryTree
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+BinaryTree< Element >& BinaryTree< Element >::operator=( const BinaryTree & rhs )
+{ 
+   if (rhs.mRoot != this->mRoot)
+   {
+      deleteSubtree(mRoot);
+      this->mRoot = copySubtree(rhs.mRoot);
+   }
+   this->mSize = rhs.mSize;
+   return *this;
+}
+
+// OPERATIONS 
+
+
+// ACCESS and MUTATE
+
+///////////////////////////////////////////////////////////////////////////////
+/// replaceElement
+/// \pre    There must be a BinaryTree to call it on
+/// \post   The Position will be replaced with the element
+/// \param  A position 
+/// \param  An Element
+/// \return None   
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+void BinaryTree< Element >::replaceElement(Position v, Element e) 
+{
+   if (v.isNull())
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   v.mPosition->mElement = e;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// swapElement
+/// \pre    There must be a BinaryTree to call it on
+/// \post   The Position will be replaced with the element
+/// \param  A position to swap
+/// \param  A position to swap
+/// \return None   
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+void BinaryTree< Element >::swapElements(Position v, Position w) 
+{
+   if (v.isNull() || w.isNull())
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   Element temp = w.mPosition->mElement;
+   
+   w.mPosition->mElement = v.mPosition->mElement;
+   v.mPosition->mElement = temp;
+}
+///////////////////////////////////////////////////////////////////////////////
+/// expandExternal
+/// \pre    There must be a BinaryTree to call it on
+/// \post   The Position will be replaced with the element
+/// \param  A position 
+/// \param  An Element
+/// \return None   
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+void BinaryTree< Element >::expandExternal( Position v)
+{
+   if (v.isNull())
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   mSize++;
+   v.mPosition->mLeftChild = new Node;
+   v.mPosition->mLeftChild->mParent = v.mPosition;
+   v.mPosition->mRightChild = new Node;
+   v.mPosition->mRightChild->mParent = v.mPosition;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// removeAboveExternal
+/// \pre    There must be a BinaryTree to call it on
+/// \post   The Position will be replaced with the element
+/// \param  A position 
+/// \param  An Element
+/// \return None   
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+void BinaryTree< Element >::removeAboveExternal( Position v)
+{
+   if (isRoot(v))
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   if ( isExternal(v))
+   {
+      Position s = sibling(v);
+      Position p = parent(v);
+      p.mPosition->mElement = s.mPosition->mElement;
+      p.mPosition->mLeftChild = s.mPosition->mLeftChild;
+      p.mPosition->mRightChild = s.mPosition->mRightChild;
+   }
+}
+
+// INQUIRY
+///////////////////////////////////////////////////////////////////////////////
+/// print
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  None
+/// \return The Position to the root of the BinaryTree
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+void BinaryTree< Element >::print(Position v)
+{
+   Position excheck = leftChild(v);
+   if (isInternal(excheck))
+   {
+      print(leftChild(v));
+   }
+   std::cout << v.element() << " ";
+   excheck = rightChild(v);
+   if (isInternal(excheck))
+   {
+      print(rightChild(v));
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// root
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  None
+/// \return The Position to the root of the BinaryTree
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+typename BinaryTree< Element >::Position BinaryTree< Element >::root( void ) const
+{
+   Position root_temp;
+   root_temp.mPosition = mRoot;
+   return root_temp;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// isRoot
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  A position
+/// \return bool if its a root
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+bool BinaryTree< Element >::isRoot(Position& v) const
+{
+   if (v.isNull())
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+  
+   return (v.mPosition->mParent == NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// isExternal
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  A position
+/// \return bool if its external
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+bool BinaryTree< Element >::isExternal(Position& v) const
+{
+   if (v.isNull())
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   return ( v.mPosition->mRightChild == NULL && v.mPosition->mLeftChild == NULL );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// isInternal
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  A position
+/// \return bool if its internal
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+bool BinaryTree< Element >::isInternal(Position& v) const
+{
+   if (v.isNull())
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   
+   return (! (v.mPosition->mRightChild == NULL) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// size
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  None
+/// \return the size of a BinaryTree
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+unsigned int BinaryTree< Element >::size( void ) const
+{
+   return mSize;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// parent
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  A position
+/// \return the parent of a node   
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+typename BinaryTree< Element >::Position BinaryTree< Element >::parent( const Position& v) const
+{
+   if (v.mPosition->mParent == NULL)
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   BinaryTree::Position p;
+   p.mPosition = (v.mPosition->mParent);
+   return p;
+   
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// leftChild
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  A position
+/// \return the left child of a node   
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+typename BinaryTree< Element >::Position BinaryTree< Element >::leftChild( Position& v ) const
+{
+   if (v.isNull())
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   BinaryTree::Position p;
+   p.mPosition = v.mPosition->mLeftChild;
+   return p;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// rightChild
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  A position
+/// \return the left child of a node   
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+typename BinaryTree< Element >::Position BinaryTree< Element >::rightChild( Position& v ) const
+{
+   if (v.isNull())
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   BinaryTree::Position p;
+   p.mPosition = v.mPosition->mRightChild;
+   return p;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// sibling
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  A position
+/// \return the position of the parents other child  
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+typename BinaryTree< Element >::Position BinaryTree< Element >::sibling( Position& v ) const
+{
+   if (v.isNull())
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   if (isRoot(v))
+   {
+      throw std::out_of_range("OMFG WTFBBQ PWNT");
+   }
+   BinaryTree::Position p;
+   if (v.mPosition->mParent->mLeftChild != v.mPosition)
+   {
+      p.mPosition = v.mPosition->mParent->mLeftChild;
+      return p;
+   }
+   if (v.mPosition->mParent->mRightChild != v.mPosition)
+   {
+      p.mPosition = v.mPosition->mParent->mRightChild;
+      return p;
+   }
+   return p;
+}
+
+// PROTECTED  
+
+// PRIVATE  
+///////////////////////////////////////////////////////////////////////////////
+/// deleteSubtree
+/// \pre    There must be a tree to call it on
+/// \post   None
+/// \param  None
+/// \return None
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+void BinaryTree< Element >::deleteSubtree( Node * p)
+{
+   if (p->mLeftChild != NULL)
+   {
+      deleteSubtree(p->mLeftChild);
+   }
+   if (p->mLeftChild != NULL)
+   {
+      deleteSubtree(p->mRightChild);
+   }
+   delete p;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// copySubTree
+/// \pre    There must be a BinaryTree to call it on
+/// \post   None
+/// \param  None
+/// \return A node pointer to the new BinaryTree
+///////////////////////////////////////////////////////////////////////////////
+template < class Element >
+typename BinaryTree< Element >::Node * BinaryTree< Element >::copySubtree( Node * p)
+{
+   Node* Temp = new Node;
+   Node* New_Child1;
+   Node* New_Child2;
+   Temp->mParent = p->mParent;
+   Temp->mElement = p->mElement;
+   if (p->mLeftChild != NULL)
+   {
+      New_Child1 = copySubtree(p->mLeftChild);
+   }
+   if (p->mLeftChild != NULL)
+   {
+      New_Child2 = copySubtree(p->mRightChild);
+   }
+   New_Child1->mParent = Temp;
+   New_Child2->mParent = Temp;
+   
+   return Temp;
+   
+}
+
+#endif

@@ -1,0 +1,22 @@
+Setup Attack 1
+
+//USED TO DEMONSTRAIGHT ANOMALY
+//Hold enter on alice to flood the max rate, than let go for a while to return service
+//Also can enter a long message "Im going to be a dropped message because I exceed the rate limit and i really hate to do this blah" to send and break wait limit
+./alice -p 2000
+./bob -p 2001
+./eve -f bob 2001 -r alice 2000 -l 130 -s 20
+
+
+//USED TO DEMONSTRAIGHT MISUSE
+//First command used to send a good message
+//Second command used to send a message with bad tags
+//third command used to send a bad port message
+
+./alice -p 4000 -f msg
+./alice -p 4000 -f badtagmsg
+./alice -p 4000 -f badportmsg
+./bob -p 4001
+./eve -f bob 4001 -r alice 4000 -l 1000 -s 20000
+
+

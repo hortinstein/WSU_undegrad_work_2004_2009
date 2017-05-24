@@ -1,0 +1,12 @@
+GET /profile.php?id=27216355&ref=profile HTTP/1.1
+Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-ms-application, application/vnd.ms-xpsdocument, application/xaml+xml, application/x-ms-xbap, application/x-shockwave-flash, application/vnd.ms-powerpoint, application/msword, application/vnd.ms-excel, */*
+Referer: http://www.facebook.com/inbox/readmessage.php?t=1061557738513&mbox_pos=0
+Accept-Language: en-us
+UA-CPU: x86
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; SLCC1; .NET CLR 2.0.50727; Media Center PC 5.0; .NET CLR 3.0.04506)
+Host: www.facebook.com
+Connection: Keep-Alive
+Cookie: datr=cdff33005cafb61f5242255eac4721f3db3b7918647127c7230ec5b3a3695062; __utma=87286159.110539671.1208152953.1224533591.1224628097.48; __utmz=87286159.1221592559.44.13.utmccn=(referral)|utmcsr=new.facebook.com|utmcct=/apps/application.php|utmcmd=referral; ABT=11ba8b899e3a5d3190608ee8e33e8d5b1st27216355%3A1225071612%3AA%2311ba8b899e3a5d3190608ee8e33e8d5b1st27216849%3A1225232739%3AA%2311ba8b899e3a5d3190608ee8e33e8d5b1st27215299%3A1225249762%3AA%2325d18f295b2443846d529d60f2d990f31st%3A1225398338%3AA; login_x=a%3A2%3A%7Bs%3A5%3A%22email%22%3Bs%3A21%3A%22stanknation13%40wsu.edu%22%3Bs%3A19%3A%22remember_me_default%22%3Bb%3A0%3B%7D; test_cookie=1; login=+; xs=efd58722bb9c68318f56e73ab3fe744e; c_user=27216355; h_user=1edd759ac6f7; isfbe=false; presence=%7B%22v%22%3A2%2C%22time%22%3A1225139062%2C%22ch%22%3A%7B%22h%22%3A%22channel26%22%2C%22p%22%3A80%2C%22sub%22%3A%5B1%2C1%5D%2C%22p_27216355%22%3A0%2C%22ri%22%3A0%7D%2C%22state%22%3A%7B%22p%22%3A0%2C%22w%22%3A1259%2C%22h%22%3A603%2C%22ut%22%3A1225139058543%2C%22pt%22%3A0%2C%22vis%22%3A1%2C%22smf%22%3A1%2C%22bls%22%3A0%2C%22blc%22%3A0%2C%22snd%22%3A1%2C%22blo%22%3A0%2C%22bvt%22%3A0%2C%22ct%22%3A0%2C%22t%22%3A%7B%7D%2C%22f%22%3Anull%2C%22sb%22%3A1%2C%22s%22%3A0%7D%2C%22ntf%22%3A0%2C%22bl%22%3A%7B%22ac%22%3A35%2C%22al%22%3A%7B%7D%2C%22ut%22%3A1225138788%2C%22ud%22%3A400%2C%22lc%22%3A1%7D%7D; made_write_conn=1225139190; ABT=11ba8b899e3a5d3190608ee8e33e8d5b1st27216849%3A1225232739%3AA%2311ba8b899e3a5d3190608ee8e33e8d5b1st27215299%3A1225249762%3AA%2325d18f295b2443846d529d60f2d990f31st%3A1225398338%3AA%23%3A%3A
+
+

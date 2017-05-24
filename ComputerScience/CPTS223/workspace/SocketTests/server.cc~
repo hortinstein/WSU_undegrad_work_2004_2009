@@ -1,0 +1,49 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \author       Alex Hortin
+/// \date         4/3/06
+/// \brief        A simple program to test out the network stuff
+///
+/// I am creating this to test the simple network
+///
+/// REVISION HISTORY:
+///
+/// NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// INCLUDES
+
+#include "Socket.h"
+#include <vector>
+#include <iostream>
+#include <sstream>
+#include <stdlib.h>
+// FUNCTIONS
+
+int main(void)
+{
+	int clients = 0;
+	Socket mLogin;
+	std::vector<Socket *> mConnections;
+	while (clients < 4)
+	{
+		Socket * NewConnection = new Socket;
+		mLogin.listen(9931);//listening on login port
+		
+		std::stringstream port;
+		clients++;//incrimenting clients
+		port << (9931 + clients);//setting the port string
+ 		std::cout << "Login Detected, sending dedicated port" <<  port.str() << std::endl;
+		mLogin.send(port.str());//sending dedicated port to client
+		
+		mConnections.push_back(NewConnection);
+		mConnections[clients - 1]->listen(9931 + clients);
+		std::stringstream msg;
+		msg << "You Are the " << clients << " to connect" << std::endl;
+		mConnections[clients - 1]->send(msg.str());
+	}
+	for (int i = 0; i < mConnections.size();i++)
+	{
+		mConnections[i]->send("Everyone is Connected");
+	}
+}

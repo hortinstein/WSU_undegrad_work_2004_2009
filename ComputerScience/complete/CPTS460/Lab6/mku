@@ -1,0 +1,14 @@
+echo "compiling ..."
+cd USER/
+bcc -c uc.c
+as86 -o us.o us.s
+echo linking .....
+ld86 -s us.o uc.o /usr/lib/bcc/libc.a
+ls -l a.out
+echo "dumping a.out to u1 ...."
+mount -t ext2 -o loop ../mtximage ../temp
+cp a.out ../temp/u1
+umount ../temp
+cp sosimage /var/lib/dosemu/
+echo done.
+

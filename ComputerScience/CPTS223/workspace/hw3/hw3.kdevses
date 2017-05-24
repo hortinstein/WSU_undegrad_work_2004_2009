@@ -1,0 +1,48 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE KDevPrjSession>
+<KDevPrjSession>
+ <DocsAndViews NumberOfDocuments="6" >
+  <Doc0 NumberOfViews="1" URL="file:/net/zeus/users/ahortin/workspace/hw3/Playlist.cc" >
+   <View0 Type="Source" />
+  </Doc0>
+  <Doc1 NumberOfViews="1" URL="file:/net/zeus/users/ahortin/workspace/hw3/playlist_with_iterators.cc" >
+   <View0 Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:/net/zeus/users/ahortin/workspace/hw3/PlaylistEditorWindow.cc" >
+   <View0 line="182" Type="Source" />
+  </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:/net/zeus/users/ahortin/workspace/hw3/PlaylistIterator.cc" >
+   <View0 Type="Source" />
+  </Doc3>
+  <Doc4 NumberOfViews="1" URL="file:/net/zeus/users/ahortin/workspace/hw3/Soundfile.cc" >
+   <View0 Type="Source" />
+  </Doc4>
+  <Doc5 NumberOfViews="1" URL="file:/net/zeus/users/ahortin/workspace/hw3/Makefile" >
+   <View0 line="24" Type="Source" />
+  </Doc5>
+ </DocsAndViews>
+ <pluginList>
+  <kdevbookmarks>
+   <bookmarks>
+    <bookmark url="/net/zeus/users/ahortin/workspace/hw3/Playlist.cc" >
+     <mark line="205" />
+    </bookmark>
+   </bookmarks>
+  </kdevbookmarks>
+  <kdevsubversion>
+   <subversion recurseresolve="1" recurserelocate="1" recursemerge="1" recursecommit="1" base="" recursepropget="1" recurseswitch="1" recurseupdate="1" recursepropset="1" recursediff="1" recurserevert="1" forcemove="1" recursecheckout="1" forceremove="1" recurseadd="1" recurseproplist="1" forcemerge="1" />
+  </kdevsubversion>
+  <kdevvalgrind>
+   <executable path="" params="" />
+   <valgrind path="" params="" />
+   <calltree path="" params="" />
+   <kcachegrind path="" />
+  </kdevvalgrind>
+  <kdevdebugger>
+   <breakpointList>
+    <breakpoint0 location="/net/zeus/users/ahortin/workspace/hw3/playlist_with_iterators.cc:47" type="1" condition="" enabled="1" />
+    <breakpoint1 location="/net/zeus/users/ahortin/workspace/hw3/PlaylistEditorWindow.cc:134" type="1" condition="" enabled="1" />
+   </breakpointList>
+  </kdevdebugger>
+ </pluginList>
+</KDevPrjSession>

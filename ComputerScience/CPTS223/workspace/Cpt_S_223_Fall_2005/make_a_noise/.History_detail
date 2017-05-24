@@ -1,0 +1,339 @@
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:17:36 AM PDT-->Target|Project|/make_a_noise-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:17:36 AM PDT-->Target|File|/make_a_noise/.cdtproject-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:17:36 AM PDT-->Target|File|/make_a_noise/.project-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:17:37 AM PDT-->Target|File|/make_a_noise/.cdtproject-->Action|changed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:17:37 AM PDT-->Target|File|/make_a_noise/.project-->Action|changed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:17:37 AM PDT-->Target|File|/make_a_noise/.cdtproject-->Action|changed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:18:14 AM PDT-->Target|File|/make_a_noise/make_a_noice.cc-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:18:30 AM PDT-->Target|File|/make_a_noise/Makefile-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:20:52 AM PDT-->Target|File|/make_a_noise/Makefile-->Action|changed
+0a1,18
+> #
+> # Makefile for Make A Noise
+> #
+> # Compiler: Eclipse
+> # Linker: Eclipse
+> # 
+> CXXFlags = -O0 -g3 -Wall -I/usr/local/include -I/usr/X11R6/include
+> LDFLAGS = `fltk-config --ldflags`
+> test: make_a_noise.o PlayerWindow.o 
+> 	g++ make_me_laugh.o PlayerWindow.o -o makemelaugh $(LDFLAGS)
+> 	./makeanoise
+> all: make_a_noise.o PlayerWindow.o 
+> 	g++ make_a_noise.o PlayerWindow.o -o makemelaugh $(LDFLAGS)
+> 
+> 
+> clean:
+> 	- rm *.o makeanoise
+> 	- rm core*
+\ No newline at end of file
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:21:06 AM PDT-->Target|File|/make_a_noise/make_a_noice.cc-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:22:35 AM PDT-->Target|File|/make_a_noise/make_a_noise.cc-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:27:53 AM PDT-->Target|File|/make_a_noise/PlayerWindow.h-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:34:51 AM PDT-->Target|File|/make_a_noise/PlayerWindow.h-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:35:08 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.h-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:37:09 AM PDT-->Target|File|/make_a_noise/make_a_noise.cc-->Action|changed
+0a1,24
+> /*
+>  * Programmer: Alex Hortin
+>  * Class: Cpt S 223, Fall 2005;
+>  * Programming Assignment: #1 Make Me Laugh
+>  * Date: August 31, 2005
+>  * Due: September 7, 2005
+>  * Description: This program involves us making a simple sound player in
+>  * 	FLTK.  It will test our comprehension of sounds and how to use new librarys
+>  * 	that we are currently unfamilar of.  It is our job to implement these 
+>  * 	librarys in an FLTK program.
+>  */
+> 
+> #include <FL/Fl.H>//the FLTK source files
+> #include <FL/Fl_Window.H>//the FLTK source files
+> #include <FL/Fl_Button.H>//the FLTK source files
+> #include <FL/Fl_Input.H>//the FLTK source files
+> #include <FL/Fl_Output.H>//the FLTK source files 
+> #include "PlayerWindow.h"
+> 
+> 
+> int main(void)
+> {
+> 	
+> }
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:37:10 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.h-->Action|changed
+0a1,40
+> #ifndef PLAYBACKWINDOW_H//guard conditional compilation
+> #define PLAYBACKWINDOW_H//guard conditional compilation
+> 
+> #include <FL/Fl.H>//the FLTK source files
+> #include <FL/Fl_Window.H>//the FLTK source files
+> #include <FL/Fl_Button.H>//the FLTK source files
+> #include <FL/Fl_Input.H>//the FLTK source files
+> #include <FL/Fl_Output.H>//the FLTK source files
+> 
+> #include <string>//string.h include
+> using std::string;//includes the string command
+> 
+> 
+> /* Class: PlaybackWindow                       
+>  * Date Created: 8/30/05                           
+>  * Date Last Modified: 8/30/05                         
+>  * Description: A class that shows a window in FLTK, with both a play button
+>  * 	and a quit button.  The play button changes to stop when clicked.  
+>  * Base Class: Fl_Window                
+> */
+> class PlaybackWindow : public Fl_Window//inheritance for the window
+> {
+> 	public:
+> 		PlaybackWindow(string file_name);//the basic constructor used for testing
+> 		PlaybackWindow( const PlaybackWindow&PlaybackWindow );//the copy constructor
+> 		~PlaybackWindow();//the destructor
+> 		Fl_Button* play_or_stop;//the pointer that contains the dual button fo play or stop
+> 		Fl_Button* quit;//the pointer that contains the button for "quit"
+> 		Fl_Input* rid;//stores the riddle button
+> 		Fl_Output* ans;//stores the ans button
+> 	
+> 	private:
+> 		static void cb_play_or_stop(Fl_Widget*, void*);//the button for play or stop
+> 		inline void cb_play_or_stop_i();//the call that the button makes to play or stop
+> 	
+> 		static void cb_quit(Fl_Widget*, void*);//the button to quit
+> 		inline void cb_quit_i();//the fuction that quits
+> };
+> 
+> #endif//end of the guard code
+\ No newline at end of file
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:37:21 AM PDT-->Target|File|/make_a_noise/make_a_noise.cc-->Action|changed
+18c18
+< #include "PlayerWindow.h"
+---
+> #include "PlaybackWindow.h"
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:37:40 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:49:05 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.h-->Action|changed
+15,16c15,16
+<  * Date Created: 8/30/05                           
+<  * Date Last Modified: 8/30/05                         
+---
+>  * Date Created: 8/31/05                           
+>  * Date Last Modified: 8/31/05                         
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:49:06 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+0a1,68
+> #include <iostream>
+> #include <string>
+> 
+> 
+> #include "PlaybackWindow.h"//includes the file where my class definition is
+> 
+> /* Function: PlaybackWindow constructor                      
+>  * Date Created: 8/31/05                           
+>  * Date Last Modified:                         
+>  * Description: A constructor for the window in FLTK.
+>  * Input parameters: 2 strings                                     
+>  * Returns: NONE    
+> */
+> PlaybackWindow(string file_name):Fl_Window(500,200,"Music Player")
+> {
+> 	begin();
+> 		tell_me = new Fl_Button( 10, 150, 70, 30, "P&lay");//displays the button to tell
+> 		tell_me->callback( cb_play_or_stop, this );//calls the function after the button has been pressed
+> 	
+> 		quit = new Fl_Button(100, 150, 70, 30, "&Quit");//displays the quit button
+> 		quit->callback(cb_quit, this);//calls the quit function to quit the program
+> 		
+> 		end();//ends the function
+> 		resizable(this);//makes the window resizable
+> 		show();//shows the window
+> }
+> /* Function: PlaybackWindow copy constructor                      
+>  * Date Created: 8/31/05                           
+>  * Date Last Modified: 8/31/05                         
+>  * Description: A copy constructor for the window in FLTK.
+>  * Input parameters: the adress of a window to copy                                    
+>  * Returns: NONE    
+> */
+> PlaybackWindow::PlaybackWindow(const PlaybackWindow& PlaybackWindow):Fl_Window(300,200,"I Pass")
+> {
+> }
+> /* Function: PlaybackWindow destructor                      
+>  * Date Created: 8/31/05                           
+>  * Date Last Modified: 8/31/05                         
+>  * Description: A destructor for the window in FLTK.
+>  * Input parameters: NONE                                     
+>  * Returns: NONE    
+> */
+> PlaybackWindow::~PlaybackWindow()
+> {
+> }
+> /* Function: PlaybackWindow quit button                      
+>  * Date Created: 8/31/05                           
+>  * Date Last Modified: 8/31/05                         
+>  * Description: Calls the quit function while still hiding information
+>  * Input parameters: the widget location pointer                                     
+>  * Returns: NONE    
+> */
+> void PlaybackWindow::cb_quit(Fl_Widget* , void* v)
+> {
+> 	( (PlaybackWindow*)v )->cb_quit_i();//calls the function to hide the window
+> }
+> /* Function: PlaybackWindow quit button                      
+>  * Date Created: 8/31/05                           
+>  * Date Last Modified: 8/31/05                         
+>  * Description: Calls hide function to destroy the window
+>  * Input parameters: NONE                                     
+>  * Returns: NONE    
+> */
+> void PlaybackWindow::cb_quit_i() 
+> {
+> 	hide();//hides the window
+> }
+\ No newline at end of file
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:51:35 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+67a68,89
+> }
+> /* Function: cb_play_or_stop                      
+>  * Date Created: 8/31/05                           
+>  * Date Last Modified: 8/31/05                         
+>  * Description: Calls the function to show the answer
+>  * Input parameters: widget adress                                     
+>  * Returns: NONE    
+> */
+> void PlaybackWindow::cb_play_or_stop(Fl_Widget* , void* v)
+> {
+>     ( (RiddleWindow*)v )->cb_tell_me_i();//calls the function that displays the text
+> }
+> /* Function: cb_play_or_stop_i                      
+>  * Date Created: 8/31/05                           
+>  * Date Last Modified: 8/31/05                         
+>  * Description: Calls hide function to destroy the window
+>  * Input parameters: NONE                                     
+>  * Returns: NONE    
+> */
+> void PlaybackWindow::cb_play_or_stop_i()
+> {
+> 	ans->value(answer.c_str());//shows the answer
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:55:32 AM PDT-->Target|File|/make_a_noise/make_a_noise.o-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:56:40 AM PDT-->Target|File|/make_a_noise/Makefile-->Action|changed
+9,10c9,10
+< test: make_a_noise.o PlayerWindow.o 
+< 	g++ make_me_laugh.o PlayerWindow.o -o makemelaugh $(LDFLAGS)
+---
+> test: make_a_noise.o PlaybackWindow.o 
+> 	g++ make_a_noise.o PlaybackWindow.o -o makeanoise $(LDFLAGS)
+12,13c12,13
+< all: make_a_noise.o PlayerWindow.o 
+< 	g++ make_a_noise.o PlayerWindow.o -o makemelaugh $(LDFLAGS)
+---
+> all: make_a_noise.o PlaybackWindow.o 
+> 	g++ make_a_noise.o PlaybackWindow.o -o makeanoise $(LDFLAGS)
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:56:42 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.h-->Action|changed
+29,30c29
+< 		Fl_Input* rid;//stores the riddle button
+< 		Fl_Output* ans;//stores the ans button
+---
+> 	
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:56:42 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+78c78
+<     ( (RiddleWindow*)v )->cb_tell_me_i();//calls the function that displays the text
+---
+>     ( (PlaybackWindow*)v )->cb_tell_me_i();//calls the function that displays the text
+89c89
+< 	ans->value(answer.c_str());//shows the answer
+---
+> 	quit->copy_label(i->value());
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:57:49 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+78c78
+<     ( (PlaybackWindow*)v )->cb_tell_me_i();//calls the function that displays the text
+---
+>     ( (PlaybackWindow*)v )->cb_play_or_stop_i();//calls the function that displays the text
+89,90c89,90
+< 	quit->copy_label(i->value());
+< }
+\ No newline at end of file
+---
+> 	quit->copy_label("Stop");
+> }
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:58:50 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+14c14
+< PlaybackWindow(string file_name):Fl_Window(500,200,"Music Player")
+---
+> PlaybackWindow::PlaybackWindow(string file_name):Fl_Window(500,200,"Music Player")
+RCL_Rpt-->Time|Wednesday, August 31, 2005 10:59:20 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.h-->Action|changed
+39c39,40
+< #endif//end of the guard code
+\ No newline at end of file
+---
+> #endif//end of the guard code
+> 
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:00:21 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+17,18c17,18
+< 		tell_me = new Fl_Button( 10, 150, 70, 30, "P&lay");//displays the button to tell
+< 		tell_me->callback( cb_play_or_stop, this );//calls the function after the button has been pressed
+---
+> 		play_or_stop = new Fl_Button( 10, 150, 70, 30, "P&lay");//displays the button to tell
+> 		play_or_stop->callback( cb_play_or_stop, this );//calls the function after the button has been pressed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:01:05 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+89c89
+< 	quit->copy_label("Stop");
+---
+> 	quit->label("Stop");
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:02:09 AM PDT-->Target|File|/make_a_noise/make_a_noise.cc-->Action|changed
+22a23
+> 	PlaybackWindow w( "filename" );
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:03:12 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.o-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:03:12 AM PDT-->Target|File|/make_a_noise/make_a_noise.o-->Action|changed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:03:12 AM PDT-->Target|File|/make_a_noise/makeanoise-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:04:56 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+23,25c23,25
+< 		end();//ends the function
+< 		resizable(this);//makes the window resizable
+< 		show();//shows the window
+---
+> 	end();//ends the function
+> 	resizable(this);//makes the window resizable
+> 	show();//shows the window
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:05:09 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.o-->Action|changed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:05:09 AM PDT-->Target|File|/make_a_noise/make_a_noise.o-->Action|changed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:05:09 AM PDT-->Target|File|/make_a_noise/makeanoise-->Action|changed
+DEL_Rpt-->Time|Wednesday, August 31, 2005 11:05:13 AM PDT-->Target|Debugger|Process|/make_a_noise/makeanoise-->Action|create
+DEL_Rpt-->Time|Wednesday, August 31, 2005 11:05:14 AM PDT-->Target|Debugger|Process|/make_a_noise/makeanoise-->Action|terminate
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:06:48 AM PDT-->Target|File|/make_a_noise/makeanoise-->Action|changed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:07:22 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.o-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:07:22 AM PDT-->Target|File|/make_a_noise/make_a_noise.o-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:07:22 AM PDT-->Target|File|/make_a_noise/makeanoise-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:08:12 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.o-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:08:12 AM PDT-->Target|File|/make_a_noise/make_a_noise.o-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:08:12 AM PDT-->Target|File|/make_a_noise/makeanoise-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:08:16 AM PDT-->Target|File|/make_a_noise/make_a_noise.cc-->Action|changed
+24c24
+< 	
+---
+> 	return Fl::run();//returns the FLTK windows if successfull.
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:08:53 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+89c89
+< 	quit->label("Stop");
+---
+> 	play_or_stop->label("Stop");
+WkSavePart-->Time|Wednesday, August 31, 2005 11:09:48 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+WkSavePart-->Time|Wednesday, August 31, 2005 11:11:25 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:36 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.o-->Action|changed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:36 AM PDT-->Target|File|/make_a_noise/make_a_noise.o-->Action|changed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:36 AM PDT-->Target|File|/make_a_noise/makeanoise-->Action|changed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:14:13 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+89c89,94
+< 	play_or_stop->label("Stop");
+---
+> 	if (play_or_stop->label()) = "Play")
+> 		play_or_stop->label("Stop");
+> 	if (play_or_stop->label()) = "Stop")
+> 		play_or_stop->label("Play");
+> 	
+> 		
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:15:49 AM PDT-->Target|File|/make_a_noise/PlaybackWindow.cc-->Action|changed
+89,94c89
+< 	if (play_or_stop->label()) = "Play")
+< 		play_or_stop->label("Stop");
+< 	if (play_or_stop->label()) = "Stop")
+< 		play_or_stop->label("Play");
+< 	
+< 		
+---
+> 	play_or_stop->label("Stop");
+WkSavePart-->Time|Wednesday, August 31, 2005 11:16:01 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnoff

@@ -1,0 +1,33 @@
+volatile boolean enter1 = false;
+volatile boolean enter2 = false;
+volatile int turn = 1;
+{ while(true) { /* Thread 1 */
+   enter1 = true;
+   while (enter2) {
+      if (turn==2) {
+         enter1 = false;
+         while (turn==2) skip;
+         enter1 = true;
+      }
+   }
+   /* critical section */
+   enter1 = false; turn = 2;
+   /* non-critical section */
+}}
+
+/* Thread 2 */
+{ while(true) {
+   enter1 = true;
+   while (enter1) {
+      if (turn==2) {
+         enter2 = false;
+         while (turn==2) skip;
+         enter2 = true;
+      }
+   }
+   /* critical section */
+   enter1 = false; turn = 2;
+   /* non-critical section */
+}}
+
+

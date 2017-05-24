@@ -1,0 +1,79 @@
+<html><head><title>460 Notes</title></head><body bgcolor="#00cccc" text="#000000">
+<h1>LAB Assignment #2</h1>
+<pre>   
+           DUE &amp; DEMO: PRE_WORK: week of Feb.2, 2009
+                       LAB#2     week of Feb.9, 2009
+
+1. PRE-work: Due: Week of Feb.2, 2009
+
+   Down load files from ~samples/LAB2:
+        s.s : assembly file, use it AS IS
+        t.c : C file for MTX, which calls printf() in YOUR io.c
+        io.c: YOUR gets() and printf()
+        mk  : sh script for generating MTX kernel : /boot/mtx
+
+   In the mk sh script, 
+          ld86 -d s.o t.o mtxlib /usr/lib/bss/lib.c
+   uses the GIVEN mxtlib, which contains printf() in io.o for you to 
+   generate  /boot/mtx to get started.
+ 
+   But you MUST supply YOUR own io.c containing YOUR printf() to create /boot/mtx.
+   Also, use YOUR MTX booter in LAB#1 on the FD for booting up /boot/mtx
+ 
+(1). Write YOUR own printf() as speicified in the class lecture.
+     Use your printf() in an io.c file to generate the MTX kernel.
+
+(2). Implement a    pid = kfork();
+     function, which creates a CHILD process, put it into the ready queue
+     and return its pid. Return -1 if kfork() fails (due to no more FREE
+     proc's). Use YOUR kfork() to create P1. 
+
+(3). Finish the enqueue() function, which enters a proc (pointer) into 
+     readyqueue by priority (FIFO if same priority).
+
+(4). Add a 'f' command to body(), which creates a CHILD process, puts it
+     into ready queue and return its pid (or -1 if failure).
+
+     Demonstrate YOUR 'f' command. (It should be able to create new procs
+     in ready queue and 's' should run different procs.
+ 
+----------------------------------------------------------------------------   
+
+2. MAIN WORK OF LAB #2
+
+Modify the MTX system to include the following:
+
+1. sleep(event)/wakeup(event):
+   As shown in Notes #4
+
+2. pid = wait(&amp;status):
+   The logic of wait() is explained in Notes #4.
+   Implement it in YOUR MTX.
+
+3. kexit(value) int value:
+   A process calls kexit(value) to die, in which it
+     . become a ZOMBIE; 
+     . print last gasp and records the gasp string (pointer) as "exitValue" 
+       in PROC;
+     . give away all children to Task1;
+     . wakeup its parent;
+     . finally, tswitch() to give up CPU.
+ 
+   Also, implement these into kexit():
+     Process P1 cannot die if there are other READY tasks.
+
+4. Add the follwoing commands FOR DEMO:
+    
+    Print the status of ALL tasks, including
+          running pid
+          freeList 
+          sleepList 
+  
+    w  : pid=wait(&amp;LastGasp); wait for a ZOMBIE child, get its pid and last 
+                              gasp string, free the ZOMBIE proc;
+         Then, print the dead child pid and its last gasp string.
+
+5. LAB2/lab2.bin.gz is a sample solution. 
+
+
+</pre></body></html>

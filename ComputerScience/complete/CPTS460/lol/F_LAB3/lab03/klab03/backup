@@ -1,0 +1,19 @@
+
+/***********************************************************************
+ * dequeue
+ * Description:
+ * Params:
+ * Return:
+ *
+ **********************************************************************/
+PROC * dequeue( queue ) PROC ** queue;
+{
+    PROC * p = *queue;
+
+    if (p) {
+        *queue = p->next;
+        return p;
+    }
+
+    return &proc[0];        /* if readyqueue empty => return P0 */
+}

@@ -1,0 +1,88 @@
+#!/usr/bin/python
+import sys, os, socket,time 
+#######################################################################################################################################
+#	alice
+#
+#	alice is a smiple message sending client that can generate messages in the format:
+#	
+#	<MSG>
+#	  <SRC>source</SRC>
+#	  <DEST>destination</DEST>
+#	  <USER>user</USER>
+#	  <VALUE>value</VALUE>
+#	  <TEXT>text</TEXT>
+#	</MSG>
+#	
+#	-the <MSG> </MSG> field contains the entire message and all the fields that the rerouting software expects
+#		-the <SRC> </SRC> field contains the source from sender in format "port ie a message from alice might 
+#			contain "2000"
+#		-the <DEST> </DEST> field contains the host destination from the sender in format "dest" ie a message from
+#			alice to bob might contain "2001"
+#		-the <USER> </USER> field contains the user at the destination the message is meant for
+#		-the <VALUE> </VALUE> field contains the time that the message is sent (seconds since epoch)
+#		-the <TEXT> </TEXT> field contains the text in the message
+#		
+#		-b field will let the user input anything into the program to send (rather than generate the fields
+#			that it can automatically
+#		-p [#] or --port [#] : specifies the port to send to/recieve from
+#		-h [address] or --host [address] : specifies the address to send to/recieve from - defaults to localhost 
+#		-m "string" : specifies the message to be sent
+#		
+#######################################################################################################################################
+msg = ""#a var to store the total message
+
+for arg in enumerate(sys.argv):
+	if sys.argv[arg[0]] == "-h" or sys.argv[arg[0]] == "--host": host = sys.argv[arg[0]+1]	#found the host
+	if sys.argv[arg[0]] == "-p" or sys.argv[arg[0]] == "--port": port = int(sys.argv[arg[0]+1])	#found the port
+	if sys.argv[arg[0]] == "-f": msgFile = sys.argv[arg[0]+1]	#found the message
+if "-h" not in sys.argv or "--host" not in sys.argv: host = "localhost"#defaults to localhost
+if "-b" not in sys.argv and  "-f" not in sys.argv:
+	print "...alice : input message destination port (bobs)"	
+	dest = sys.stdin.readline()
+
+
+def sendmsg(msg):
+	message_address = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#tcp socket stream
+	message_address.connect((host,port))
+	message_address.send(msg)#sending it
+
+	
+if "-f" in sys.argv: #if a message file is provided
+	msgFile = (open(msgFile, 'r')).readlines()
+	for line in msgFile:
+		msg+=line
+	print ("...alice: starting in file send mode with route: [host] "+host+" [post] " + str(port) + "sending message:\n"+msg)
+	sendmsg(msg)
+elif "-b" in sys.argv:#This can be used to generate a message in the improper format		
+	print "...alice : input message source"	
+	line = sys.stdin.readline()
+	msg += ("<MSG>\n<SRC>" + line[:-1] + "</SRC>\n")
+	print "...alice : input message destination"	
+	line = sys.stdin.readline()
+	msg += ("<DEST>" + line[:-1] + "</DEST>\n")
+	print "...alice : input the user on destination machine to recieve message"	
+	line = sys.stdin.readline()
+	msg += ("<USER>" + line[:-1] + "</USER>\n")
+	print "...alice : input user sending message (good behavior = alice)"	
+	line = sys.stdin.readline()
+	msg += ("<VALUE>" + line[:-1] + "</VALUE>\n")		
+	print "...alice : input message text"	
+	line = sys.stdin.readline()	
+	msg += ("<TEXT>" + line[:-1] + "</TEXT>\n</MSG>")	
+	print ("...alice: starting in input send mode with route: [host] "+host+" [post] " + str(port) + "sending message:\n"+msg)
+	sendmsg(msg)
+else:#This can be used to generate a message in the proper format		
+	print "...alice : input message text"	
+	print ("...alice: starting in flood mode with route: [host] "+host+" [post] " + str(port) + "sending message:\n"+msg)
+	#This mode is to test packet flooding
+	while ("-b" not in sys.argv or  "-f" not in sys.argv):
+		line = sys.stdin.readline()	
+		print "...alice: press or hold enter to flood"	
+		msg += ("<MSG>\n<SRC>" + str(port) + "</SRC>\n")
+		msg += ("<DEST>" + dest[:-1] + "</DEST>\n")
+		msg += ("<USER>"+"bob"+"</USER>\n")
+		value_epoch = str( time.time() )
+		msg += ("<VALUE>" + value_epoch + "</VALUE>\n")
+		msg += ("<TEXT>" + line[:-1] + "</TEXT>\n</MSG>")
+		sendmsg(msg)
+		msg = ""

@@ -1,0 +1,170 @@
+1. What happens when you login to Unix?
+
+	The first process that becomes active is P1 called the INIT process, 	which will be the parent of all processes to follow.  It reads 				configuration files on the system and opens up child processes for different terminals.  Each terminal has 3 input or output streams; stdin, stdoud, stderr.  The child process executes /etc/getty, and waits for a login.  When given input it looks up the process in /etc/passwd and matches user name and password.  If login is successful, the login process takes on the users gid and user id. When a user logs into unix the current working directory is set to their Home directory.  To verify their password, there is a file within the /etc/passwd file. It than executes the shell program (bash csh etc) specified within the user account
+
+2. What's cc? (Steps and what does each step do)
+
+cc or gcc is the GNU project C and C++ compiler, which does preprocessing, compilation, assembly, and linking of a C or C++ file(s).
+
+The steps are as follows: 
+	1) 	converting the C files into assembly .s files containing all the assembly code for the target machine.  
+	2)	It than must convert the assembly code into object code.  Since assembly code is tailor made for each machine an assembler is invoked which translates the file into a .o file called an object file.  Each .o file contains a code section, a data section (all global and static variables), and a SymbolTable (all variables, function names and their varios attributes)
+	3)	the final step is called linking, where the linker is invoked to take all the different .o files that are dependant on one another and any libraries they might use, and put them into one executable binary file (a.out by default).
+
+3. Dynamic Vs. static linking?
+
+	There are 2 ways to create a.out, static and dynamic linking.  In static linking all library functions are included in a.out, making it large, but completely able to standalone on any machine.  In dynamic linking the libraries are not included, but function calls are stored in the loader, making it possible to load the proper libraries on execution.  Once loaded into memory these library files known as DLL (dynamic linked libraries) can be shared and the a.out size is drastically reduced.  The loader loads all files into memory.
+
+4. Given a C program,
+
+        int g;
+        int h = 1;
+
+        main(int argc, char *argv[])      int A(        )
+        {                                 {                            
+           int a,b,c;                        int u,v;
+           a = 2; 
+           b = 3;                            HERE:       
+           c = A(a,b,"hello");      
+        }                 
+                }
+   (0). Complete the function heading of A(....)
+		-int A(int a, int b, char* str)
+   (1). Which variables are global? local?
+		-g and h are global while a,b,c are local, and u and v are local to A    
+   (2). Which variables are in a.out?
+		-the variables that are in a.out are h 
+   (3). In the run-time memory of a.out, where are the variables?
+		-the dynamic variables are on the heap, while the run time variables are located on the stack
+   (4). Execution is at HERE:  Show the stack contents from HERE to main()'s 
+                               argc and argv.
+								a| b| c| return address|frame pointer|u|v|
+		- a=2,b=3, u, u ?????
+5. A simple function in assembly:
+            .global sub
+   sub:
+
+   ENTRY:   pushl   %ebp
+            movl    %esp, %ebp
+   
+   BODY:
+            movl    $1234, %eax
+            movl     1234, %eax            
+
+   EXIT:
+            movl    %ebp, %esp
+            popl    %ebp
+            ret
+
+   (0). What's purpose of .global sub ?
+		-it is predefining sub as a global variable
+   (1). What's the purpose of ENTRY?
+		-the pupose on entry is defining a function
+   (2). What's the difference between the 2 statements in BODY?
+		- one is assigning a variable to eax (return register) 
+		- ???
+   (3). What does the EXIT part do?
+		- it copies the frame pointer onto the stack pointer
+		- than it pops the stack pointer into frame pointer
+		- RET pops the stack top into PC register, causing the CPU to 
+              execute from the "return address" saved earlier.
+
+6. int pid, dead, how;
+
+   pid = fork();              What does it do? if forks a new proces and assigns pid as the child id or -1 if any error happens
+
+   if (pid){ // do this }     which process will do this? parent 
+   else{     // do that }     which process will do that? child
+
+   dead = wait(&how);         IF CALLED BY THE ABOVE 2 processes, dead=? how=? dead will be assigned to a childs process id and exit status returned by wait
+
+7. What does  int   r = execve("a.out", argv, env);    do? it will run a.out with the arguments and env variables from the current program r will be error or success
+   How does the system find a.out?							it will the first argument (assumed as direct path) to find it in CWD.
+   Draw a diagram to show exactly what's argv?				arv are the argumetns in the current program main(int argc, char *argv[], char *env[])
+   What's the value of r? (It can only have ONE possible value !!!) 0 since its essentially a recursive call
+
+8. a.out is the binary executable of the C program
+     main(int argc, char *argv[], char *env[])
+     {
+       execve(argv[0], argv, env);
+     }
+   What would happen?
+	this would be a problem, because it would be calling the current program over and over again with the same arguments.  It would enter an endless loop
+   HOW TO GET OUT THE MESS?
+	dont call the same function over and over again, add a check for aguments
+
+9. When run  a.out > outfile, how does sh do the I/O re-direction?
+	
+	it forks a child for a.out  and it closes the stdout process and opens a file as stdout for that child process
+
+10. You can use the Unix command  mkdir /a/b/c  to make a directory.
+    Write a C statement for the mkdir command.
+
+	
+	main(int argc, char *argv[], char *env[])
+    {
+       mkdir(argv[1]);
+     }
+
+11. open,  read,  write are system calls
+   fopen, fread, fwrite are library I/O functions.
+
+   What's their RELATIONSHIP? The library i/o functions are built on top of the system calls
+   WHY do wee need lib I/O functions? so we dont have to use the system calls that blindly open and process and write data. The system calls do not know anything about the data or 
+
+   Write C code to
+     open a file for READ; read the SECOND block of 1024 bytes into a buf[]
+     open a file for WRITE (CREAT if needed); write a string of chars to it.
+	
+ 		   #include    <fcntl.h>
+           int gd,fd, n;   char buf[1024]; 
+           main()
+           {
+              fd = open("myfile", 0_RDONLY); 
+              n = read(fd, buf, 1024); 
+             lseek(fd, (long)POSITION, 0);     
+			gd = open("file2", O_WRONLY);
+				write (gd, buf, n) 
+             close(fd);                        This closes an opened file.
+			close(gd);
+           }
+	
+12. stat() (and lstat()):
+    What does it do? retuns information about the given file
+    HOW TO determine a files's type, e.g. REG or DIR? check the bitmasking in the st_mode part of the struct
+    HOW TO get the file size, ctime? st_size, st_ctime
+    How to print ctime in calendar form? ctime(&fileStat.st_ctime);
+    How to tell whether 2 pathnames are really the SAME file? compare their st_ino 
+
+13. HOW TO use opendir(), readdir()?
+	
+	struct* dirent;
+	dp = opendir(argv[1]);
+	ep = readdir(dp);
+	while(ep != '\0')			
+	{	
+		printf("%s\n",(ep->d_name));
+		ep = readdir(dp);
+	}
+
+14. Network Programming using TCP
+    What's IP? what's TCP? HOW DOES TCP achieve reliable data transfer? IP is a best try protocol for sending recieving datapackets among hosts, while TCP requires in order packets and retransmission
+    What's an IP address, a Port Number? an IP address is a computers location (unique) on a network for each host machine, and a port number is what port an application is using either with udp or tcp so many applications can use the same IP address at once without conflicting packets
+    Network (bytes) order Vs. host order? one the internet the bytes are always big endian and hosts run on either big or little endian...library functions are used to convert the two
+    Compare a socket (number) with a file descriptor?
+	a socket is just like a file within a unix enviroment and can be written, read and opened and closed.  However a socket will have a port number bound to it so other machines can access it
+    In a TCP Server-Client model, to establish a "virtual" connection,
+
+       What should the Server do?   |    What should the Client do? 
+       The server should start and client connect to localhost, given the proper port
+          (After Server accepted a Client connection)                      
+       How does the Server (porgram) know where is the Client?
+			because it is bound to a specific port.  
+            HOW DO THEY communicate with each other?
+			through sockets
+    HOW TO let the Server deal with multiple Clients?
+	an array of sockets
+15. sh programming:
+    Study YOUR LAB#5
+
+

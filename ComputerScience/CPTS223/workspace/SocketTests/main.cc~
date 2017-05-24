@@ -1,0 +1,26 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \author       Alex Hortin
+/// \date         4/3/06
+/// \brief        A simple program to test out the network stuff
+///
+/// I am creating this to test the simple network
+///
+/// REVISION HISTORY:
+///
+/// NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// INCLUDES
+
+#include "MyWindow.h"
+#include <FL/Fl.H>
+// FUNCTIONS
+
+int main(void)
+{
+	
+	MyWindow* Mw;
+	Mw = new MyWindow;
+	return Fl::run();
+}

@@ -1,0 +1,16 @@
+#Usage : mku filename
+
+echo "compiling $1"
+bcc -c $1.c
+as86 -o u.o u.s
+ld86 u.o $1.o ../mtxlib /usr/lib/bcc/libc.a
+
+echo "copying $1 to mtximage"
+mount -t ext2 -o loop ../mtximage ../temp
+cp a.out ../temp/$1
+cp a.out ../temp/$1
+umount ../temp
+
+rm *.o a.out
+
+echo "done making $1"

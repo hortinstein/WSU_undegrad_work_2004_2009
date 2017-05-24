@@ -1,0 +1,12 @@
+client
+client.c
+client.o
+lab4.client
+lab4helpers.c
+lab4helpers.h
+lab4.server
+Makefile
+server
+server.c
+serverdat
+server.o

@@ -1,0 +1,2 @@
+sudo losetup /dev/loop0 /home/dan/Desktop/CPTS460/LAB3/dos 
+sudo mount /dev/loop0 /home/dan/Desktop/t

@@ -1,0 +1,67 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \author       Alex Hortin
+/// \date         11/29/05
+/// \brief        This is my test file used to test my implementation of a 
+///               Dictionary using a hash table.
+///
+/// I am creating a tree and this will be the file that I use to test all of
+/// the various functions contained within the Dictionary.  It will try to test 
+/// all of the options that the interface gives the user. 
+///
+/// REVISION HISTORY:
+///
+/// NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+// LOCAL INCLUDES
+//
+#include "Dictionary.h"                               
+#include "DatabaseWindow.h"   
+#include "BinaryTree.h"
+// FUNCTIONS
+
+//         /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/photo_database_browser
+
+
+int main (int argc, char *argv[])
+{
+   cout << "1 Testing various functions for basic binary tree" << endl;
+   BinaryTree<int> p(6);
+   BinaryTree<int>::Position root = p.root();
+   BinaryTree<int>::Position as = p.leftChild(root);
+   BinaryTree<int>::Position as2 = p.rightChild(root);
+   p.expandExternal(as);
+   p.expandExternal(as2);
+   p.replaceElement(as, 2);
+   p.replaceElement(as2, 7);
+   p.swapElements(as2,as);
+   p.print(p.root());
+   cout << endl;
+   p.swapElements(as2,as);
+   p.print(p.root());
+   cout << endl;
+   p.removeAboveExternal(p.rightChild(as2));
+   p.print(p.root());
+   cout << endl << "1 passed" << endl << endl;
+   
+   cout << "2 Testing various functions for binary search tree" << endl;
+   BinaryTree<int> j(11);
+   bst_insert(j,22);
+   bst_insert(j,1);
+   bst_insert(j,17);
+   bst_insert(j,3);
+   bst_insert(j,5);
+   j.print(j.root());
+   cout << endl;
+   root = j.root();
+   BinaryTree<int>::Position srch = bst_search(j,root,77);
+   if (! srch.isNull())
+   {
+      cout << srch.element() << endl;
+   }
+   cout << endl << "2 passed" << endl << endl;
+}

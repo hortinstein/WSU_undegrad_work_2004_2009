@@ -1,0 +1,36 @@
+#! /usr/bin/env python
+
+#Homework #3
+#concord
+#CPTS481
+#Alex Hortin
+#10732085
+
+from concordance import concordance 
+import sys
+htmlfile=open('concord_out.html', 'w')
+html = "<html>\n<head>\n<title>\nConcordance Output</title>\n</head>\n<body>\n<table border=\"1\">\n"
+mega_cord = {}
+for args in sys.argv[1:]:
+	temp = concordance(args,False)
+	for key in temp:
+		if mega_cord.has_key(key): mega_cord[key][args] = (temp[key][args])
+		else:	mega_cord[key] = temp[key]
+#printing all data out
+for key in sorted(mega_cord): 
+	#print str(key) + "			"+  str(mega_cord[key])
+	total_occur = 0
+	out_file = ""	
+	for file_name in mega_cord[key]:
+		temp = list(set(mega_cord[key][file_name]))
+		out_file += "	" + file_name + ": "
+		for linenum in temp:
+			occur = mega_cord[key][file_name].count(linenum)
+			total_occur += occur
+			if (occur > 1): out_file += " " + str(linenum) +"(" + str(occur) + "), "
+			else: out_file += " " + str(linenum) + ", "
+		out_file += "\n"
+	print key + " ("+str(total_occur)+"): \n" + out_file
+	html += "\n<tr><td>\n" + key + " ("+str(total_occur)+"): </td><td>\n" + out_file + "\n</td></tr>"
+html += "\n</table></body></html>"
+htmlfile.write(html)

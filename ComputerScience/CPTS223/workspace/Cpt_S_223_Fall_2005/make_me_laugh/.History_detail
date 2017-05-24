@@ -1,0 +1,930 @@
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:26:34 AM PDT-->Target|Project|/make_me_laugh-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:26:34 AM PDT-->Target|File|/make_me_laugh/.cdtproject-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:26:34 AM PDT-->Target|File|/make_me_laugh/.project-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:26:35 AM PDT-->Target|File|/make_me_laugh/.cdtproject-->Action|changed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:26:35 AM PDT-->Target|File|/make_me_laugh/.project-->Action|changed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:26:35 AM PDT-->Target|File|/make_me_laugh/.cdtproject-->Action|changed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:29:54 AM PDT-->Target|File|/make_me_laugh/make_me_laugh.cc-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:30:11 AM PDT-->Target|File|/make_me_laugh/Makefile-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:30:57 AM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:31:05 AM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:55:50 AM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+0a1,22
+> #include <stdio.h>
+> #include <string.h>
+> #include <stdlib.h>
+> #include "riddlewindow.h"
+> 
+> 
+> RiddleWindow::RiddleWindow(string ):Fl_Window(w,h,title)
+> {
+> 	begin();
+> 		copy = new Fl_Button( 10, 150, 70, 30, "T&ell Me");
+> 		copy->callback( cb_tell_me, this );
+> 	
+> 		quit = new Fl_Button(100, 150, 70, 30, "&Quit");
+> 		quit->callback(cb_quit, this);
+> 		
+> 		inp = new Fl_Input(50, 50, 140, 30, "Riddle:");
+> 		out = new Fl_Output(50, 100, 140, 30, "Answer:");
+> 	
+> 	end();
+> 	resizable(this);
+> 	show();
+> }
+\ No newline at end of file
+RCL_Rpt-->Time|Tuesday, August 30, 2005 9:55:51 AM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+0a1,33
+> #pragma once
+> #ifndef RIDDLEWINDOW_H
+> #define RIDDLEWINDOW_H
+> 
+> #include <FL/Fl.H>
+> #include <FL/Fl_Window.H>
+> #include <FL/Fl_Button.H>
+> #include <FL/Fl_Input.H>
+> #include <FL/Fl_Output.H>
+> #include <riddlewindow.cc>
+> #include <string.h>
+> using namespace std::string
+> 
+> class RiddleWindow : public Fl_Window
+> {
+> 	public:
+> 		RiddleWindow(string w, string h);
+> 		RiddleWindow( const RiddleWindow& RiddleWindow )
+> 		~RiddleWindow();
+> 		Fl_Button* tell_me;
+> 		Fl_Button* quit;
+> 		Fl_Input* inp;
+> 		Fl_Output* out;
+> 	
+> 	private:
+> 		static void cb_tell_me(Fl_Widget*, void*);
+> 		inline void cb_tell_me_i();
+> 	
+> 		static void cb_quit(Fl_Widget*, void*);
+> 		inline void cb_quit_i();
+> };
+> 
+> #endif
+\ No newline at end of file
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:13:45 AM PDT-->Target|File|/make_me_laugh/make_me_laugh.cc-->Action|changed
+0a1,21
+> /*
+>  * Programmer: Alex Hortin
+>  * Class: Cpt S 223, Fall 2005;
+>  * Programming Assignment: #1 Make Me Laugh
+>  * Date: August 30, 2005
+>  * Due: August 31, 2005
+>  * Description: This program is meant to test our ability to use the FLTK tools
+>  * 	and test our prior knowledge of C++. It is the first assignment of the 
+>  * 	semester and it is fairly easy since all we have to do is display a window
+>  * 	with a riddle and the answer
+>  */
+>  
+> #include "riddlewindow.h"
+> 
+> int main(void)
+> {
+> 	string q = "What's the difference between a duck?";//question
+> 	string a = "Each of its legs is both the same";//answer
+> 	RiddleWindow w( q, a );//call to the fuction that makes the window
+> 	return FL::run();//returns the FLTK windows if successfull.
+> }
+\ No newline at end of file
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:13:47 AM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+7c7
+< RiddleWindow::RiddleWindow(string ):Fl_Window(w,h,title)
+---
+> RiddleWindow::RiddleWindow(string w, string h):Fl_Window(300,200,"I Pass")
+22c22,33
+< }
+\ No newline at end of file
+---
+> }
+> 
+> void SimpleWindow::cb_quit(Fl_Widget* , void* v) {
+> 
+>    ( (SimpleWindow*)v )->cb_quit_i();
+> }
+> 
+> 
+> void SimpleWindow::cb_quit_i() {
+> 
+>     hide();
+> }
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:13:50 AM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+13c13,21
+< 
+---
+> ///////////////////////////////////////////////////////////////////////////////
+> /// \class        Riddle Window
+> /// \author       Author’s Name
+> /// \date         The Date
+> /// \brief        A short description and purpose of this class.
+> /// BASE CLASSES: List any base classes of this class.
+> ///
+> /// PURPOSE:   A longer description and purpose for this class.            
+> ///////////////////////////////////////////////////////////////////////////////
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:24:10 AM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+6c6,12
+< 
+---
+> /* Function: RiddleWindow constructor                      
+>  * Date Created: 8/30/05                           
+>  * Date Last Modified: 8/30/05                         
+>  * Description: A constructor for the window in FLTK.
+>  * Input parameters: 2 strings                                     
+>  * Returns: NONE    
+> */
+16,17c22,23
+< 		inp = new Fl_Input(50, 50, 140, 30, "Riddle:");
+< 		out = new Fl_Output(50, 100, 140, 30, "Answer:");
+---
+> 		rid = new Fl_Input(50, 50, 140, 30, "Riddle:");
+> 		ans = new Fl_Output(50, 100, 140, 30, "Answer:");
+23c29,48
+< 
+---
+> /* Function: RiddleWindow copy constructor                      
+>  * Date Created: 8/30/05                           
+>  * Date Last Modified: 8/30/05                         
+>  * Description: A copy constructor for the window in FLTK.
+>  * Input parameters: the adress of a window to copy                                    
+>  * Returns: NONE    
+> */
+> RiddleWindow::RiddleWindow(const RiddleWindow& RiddleWindow)
+> {
+> }
+> /* Function: RiddleWindow destructor                      
+>  * Date Created: 8/30/05                           
+>  * Date Last Modified: 8/30/05                         
+>  * Description: A destructor for the window in FLTK.
+>  * Input parameters: NONE                                     
+>  * Returns: NONE    
+> */
+> RiddleWindow::~RiddleWindow()
+> {
+> }
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:24:13 AM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+1,3c1,3
+< #pragma once
+< #ifndef RIDDLEWINDOW_H
+< #define RIDDLEWINDOW_H
+---
+> #pragma once//guard code
+> #ifndef RIDDLEWINDOW_H//guard conditional compilation
+> #define RIDDLEWINDOW_H//guard conditional compilation
+5,10c5,10
+< #include <FL/Fl.H>
+< #include <FL/Fl_Window.H>
+< #include <FL/Fl_Button.H>
+< #include <FL/Fl_Input.H>
+< #include <FL/Fl_Output.H>
+< #include <riddlewindow.cc>
+---
+> #include <FL/Fl.H>//the FLTK source files
+> #include <FL/Fl_Window.H>//the FLTK source files
+> #include <FL/Fl_Button.H>//the FLTK source files
+> #include <FL/Fl_Input.H>//the FLTK source files
+> #include <FL/Fl_Output.H>//the FLTK source files
+> #include <riddlewindow.cc>//the C++ file containing the functions for this file
+13,21c13,22
+< ///////////////////////////////////////////////////////////////////////////////
+< /// \class        Riddle Window
+< /// \author       Author’s Name
+< /// \date         The Date
+< /// \brief        A short description and purpose of this class.
+< /// BASE CLASSES: List any base classes of this class.
+< ///
+< /// PURPOSE:   A longer description and purpose for this class.            
+< ///////////////////////////////////////////////////////////////////////////////
+---
+> 
+> 
+> /* Class: RiddleWindow                       
+>  * Date Created: 8/30/05                           
+>  * Date Last Modified: 8/30/05                         
+>  * Description: A class that shows a window in FLTK, with both a riddle and
+>  * 	an answer to that riddle
+>  * Base Class: Fl_Window             
+>  *     
+> */
+25,31c26,32
+< 		RiddleWindow(string w, string h);
+< 		RiddleWindow( const RiddleWindow& RiddleWindow )
+< 		~RiddleWindow();
+< 		Fl_Button* tell_me;
+< 		Fl_Button* quit;
+< 		Fl_Input* inp;
+< 		Fl_Output* out;
+---
+> 		RiddleWindow(string w, string h);//the basic constructor used for testing
+> 		RiddleWindow( const RiddleWindow& RiddleWindow )//the copy constructor
+> 		~RiddleWindow();//the destructor
+> 		Fl_Button* tell_me;//the pointer that contains the button for "tell me"
+> 		Fl_Button* quit;//the pointer that contains the button for "quit"
+> 		Fl_Input* rid;
+> 		Fl_Output* ans;
+41c42
+< #endif
+\ No newline at end of file
+---
+> #endif//end of the guard code
+\ No newline at end of file
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:33:31 AM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+0a1,20
+> #
+> # Makefile for Make Me Laugh
+> #
+> # Compiler: Eclipse
+> # Linker: Eclipse
+> # 
+> 
+> all: makemelaugh
+> 
+> makemelaugh: main.o factorial.o hello.o
+> 	g++ make_me_laugh.o riddlewindow.o -o makemelaugh
+> 
+> make_me_laugh.o: make_me_laugh.cc
+> 	g++ -c make_me_laugh.cc
+> 
+> riddlewindow.o: riddlewindow.cc
+> 	g++ -c riddlewindow.cc
+> 
+> clean:
+> 	rm -rf *o makemelaugh
+\ No newline at end of file
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:39:56 AM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+8c8,9
+< all: makemelaugh
+---
+> all:
+> 	makemelaugh
+20c21,24
+< 	rm -rf *o makemelaugh
+\ No newline at end of file
+---
+> 	rm -rf *o makemelaugh
+> 	
+> -I/usr/local/include -I/usr/X11R6/include
+> 	
+\ No newline at end of file
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:52:00 AM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+7,8c7,8
+< 
+< all:
+---
+> CXXFlags = -O0 -g3 -Wall
+> make all: 
+21,24c21
+< 	rm -rf *o makemelaugh
+< 	
+< -I/usr/local/include -I/usr/X11R6/include
+< 	
+\ No newline at end of file
+---
+> 	rm -rf *o makemelaugh
+\ No newline at end of file
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:52:01 AM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+49,51c49,58
+< void SimpleWindow::cb_quit(Fl_Widget* , void* v) {
+< 
+<    ( (SimpleWindow*)v )->cb_quit_i();
+---
+> /* Function: RiddleWindow quit button                      
+>  * Date Created: 8/30/05                           
+>  * Date Last Modified: 8/30/05                         
+>  * Description: Calls the quit function while still hiding information
+>  * Input parameters: the widget location pointer                                     
+>  * Returns: NONE    
+> */
+> void SimpleWindow::cb_quit(Fl_Widget* , void* v)
+> {
+> 	( (SimpleWindow*)v )->cb_quit_i();//calls the function to hide the window
+53,57c60,69
+< 
+< 
+< void SimpleWindow::cb_quit_i() {
+< 
+<     hide();
+---
+> /* Function: RiddleWindow quit button                      
+>  * Date Created: 8/30/05                           
+>  * Date Last Modified: 8/30/05                         
+>  * Description: Calls hide function to destroy the window
+>  * Input parameters: NONE                                     
+>  * Returns: NONE    
+> */
+> void SimpleWindow::cb_quit_i() 
+> {
+> 	hide();//hides the window
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:56:01 AM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+7,8c7,9
+< CXXFlags = -O0 -g3 -Wall
+< make all: 
+---
+> CXXFlags = -O0 -g3 -Wall -I/usr/local/include -I/usr/X11R6/include
+> 
+> all:
+21c22,23
+< 	rm -rf *o makemelaugh
+\ No newline at end of file
+---
+> 	rm -rf *o makemelaugh
+> 	
+\ No newline at end of file
+RCL_Rpt-->Time|Tuesday, August 30, 2005 10:56:01 AM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+16,17c16,17
+< 		copy = new Fl_Button( 10, 150, 70, 30, "T&ell Me");
+< 		copy->callback( cb_tell_me, this );
+---
+> 		copy = new Fl_Button( 10, 150, 70, 30, "T&ell Me");//displays the button to tell
+> 		copy->callback( cb_tell_me, this );//calls the function after the button has been pressed
+19c19
+< 		quit = new Fl_Button(100, 150, 70, 30, "&Quit");
+---
+> 		quit = new Fl_Button(100, 150, 70, 30, "&Quit");//displays the quit button
+WkSavePart-->Time|Tuesday, August 30, 2005 10:56:20 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnoff
+WkSavePart-->Time|Tuesday, August 30, 2005 10:56:55 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+WkSavePart-->Time|Tuesday, August 30, 2005 10:57:08 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnoff
+WkSavePart-->Time|Tuesday, August 30, 2005 2:40:52 PM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+WkSavePart-->Time|Tuesday, August 30, 2005 2:44:10 PM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+RCL_Rpt-->Time|Tuesday, August 30, 2005 2:49:50 PM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+7c7
+< CXXFlags = -O0 -g3 -Wall -I/usr/local/include -I/usr/X11R6/include
+---
+> CXXFlags = '-O0 -g3 -Wall -I/usr/local/include -I/usr/X11R6/include'
+10,12c10
+< 	makemelaugh
+< 
+< makemelaugh: main.o factorial.o hello.o
+---
+> 	main.o factorial.o hello.o
+RCL_Rpt-->Time|Tuesday, August 30, 2005 2:51:11 PM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+9,10c9
+< all:
+< 	main.o factorial.o hello.o
+---
+> all: make_me_laugh.o riddlewindow.o 
+RCL_Rpt-->Time|Tuesday, August 30, 2005 2:55:38 PM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+7c7,8
+< CXXFlags = '-O0 -g3 -Wall -I/usr/local/include -I/usr/X11R6/include'
+---
+> CXXFlags = -O0 -g3 -Wall -I/usr/local/include -I/usr/X11R6/include
+> LDFLAGS = `fltk-config --ldflags`
+12,16d12
+< make_me_laugh.o: make_me_laugh.cc
+< 	g++ -c make_me_laugh.cc
+< 
+< riddlewindow.o: riddlewindow.cc
+< 	g++ -c riddlewindow.cc
+RCL_Rpt-->Time|Tuesday, August 30, 2005 2:55:38 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+1d0
+< #pragma once//guard code
+RCL_Rpt-->Time|Tuesday, August 30, 2005 2:56:54 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+9c9
+< #include <riddlewindow.cc>//the C++ file containing the functions for this file
+---
+> #include "riddlewindow.cc"//the C++ file containing the functions for this file
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:01:20 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.h|22-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:02:05 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+3a4
+> 
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:02:07 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+9c9
+< #include "riddlewindow.cc"//the C++ file containing the functions for this file
+---
+> 
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:02:08 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.h|22|[true, Line breakpoint: riddlewindow.h [line: 22], org.eclipse.cdt.debug.core, /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/make_me_laugh/riddlewindow.h, 0, , 22]-->Action|enabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:05:47 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+26c26
+< 		RiddleWindow( const RiddleWindow& RiddleWindow )//the copy constructor
+---
+> 		RiddleWindow( const RiddleWindow& RiddleWindow );//the copy constructor
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:05:47 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.h|22|[true, Line breakpoint: riddlewindow.h [line: 22], org.eclipse.cdt.debug.core, /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/make_me_laugh/riddlewindow.h, 0, , 22]-->Action|enabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:07:12 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+11c11
+< using namespace std::string
+---
+> using std::string
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:07:13 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.h|22|[true, Line breakpoint: riddlewindow.h [line: 22], org.eclipse.cdt.debug.core, /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/make_me_laugh/riddlewindow.h, 0, , 22]-->Action|enabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:07:31 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+11c11
+< using std::string
+---
+> using std::string;
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:07:31 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.h|22|[true, Line breakpoint: riddlewindow.h [line: 22], org.eclipse.cdt.debug.core, /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/make_me_laugh/riddlewindow.h, 0, , 22]-->Action|enabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:08:08 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+1,3c1,3
+< #include <stdio.h>
+< #include <string.h>
+< #include <stdlib.h>
+---
+> #include <stdio>
+> #include <string>
+> #include <stdlib>
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:08:14 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+10c10
+< #include <string.h>
+---
+> #include <string>
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:08:14 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.h|22|[true, Line breakpoint: riddlewindow.h [line: 22], org.eclipse.cdt.debug.core, /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/make_me_laugh/riddlewindow.h, 0, , 22]-->Action|enabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:09:00 PM PDT-->Target|File|/make_me_laugh/make_me_laugh.cc-->Action|changed
+12c12,17
+<  
+---
+> 
+> #include <FL/Fl.H>//the FLTK source files
+> #include <FL/Fl_Window.H>//the FLTK source files
+> #include <FL/Fl_Button.H>//the FLTK source files
+> #include <FL/Fl_Input.H>//the FLTK source files
+> #include <FL/Fl_Output.H>//the FLTK source files 
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:09:38 PM PDT-->Target|File|/make_me_laugh/make_me_laugh.cc-->Action|changed
+26c26
+< }
+\ No newline at end of file
+---
+> }
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:09:42 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+41c41
+< #endif//end of the guard code
+\ No newline at end of file
+---
+> #endif//end of the guard code
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:09:43 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.h|22|[true, Line breakpoint: riddlewindow.h [line: 22], org.eclipse.cdt.debug.core, /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/make_me_laugh/riddlewindow.h, 0, , 22]-->Action|enabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:11:33 PM PDT-->Target|File|/make_me_laugh/make_me_laugh.cc-->Action|changed
+25c25
+< 	return FL::run();//returns the FLTK windows if successfull.
+---
+> 	return Fl::run();//returns the FLTK windows if successfull.
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:12:21 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+1c1
+< #include <stdio>
+---
+> #include <iostream>
+3c3
+< #include <stdlib>
+---
+> 
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:18:21 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+17,18c17,18
+< 		copy = new Fl_Button( 10, 150, 70, 30, "T&ell Me");//displays the button to tell
+< 		copy->callback( cb_tell_me, this );//calls the function after the button has been pressed
+---
+> 		tell_me = new Fl_Button( 10, 150, 70, 30, "T&ell Me");//displays the button to tell
+> 		tell_me->callback( cb_tell_me, this );//calls the function after the button has been pressed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:22:46 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+23a24
+> 		rid->value(w); 
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:24:32 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+24c24
+< 		rid->value(w); 
+---
+> 		//rid->value(w); 
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:24:52 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+24c24
+< 		//rid->value(w); 
+---
+> 		rid->value(w.c_str()); 
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:26:17 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+38c38
+< RiddleWindow::RiddleWindow(const RiddleWindow& RiddleWindow)
+---
+> RiddleWindow::RiddleWindow(const RiddleWindow& RiddleWindow):Fl_Window(300,200,"I Pass")
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:26:55 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+58c58
+< void SimpleWindow::cb_quit(Fl_Widget* , void* v)
+---
+> void RiddleWindow::cb_quit(Fl_Widget* , void* v)
+60c60
+< 	( (SimpleWindow*)v )->cb_quit_i();//calls the function to hide the window
+---
+> 	( (RiddleWindow*)v )->cb_quit_i();//calls the function to hide the window
+69c69
+< void SimpleWindow::cb_quit_i() 
+---
+> void RiddleWindow::cb_quit_i() 
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:27:18 PM PDT-->Target|File|/make_me_laugh/make_me_laugh.o-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:27:18 PM PDT-->Target|File|/make_me_laugh/riddlewindow.o-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:30:38 PM PDT-->Target|File|/make_me_laugh/make_me_laugh.cc-->Action|changed
+19a20,21
+> using std::string;
+> 
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:32:18 PM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+11c11
+< 	g++ make_me_laugh.o riddlewindow.o -o makemelaugh
+---
+> 	g++ make_me_laugh.o riddlewindow.o -o makemelaugh $(LDFLAGS)
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:32:22 PM PDT-->Target|File|/make_me_laugh/make_me_laugh.o-->Action|changed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:32:22 PM PDT-->Target|File|/make_me_laugh/riddlewindow.o-->Action|changed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:38:22 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+72a73,94
+> /* Function: cb_tell_me                      
+>  * Date Created: 8/30/05                           
+>  * Date Last Modified: 8/30/05                         
+>  * Description: Calls the function to show the answer
+>  * Input parameters: NONE                                     
+>  * Returns: NONE    
+> */
+> void RiddleWindow::cb_tell_me(Fl_Widget* , void* v)
+> {
+>     ( (SimpleWindow*)v )->cb_copy_i();
+> }
+> /* Function: cb_tell_me_i                      
+>  * Date Created: 8/30/05                           
+>  * Date Last Modified: 8/30/05                         
+>  * Description: Calls hide function to destroy the window
+>  * Input parameters: NONE                                     
+>  * Returns: NONE    
+> */
+> void RiddleWindow::cb_tell_me_i()
+> {
+> 	ans->value(h.c_str());
+> }
+\ No newline at end of file
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:39:21 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+82c82
+<     ( (SimpleWindow*)v )->cb_copy_i();
+---
+>     ( (RiddleWindow*)v )->cb_copy_i();
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:40:01 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+82c82
+<     ( (RiddleWindow*)v )->cb_copy_i();
+---
+>     ( (RiddleWindow*)v )->cb_tell_me_i();
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:43:18 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+25a26
+> 		answer = h;
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:43:26 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+38a39
+> 		string *answer; 
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:43:26 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.h|22|[true, Line breakpoint: riddlewindow.h [line: 22], org.eclipse.cdt.debug.core, /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/make_me_laugh/riddlewindow.h, 0, , 22]-->Action|enabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:43:53 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+94c94
+< 	ans->value(h.c_str());
+---
+> 	ans->value(*(h.c_str()));
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:44:39 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+94c94
+< 	ans->value(*(h.c_str()));
+---
+> 	ans->value(h.c_str());
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:44:43 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+39c39
+< 		string *answer; 
+---
+> 		string answer; 
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:44:47 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.h|22|[true, Line breakpoint: riddlewindow.h [line: 22], org.eclipse.cdt.debug.core, /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/make_me_laugh/riddlewindow.h, 0, , 22]-->Action|enabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:44:57 PM PDT-->Target|File|/make_me_laugh/make_me_laugh.o-->Action|changed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:44:57 PM PDT-->Target|File|/make_me_laugh/riddlewindow.o-->Action|removed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:45:06 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+94c94
+< 	ans->value(h.c_str());
+---
+> 	ans->value(answer.c_str());
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:45:20 PM PDT-->Target|File|/make_me_laugh/makemelaugh-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:45:20 PM PDT-->Target|File|/make_me_laugh/riddlewindow.o-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:45:35 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+95c95,96
+< }
+\ No newline at end of file
+---
+> }
+> 
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:45:48 PM PDT-->Target|File|/make_me_laugh/makemelaugh-->Action|changed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:45:48 PM PDT-->Target|File|/make_me_laugh/riddlewindow.o-->Action|changed
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:48:33 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.cc|83-->Action|added
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:49:04 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:49:10 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.cc|83|[83, true, org.eclipse.cdt.debug.core, /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/make_me_laugh/riddlewindow.cc, Line breakpoint: riddlewindow.cc [line: 83], 0, ]-->Action|enabled
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:49:53 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.cc|83-->Action|disabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:51:25 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+14c14
+< RiddleWindow::RiddleWindow(string w, string h):Fl_Window(300,200,"I Pass")
+---
+> RiddleWindow::RiddleWindow(string w, string h):Fl_Window(500,200,"I Pass")
+23c23
+< 		rid = new Fl_Input(50, 50, 140, 30, "Riddle:");
+---
+> 		rid = new Fl_Input(50, 50, 440, 30, "Riddle:");
+25c25
+< 		ans = new Fl_Output(50, 100, 140, 30, "Answer:");
+---
+> 		ans = new Fl_Output(50, 100, 440, 30, "Answer:");
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:51:25 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.cc|83-->Action|disabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:53:10 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+23c23
+< 		rid = new Fl_Input(50, 50, 440, 30, "Riddle:");
+---
+> 		rid = new Fl_Input(50, 50, 430, 30, "Riddle:");
+25c25
+< 		ans = new Fl_Output(50, 100, 440, 30, "Answer:");
+---
+> 		ans = new Fl_Output(50, 100, 430, 30, "Answer:");
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:53:17 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.cc|83-->Action|disabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:54:05 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+83c83
+<     ( (RiddleWindow*)v )->cb_tell_me_i();
+---
+>     ( (RiddleWindow*)v )->cb_tell_me_i();//calls the function that displays the text
+94c94
+< 	ans->value(answer.c_str());
+---
+> 	ans->value(answer.c_str());//shows the answer
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:54:12 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.cc|83-->Action|disabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 3:55:11 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+23c23
+< 		rid = new Fl_Input(50, 50, 430, 30, "Riddle:");
+---
+> 		rid = new Fl_Input(80, 50, 430, 30, "Riddle:");
+25c25
+< 		ans = new Fl_Output(50, 100, 430, 30, "Answer:");
+---
+> 		ans = new Fl_Output(80, 100, 430, 30, "Answer:");
+BPL_Rpt-->Time|Tuesday, August 30, 2005 3:55:11 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.cc|83-->Action|disabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:00:32 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|changed
+5c5
+< #include "riddlewindow.h"
+---
+> #include "riddlewindow.h"//includes the file where my class definition is
+21c21
+< 		quit->callback(cb_quit, this);
+---
+> 		quit->callback(cb_quit, this);//calls the quit function to quit the program
+23,26c23,26
+< 		rid = new Fl_Input(80, 50, 430, 30, "Riddle:");
+< 		rid->value(w.c_str()); 
+< 		ans = new Fl_Output(80, 100, 430, 30, "Answer:");
+< 		answer = h;
+---
+> 		rid = new Fl_Input(60, 50, 430, 30, "Riddle:");//defines the label and text box
+> 		rid->value(w.c_str()); //shows the riddle
+> 		ans = new Fl_Output(60, 100, 430, 30, "Answer:");//defines the answer box
+> 		answer = h;//copies the string into class memory
+28,30c28,30
+< 	end();
+< 	resizable(this);
+< 	show();
+---
+> 	end();//ends the function
+> 	resizable(this);//makes the window resizable
+> 	show();//shows the window
+BPL_Rpt-->Time|Tuesday, August 30, 2005 4:00:32 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.cc|83-->Action|disabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:00:41 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|changed
+10,11c10,11
+< #include <string>
+< using std::string;
+---
+> #include <string>//string.h include
+> using std::string;//includes the string command
+22c22
+< class RiddleWindow : public Fl_Window
+---
+> class RiddleWindow : public Fl_Window//inheritance for the window
+30,31c30,31
+< 		Fl_Input* rid;
+< 		Fl_Output* ans;
+---
+> 		Fl_Input* rid;//stores the riddle button
+> 		Fl_Output* ans;//stores the ans button
+34,35c34,35
+< 		static void cb_tell_me(Fl_Widget*, void*);
+< 		inline void cb_tell_me_i();
+---
+> 		static void cb_tell_me(Fl_Widget*, void*);//the button for tell me
+> 		inline void cb_tell_me_i();//the call that the button makes
+37,39c37,39
+< 		static void cb_quit(Fl_Widget*, void*);
+< 		inline void cb_quit_i();
+< 		string answer; 
+---
+> 		static void cb_quit(Fl_Widget*, void*);//the buton to quit
+> 		inline void cb_quit_i();//the fuction that quits
+> 		string answer; //the string that stores the answer
+BPL_Rpt-->Time|Tuesday, August 30, 2005 4:00:43 PM PDT-->Target|linebreakpoint|/make_me_laugh/riddlewindow.h|22|[true, Line breakpoint: riddlewindow.h [line: 22], org.eclipse.cdt.debug.core, /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/make_me_laugh/riddlewindow.h, 0, , 22]-->Action|enabled
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:01:01 PM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+15c15
+< 	rm -rf *o makemelaugh
+---
+> 	rm -rf *.o makemelaugh
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:01:14 PM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+15c15
+< 	rm -rf *.o makemelaugh
+---
+> 	rm *.o makemelaugh
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:03:10 PM PDT-->Target|File|/make_me_laugh/riddlewindow.h-->Action|removed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:03:28 PM PDT-->Target|File|/make_me_laugh/RiddleWindow.cc-->Action|added
+#include <iostream>
+#include <string>
+
+
+#include "riddlewindow.h"//includes the file where my class definition is
+
+/* Function: RiddleWindow constructor                      
+ * Date Created: 8/30/05                           
+ * Date Last Modified: 8/30/05                         
+ * Description: A constructor for the window in FLTK.
+ * Input parameters: 2 strings                                     
+ * Returns: NONE    
+*/
+RiddleWindow::RiddleWindow(string w, string h):Fl_Window(500,200,"I Pass")
+{
+	begin();
+		tell_me = new Fl_Button( 10, 150, 70, 30, "T&ell Me");//displays the button to tell
+		tell_me->callback( cb_tell_me, this );//calls the function after the button has been pressed
+	
+		quit = new Fl_Button(100, 150, 70, 30, "&Quit");//displays the quit button
+		quit->callback(cb_quit, this);//calls the quit function to quit the program
+		
+		rid = new Fl_Input(60, 50, 430, 30, "Riddle:");//defines the label and text box
+		rid->value(w.c_str()); //shows the riddle
+		ans = new Fl_Output(60, 100, 430, 30, "Answer:");//defines the answer box
+		answer = h;//copies the string into class memory
+	
+	end();//ends the function
+	resizable(this);//makes the window resizable
+	show();//shows the window
+}
+/* Function: RiddleWindow copy constructor                      
+ * Date Created: 8/30/05                           
+ * Date Last Modified: 8/30/05                         
+ * Description: A copy constructor for the window in FLTK.
+ * Input parameters: the adress of a window to copy                                    
+ * Returns: NONE    
+*/
+RiddleWindow::RiddleWindow(const RiddleWindow& RiddleWindow):Fl_Window(300,200,"I Pass")
+{
+}
+/* Function: RiddleWindow destructor                      
+ * Date Created: 8/30/05                           
+ * Date Last Modified: 8/30/05                         
+ * Description: A destructor for the window in FLTK.
+ * Input parameters: NONE                                     
+ * Returns: NONE    
+*/
+RiddleWindow::~RiddleWindow()
+{
+}
+/* Function: RiddleWindow quit button                      
+ * Date Created: 8/30/05                           
+ * Date Last Modified: 8/30/05                         
+ * Description: Calls the quit function while still hiding information
+ * Input parameters: the widget location pointer                                     
+ * Returns: NONE    
+*/
+void RiddleWindow::cb_quit(Fl_Widget* , void* v)
+{
+	( (RiddleWindow*)v )->cb_quit_i();//calls the function to hide the window
+}
+/* Function: RiddleWindow quit button                      
+ * Date Created: 8/30/05                           
+ * Date Last Modified: 8/30/05                         
+ * Description: Calls hide function to destroy the window
+ * Input parameters: NONE                                     
+ * Returns: NONE    
+*/
+void RiddleWindow::cb_quit_i() 
+{
+	hide();//hides the window
+}
+/* Function: cb_tell_me                      
+ * Date Created: 8/30/05                           
+ * Date Last Modified: 8/30/05                         
+ * Description: Calls the function to show the answer
+ * Input parameters: NONE                                     
+ * Returns: NONE    
+*/
+void RiddleWindow::cb_tell_me(Fl_Widget* , void* v)
+{
+    ( (RiddleWindow*)v )->cb_tell_me_i();//calls the function that displays the text
+}
+/* Function: cb_tell_me_i                      
+ * Date Created: 8/30/05                           
+ * Date Last Modified: 8/30/05                         
+ * Description: Calls hide function to destroy the window
+ * Input parameters: NONE                                     
+ * Returns: NONE    
+*/
+void RiddleWindow::cb_tell_me_i()
+{
+	ans->value(answer.c_str());//shows the answer
+}
+
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:03:28 PM PDT-->Target|File|/make_me_laugh/RiddleWindow.h-->Action|added
+#ifndef RIDDLEWINDOW_H//guard conditional compilation
+#define RIDDLEWINDOW_H//guard conditional compilation
+
+#include <FL/Fl.H>//the FLTK source files
+#include <FL/Fl_Window.H>//the FLTK source files
+#include <FL/Fl_Button.H>//the FLTK source files
+#include <FL/Fl_Input.H>//the FLTK source files
+#include <FL/Fl_Output.H>//the FLTK source files
+
+#include <string>//string.h include
+using std::string;//includes the string command
+
+
+/* Class: RiddleWindow                       
+ * Date Created: 8/30/05                           
+ * Date Last Modified: 8/30/05                         
+ * Description: A class that shows a window in FLTK, with both a riddle and
+ * 	an answer to that riddle
+ * Base Class: Fl_Window             
+ *     
+*/
+class RiddleWindow : public Fl_Window//inheritance for the window
+{
+	public:
+		RiddleWindow(string w, string h);//the basic constructor used for testing
+		RiddleWindow( const RiddleWindow& RiddleWindow );//the copy constructor
+		~RiddleWindow();//the destructor
+		Fl_Button* tell_me;//the pointer that contains the button for "tell me"
+		Fl_Button* quit;//the pointer that contains the button for "quit"
+		Fl_Input* rid;//stores the riddle button
+		Fl_Output* ans;//stores the ans button
+	
+	private:
+		static void cb_tell_me(Fl_Widget*, void*);//the button for tell me
+		inline void cb_tell_me_i();//the call that the button makes
+	
+		static void cb_quit(Fl_Widget*, void*);//the buton to quit
+		inline void cb_quit_i();//the fuction that quits
+		string answer; //the string that stores the answer
+};
+
+#endif//end of the guard code
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:03:28 PM PDT-->Target|File|/make_me_laugh/make_me_laugh.o-->Action|removed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:03:28 PM PDT-->Target|File|/make_me_laugh/makemelaugh-->Action|removed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:03:28 PM PDT-->Target|File|/make_me_laugh/riddlewindow.cc-->Action|removed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:03:28 PM PDT-->Target|File|/make_me_laugh/riddlewindow.o-->Action|removed
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:04:08 PM PDT-->Target|File|/make_me_laugh/make_me_laugh.cc-->Action|changed
+18c18
+< #include "riddlewindow.h"
+---
+> #include "RiddleWindow.h"
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:04:08 PM PDT-->Target|File|/make_me_laugh/RiddleWindow.cc-->Action|changed
+5c5
+< #include "riddlewindow.h"//includes the file where my class definition is
+---
+> #include "RiddleWindow.h"//includes the file where my class definition is
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:05:06 PM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+15c15
+< 	rm *.o makemelaugh
+---
+> 	- rm *.o makemelaugh
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:06:03 PM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+16c16
+< 	
+\ No newline at end of file
+---
+> 	- rm core*
+\ No newline at end of file
+WkSavePart-->Time|Tuesday, August 30, 2005 4:41:44 PM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:42:05 PM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+10,11c10,11
+< all: make_me_laugh.o riddlewindow.o 
+< 	g++ make_me_laugh.o riddlewindow.o -o makemelaugh $(LDFLAGS)
+---
+> all: make_me_laugh.o RiddleWindow.o 
+> 	g++ make_me_laugh.o RiddleWindow.o -o makemelaugh $(LDFLAGS)
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:44:34 PM PDT-->Target|File|/make_me_laugh/make_me_laugh.cc-->Action|changed
+WkSavePart-->Time|Tuesday, August 30, 2005 4:48:07 PM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+RCL_Rpt-->Time|Tuesday, August 30, 2005 4:48:32 PM PDT-->Target|File|/make_me_laugh/Makefile-->Action|changed
+9c9,11
+< 
+---
+> test: make_me_laugh.o RiddleWindow.o 
+> 	g++ make_me_laugh.o RiddleWindow.o -o makemelaugh $(LDFLAGS)
+> 	./makemelaugh
+WkSavePart-->Time|Wednesday, August 31, 2005 10:08:14 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+WkSavePart-->Time|Wednesday, August 31, 2005 10:12:54 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnoff
+WkSavePart-->Time|Wednesday, August 31, 2005 10:13:31 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:05:12 AM PDT-->Target|File|/make_me_laugh/RiddleWindow.o-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:05:12 AM PDT-->Target|File|/make_me_laugh/make_me_laugh.o-->Action|added
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:05:12 AM PDT-->Target|File|/make_me_laugh/makemelaugh-->Action|added
+WkSavePart-->Time|Wednesday, August 31, 2005 11:09:48 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:01 AM PDT-->Target|Project|/make_me_laugh-->Action|close
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:02 AM PDT-->Target|File|/make_me_laugh/.cdtproject-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:02 AM PDT-->Target|File|/make_me_laugh/.project-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:02 AM PDT-->Target|File|/make_me_laugh/Makefile-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:02 AM PDT-->Target|File|/make_me_laugh/RiddleWindow.cc-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:02 AM PDT-->Target|File|/make_me_laugh/RiddleWindow.h-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:02 AM PDT-->Target|File|/make_me_laugh/RiddleWindow.o-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:02 AM PDT-->Target|File|/make_me_laugh/make_me_laugh.cc-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:02 AM PDT-->Target|File|/make_me_laugh/make_me_laugh.o-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:02 AM PDT-->Target|File|/make_me_laugh/make_me_laugh.tar.gz-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:10:02 AM PDT-->Target|File|/make_me_laugh/makemelaugh-->Action|removed
+WkSavePart-->Time|Wednesday, August 31, 2005 11:11:25 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnon
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|Project|/make_me_laugh-->Action|close
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|File|/make_me_laugh/.cdtproject-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|File|/make_me_laugh/.project-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|File|/make_me_laugh/Makefile-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|File|/make_me_laugh/RiddleWindow.cc-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|File|/make_me_laugh/RiddleWindow.h-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|File|/make_me_laugh/RiddleWindow.o-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|File|/make_me_laugh/make_me_laugh.cc-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|File|/make_me_laugh/make_me_laugh.o-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|File|/make_me_laugh/make_me_laugh.tar.gz-->Action|removed
+RCL_Rpt-->Time|Wednesday, August 31, 2005 11:12:05 AM PDT-->Target|File|/make_me_laugh/makemelaugh-->Action|removed
+WkSavePart-->Time|Wednesday, August 31, 2005 11:16:01 AM PDT-->Target|MyWorkSpaceSaveParticipant-->Action|turnoff

@@ -1,0 +1,2 @@
+sudo losetup /dev/loop0 dos.img
+sudo mount /dev/loop0 /home/dan/Desktop/t

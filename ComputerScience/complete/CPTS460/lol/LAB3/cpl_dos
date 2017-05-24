@@ -1,0 +1,8 @@
+bcc  -c main.c
+as86 -o s.o s.s
+ld86 -d s.o main.o /usr/lib/bcc/libc.a
+sudo losetup /dev/loop0 dos.img 
+sudo mount /dev/loop0 /home/dan/Desktop/t
+sudo cp a.out /home/dan/Desktop/t/boot/dos
+sudo umount /home/dan/Desktop/t
+sudo losetup -d /dev/loop0

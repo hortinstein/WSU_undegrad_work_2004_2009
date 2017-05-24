@@ -1,0 +1,9 @@
+(* mltests.sml
+ * Alex Hortin
+ * 10732085
+ * 10/22/2007
+ * CPTS355
+ * contains; test functions for all ML problems
+ *)
+
+use "mlfunctions.sml";

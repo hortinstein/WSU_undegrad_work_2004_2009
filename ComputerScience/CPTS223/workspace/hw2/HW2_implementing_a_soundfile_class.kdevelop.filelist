@@ -1,0 +1,7 @@
+# KDevelop Custom Project File List
+HW2_implementing_a_soundfile_class.kdevelop
+Makefile
+Soundfile.h
+Soundfile.cc
+implementing_a_soundfile_class.cc
+playonce.cc

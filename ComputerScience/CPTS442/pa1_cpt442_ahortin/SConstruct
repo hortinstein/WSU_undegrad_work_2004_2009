@@ -1,0 +1,12 @@
+Program(target="plywire",
+    source = [
+        "controller.c",
+        "main.c",
+        "model.c",
+        "trackball.c",
+        "view.c",
+    ],
+    LIBS = [ 'glut' ],
+    CCFLAGS="-g -Wall -Wstrict-prototypes",
+    LINKFLAGS="-g",
+    )

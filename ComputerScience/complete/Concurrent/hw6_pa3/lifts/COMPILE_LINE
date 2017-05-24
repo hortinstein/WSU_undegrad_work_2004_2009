@@ -1,0 +1,9 @@
+c(agent),c(floor),c(lift),c(simulation),c(liftUtils),{[L1, L2, L3], [F1, F2, F3, F4, F5]} = simulation:newScenario(3,5).
+
+c(agent),c(floor),c(lift),c(simulation),c(liftUtils),{[L1], [F1, F2, F3, F4, F5]} = simulation:newScenario(1,5).
+
+L2 ! {stop, 4}.
+
+io:format("emptystoplist ~p ~n", Stoplist)
+
+io:format("~p received ~p~n", [HD,FW])

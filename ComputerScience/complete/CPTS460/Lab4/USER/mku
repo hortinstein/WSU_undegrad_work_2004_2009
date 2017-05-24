@@ -1,0 +1,10 @@
+bcc -c $1.c
+as86 -o u.o u.s
+ld86 u.o $1.o ../mtxlib /usr/lib/bcc/libc.a
+
+mount -o loop ../mtximage ../A
+cp a.out ../A/u1
+cp a.out ../A/bin/u1
+umount ../A
+
+echo done $1

@@ -1,0 +1,226 @@
+<html><head><title>460 Notes</title></head><body bgcolor="#00cccc" text="#000000">
+<h1>460 Notes #4</h1>
+<pre>         460 Notes #4 Process Management in Unix
+
+1. Read Unix man pages on
+        fork, exec, wait, exit,  
+
+2. Processes:
+   A process is a sequence of executions regarded as a single entity for the
+   purpose of using system resources, such as CPU time, memory space,
+   opened files, I/O devices, etc.  In general, a "resource" is anything that
+   may cause a process to wait.
+
+   When Unix starts, it creates a process P0 by brute-force. P0 uses the Unix
+   Kernel function to "fork" a child process P1, which in turn forks other 
+   processes. From a user's point of view, the most important process is P1.
+
+   Unix's "fork" creates a child process idnetical to the parent (the caller of
+   fork). However, the child usually uses exec() to change its execution image 
+   to a different file. So when P1 starts to run, it changes its image to 
+   /etc/init.  For this reason, P1 is also known as the "init" process.
+
+   While executing /etc/init, P1 reads a default configuration files, e.g.
+   /etc/inittab, to fork a child process on each terminal (or dial-in 
+   line). Then P1 waits for ANY of the children processes to terminate. 
+   
+   When a process terminates, it wakes up the parent. When a "login process" 
+   ends (by user logout), it wakes up P1, which usually "forks" another child 
+   process on that terminal.
+
+   Each terminal process opens 3 FILEs;  stdin, stdout, stderr,  on its own
+   terminal. Then, it changes image to execute "/etc/getty" or /etc/login", in 
+   which it displays a  login:  to its stdout and waits for user to login from
+   its stdin.  When a user login, the terminal process gets the users uid and
+   gid (assigned to the user account in the /etc/passwd file), and becomes the
+   user's process.
+
+   The user's account also specifies which program the user will execute when
+   login, usually sh.  So, the user process changes image to execute sh, which
+   prompts the user for input commands.
+
+   For each input command, sh forks a child to execute the command (file). 
+   Meanwhile, sh waits for the child to terminate. When the child dies, it 
+   wakes up the parent sh, which prompts for another command.
+
+   If the command line contains | or &amp;, sh may fork several children processes,
+   all of which run concurrently.
+
+   If you have taken CS360 from me at WSU, you have written a C program that 
+   simulates the Unix sh in a lab assignemnt. In case you did not or forgot, 
+   please do the following.
+   ***********************************************************************
+       Use  man  to read the man pages of  fork, exec, exit and wait 
+   ***********************************************************************
+3. Process Management in UNIX:
+     pid = fork()      : creates a child process
+           exec()      : change process image
+           exit(value) : terminate with a CODE=value
+     pid = wait(int *) : wait for a child to terminate, return its pid and
+                         exit status
+==============================================================================
+                         EXERCISES:
+              (DO THESE BUT NO NEED TO TURN IN)                           
+
+Write C programs to demonstrate the use of Unix syscalls. 
+
+(1). forkSleep.c:
+       fork a child process. 
+       Use getpid() and getppid() to identify each process.
+       Use sleep(SECONDS) to allow other processes to run first.
+       Before termination, print own pid and parent pid, and EXPLAIN
+       anything unusual you may have observed.
+
+(2). forkWait.c:
+       fork a child. wait for the child to terminate. print its exit status.
+       Child process: terminate by    exit(VALUE);
+       Parent       : int status;     pid = wait(&amp;status);  
+                                      print status in HEX to see its value.
+(2). forkExec.c
+       fork a child process.  Wait for the child to terminate.
+       print dead child pid and exit status.
+
+       Child process:
+          Use
+             execl("b.out", "b.out", "this", "is", "a", "test", 0);
+          to change image to execute a   b.out  file, passing as 
+             parameters 
+                       "b.out", "this" "is" "a" "test"
+             In b.out, echo the parameters, which are argv[1],argv[2],.....
+
+          In b.out:  (READ man on exec)
+             use execve() to change image again to  c.out. 
+
+          While in c.out, 
+             print the parameters and the environmet variable strings.
+               
+===============================================================================
+4. Process Synchronization in Unix Kernel
+
+   The Unix kernel uses 
+                         sleep(int event);
+   and                  wakeup(int event);
+   for process synchronization.
+
+(1). When a process must wait for something (called an event in Unix kernel)
+     it calls
+               sleep(event);
+     in which it records the event value in the proc structure, changes its 
+     status to SLEEP, and gives up CPU. A sleeping process will not run until 
+     it is awakened by another process or an interrupt handler through 
+     wakeup(event).
+
+(2). An event is anything a process may sleep on, as long as another process 
+     will issue a wakeup(event) on that event value. In the Unix kernel, events
+     are usually (global) variable addresses in the Unix Kernel, whcih are 
+     unique, so that processes may "sleep" on distinct event values, and 
+     wakeup(event) only wakes up those processes that are sleeping on the
+     specified event.
+
+     Examples: 
+       wait for child process termination ==&gt; sleep on its own &amp;proc.
+       wait for an i/o buffer ===&gt; sleep on that i/o buffer address.
+
+(3). Many processes may sleep for the same event. (which is natural).
+
+(4). When an event occurs, someone (a process or an interrupt handler) will
+     call wakeup(event), which wakes up ALL processes sleeping on that event.
+     If no process is sleeping on the event, wakeup() has no effect, i.e. 
+     same as a NOP (No Operation).
+
+NOTE: There is no record whether an event has occurred or not. In order NOT 
+      to miss the wakeup(event) call, a process must go to sleep() BEFORE 
+      the awaited event occurs. In a uniprocessor (Single CPU) system, this
+      is always achievable. However, in a Multiprocessor (multi-CPU) system,
+      this (sleep first and wakeup later) condition cannot be guaranteed since
+      processes can run in "parallel" in real-time. So, sleep/wakeup works
+      only for Uniprocessor systems. For multiprocessor systems, we need 
+      to use other process synchronization mechanisms, e.g. semaphores, which 
+      will be discussed later. 
+
+==============================================================================
+(4). Unix kernel assigns a fixed priority to a process when it goes to sleep.
+     The priority, which will be the process' scheduling priority when it
+     wakeup, is determined by the importance of the "resouces".  Thus, a 
+     newly awakened process may have a very high prioirty
+    
+(5). The assigned priority also classifies a sleeping process as
+         SOUND sleepers : those who will not be awakened by "signals"
+         LIGHT sleepers : those who will be awakened by signals.
+
+     Examples:
+         sleep() for disk I/O completion (interrupt) :   SOUND.
+         sleep() for KBD inputs from user            :   LIGHT.
+==============================================================================
+
+5. Process Management in MTX
+   We shall implement the following operations for process management in MTX:
+     
+(1). kfork: 
+     pid = kfork()  creates a child task and returns the child's pid.
+     The child task is READY (in a ready queue). When sechduled to run, it
+     RESUMES to the body() function.
+
+     LATER, we shall implement a  pid=ufork() operation IDENTICAL TO fork() in
+     UNIX.
+        
+(2). exit:
+     A running task calls myexit(value) to die. The actions of myexit() are:
+       Mark itself a ZOMBIE;
+       Record an exit value in its PROC.exitValue.
+       Give away children (dead or alive) to P1. Make sure P1 does not die if 
+       other tasks still exist.
+       Issue wakeup(&amp;parentPROC) to wake up its parent;
+       Call tswitch(); to give up CPU (for the last time).
+     
+     NOTE that when a task dies, its PROC is marked as ZOMBIE, contains an exit
+     value, but the PROC is NOT yet freed. It will be freed by the parent task
+     via the wait() operation.
+
+(3). Wait for a child task to die:
+     A task calls  pid = wait(int *status);  to wait for A (ANY) child to die, 
+     where pid is the dead child's pid and status is the child's exit value.
+
+           int wait(status) int *status;
+           {
+              if (no child)
+                 return -1 for ERROR;
+              while(1){
+                 if (found a ZOMBIE child){
+                    copy child's exit value to *status;
+                    free the dead child PROC;
+                    return dead child's pid;
+                 }
+                 sleep(running);    // sleep at its own &amp;PROC
+              }
+            }
+
+(4). sleep(event)/wakeup(event)
+
+     A task call sleep(event) to sleep for an event:
+
+       sleep(int event)
+       {
+          running-&gt;event = event;      //Record event in PROC
+          running-&gt;status = SLEEP;     // mark SLEEP
+          // For fairness, put running into a FIFO sleepList so that they will wakeup in order
+          tswitch();                   // not in readyQueue anymore
+       } 
+
+
+     A task calls wakeup(event) to wake up ALL tasks sleeping on event:
+
+       wakeup(int event)
+       {
+          for every task p SLEEPing on this event do{
+              // remove p from sleepList if you implement a sleepList
+              p-&gt;status = READY;        // make it READY
+              enqueue(p)                // enter it into a ready queue (by its pri)
+          }
+       }
+=============================================================================
+
+
+
+
+</pre></body></html>

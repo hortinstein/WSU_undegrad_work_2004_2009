@@ -1,0 +1,31 @@
+Bob-10001: **NEW** Bob keys generated
+Alice: msg= First--thumb
+Bob-10001: len(CipherText)=  464
+Bob-10001: msg= <MSG>First--thumb</MSG>
+Bob-10002: **NEW** Bob keys generated
+Alice: msg= Second--shoe
+Bob-10001: len(CipherText)=  464
+Bob-10001: msg= <ERROR--CANT DECRYPT>
+Alice:  **NEW** Alice keys generated
+Alice: msg= Third--tree
+Bob-10002: len(CipherText)=  464
+Bob-10002: msg= <MSG>Third--tree</MSG>
+Alice: msg= Fourth--door
+Eve-10003: len(CipherText)=  464
+Eve-10003: forwarding encrypted message
+Bob-10002: len(CipherText)=  464
+Bob-10002: msg= <MSG>Fourth--door</MSG>
+Alice: msg= Fifth--dive
+Bob-10002: len(CipherText)=  464
+Bob-10002: msg= <MSG>Fifth--dive</MSG>
+Eve-10004: **NEW** MITM keys generated
+Alice: msg= Fifth--dive
+Eve-10004: len(CipherText)=  464
+Eve-10004: msg= <MSG>Fifth--dive</MSG>
+Bob-10002: len(CipherText)=  473
+Bob-10002: msg= <MSG>**MITM**Fifth--dive</MSG>
+Alice: msg= Sixth--sticks
+Eve-10003: len(CipherText)=  465
+Eve-10003: forwarding encrypted message
+Bob-10002: len(CipherText)=  465
+Bob-10002: msg= <ERROR--CANT DECRYPT>

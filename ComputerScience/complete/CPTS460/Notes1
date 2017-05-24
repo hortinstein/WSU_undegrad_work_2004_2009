@@ -1,0 +1,27 @@
+Notes
+
+get_block( blk, buf)
+				0x9000
+				es < DS amd SS   char (global) dbuf(1024)
+
+		ox9000
+_
+|_code
+|_data
+|_bss 
+
+so dont worry aBOUT BUFFER SIZE because its allocated later
+
+getblk(
+diskr( (2*blk)/36, ((2*blk)%36)/18, (((2*blk)%26)%18)+1, buf
+)
+
+lookup diskr syntax
+
+use ungisned short
+
+______________________
+
+use inode to search for boot string .... than step through to look for the name field 
+
+study inode structure 

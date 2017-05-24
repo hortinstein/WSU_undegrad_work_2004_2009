@@ -1,0 +1,12 @@
+bcc -c t.c
+as86 -o s.o s.s
+ld86 -d s.o t.o mtxlib /usr/lib/bcc/libc.a
+ls -l a.out
+
+#mount /dev/fd0 /fd0
+#cp a.out /fd0/boot/mtx
+#umount /fd0
+
+mount -o loop mtximage A
+cp a.out A/boot/mtx
+umount A

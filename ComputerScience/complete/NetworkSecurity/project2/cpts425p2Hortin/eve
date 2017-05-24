@@ -1,0 +1,91 @@
+#!/usr/bin/python
+import sys, os, socket 
+#######################################################################################################################################
+#	eve
+#
+#	This program is used to intercept and decode secure message
+#
+#	The test environment is composed of folders that look like the following
+#	/cpts425p2Hortin
+#			/UserSpaces
+#			           /alice_Private
+#			           /bob_Private
+#			           /eve_Private
+#				   /Public_Keyring
+#				   
+#
+#	sample usage "./bob --generateKeys --host localhost --port 1337 -m "Hello World!" 
+#	sample usage "./bob -g -h localhost -port 1337 
+#
+#	The following is the openssl expression used to generate the private rsa key
+#		$openssl genrsa -out private.pem 1024 
+#
+#	The following is the openssl expression used to generate the public rsa key using a private key as input
+#		$openssl rsa -in private.pem -pubout -out public.pem
+#
+#	The following is the openssl expression used to encrypt the message using the recipients (bob) public key
+#		$openssl rsautl -in plain_msg -out enc_msg -encrypt -pubin -inkey bob_public.pem")
+#
+#	The following is the openssl expression used to decrypt the message using alice's private key
+#		$openssl rsautl -in enc_msg -out dec_msg -decrypt -inkey alice_private.pem")	
+#
+# generate new cert : openssl req -new -x509 -days 365 -out cert.pem -keyout cert.pem
+#######################################################################################################################################
+user = "eve"
+intercept,forward = "alice","bob"
+public_key_path = "UserSpaces/Public_Keyring/"
+intercept_path,forward_path = ("UserSpaces/"+ user + "_Private/"+intercept),("UserSpaces/"+ user + "_Private/"+forward)
+path = ("UserSpaces/"+ user + "_Private/"+user)
+
+for arg in enumerate(sys.argv):
+	if sys.argv[arg[0]] == "-h" or sys.argv[arg[0]] == "--host": host = sys.argv[arg[0]+1]	#found the host
+	if sys.argv[arg[0]] == "-p" or sys.argv[arg[0]] == "--port": forward_port = int(sys.argv[arg[0]+1])	#found the forward port
+	if sys.argv[arg[0]] == "-i" or sys.argv[arg[0]] == "--intercept": intercept_port = int(sys.argv[arg[0]+1])	#found the intercept port	
+	if sys.argv[arg[0]] == "-m": mitmmsg = sys.argv[arg[0]+1]	#found the message
+
+intercept_address = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#tcp socket stream
+intercept_address.bind((host,intercept_port))#binding listening port for the message
+forward_address = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#tcp socket stream
+	
+if "-m" in sys.argv:#this is the code to generate all new keys 
+	print ("..." + user+": getting a copy of " +forward+" (soon to be) old public key")
+	os.system("cp "+public_key_path+forward+"_public.pem "+forward_path+"_public.pem")	
+	print ("..." + user + ": generating new private/public rsa keys for "+intercept+" and "+forward)	 					
+	#generating intercept keys		
+	os.system("openssl genrsa -out "+intercept_path+"_private.pem 1024") #this generates the private key and stores in users private folder
+	os.system("openssl rsa -in " +intercept_path+"_private.pem -pubout -out "+intercept_path+"_public.pem ") #generates the public key using private and stores in users private folder
+	os.system("cp "+intercept_path+"_public.pem "+public_key_path)#makes a copy of the public key and puts it to the public key directory
+	#generating the forward 		
+	os.system("openssl genrsa -out "+forward_path+"_private.pem 1024") #this generates the private key and stores in users private folder
+	os.system("openssl rsa -in " +forward_path+"_private.pem -pubout -out "+public_key_path+forward+"_public.pem ") #generates the public key using private and stores in users private folder
+	
+while 1:
+	intercept_address.listen(5)#listening for another connection	
+	connection, address = intercept_address.accept()			
+	msg = connection.recv(1000000)
+	forward_address.connect((host,forward_port))	
+	if "-m" in sys.argv:#this is the code to decode and resend the message
+		#opening a path to store the encrypted message taht is recieved
+		temp_write= open(intercept_path +"enc_msg",'w')
+		temp_write.write(msg)	
+		temp_write.close()
+		#decrypting the recieved message and reading it back in for printing/reencryption/forwarding
+		os.system("openssl rsautl -in "+intercept_path+"enc_msg -out "+path+"dec_msg -decrypt -inkey "+forward_path+"_private.pem") #decrypting using user's private key	
+		#printing out the decrypted message
+		print ("..." + user + ": recieved msg intercepted from "+intercept+"...sending to "+forward+"\n... ------MSG------\n")
+		os.system("cat "+path+"dec_msg")
+		print "\n... ------MSG------"			
+		#encrypting the new message for sending to the forward		
+		os.system("touch "+path+"temp_msg")
+		os.system("echo \"<MSG>" + mitmmsg + "</MSG> \" > "+path+"temp_msg")			
+		os.system("openssl rsautl -in "+path+"temp_msg -out  "+path+"enc_msg -encrypt -pubin -inkey "+forward_path+"_public.pem")
+		tempread,msg = open(path +"enc_msg", 'r'),'';#opens up the resulting encrypted message for sending
+		for line in tempread: msg += line #compiling the message				
+		os.system("rm "+path +"*_msg")#cleaning up all the temp messages
+	print ("..." + user + ": forwarding encrypted data from "+intercept+" to "+forward)	 				
+	forward_address.send(msg)#sending it
+	connection.close()				
+	forward_address.close()	
+	forward_address = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#tcp socket stream
+	
+

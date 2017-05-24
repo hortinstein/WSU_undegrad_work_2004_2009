@@ -1,0 +1,11 @@
+bcc -c main.c
+as86 -o boot.o boot.s
+ld86 -d boot.o main.o /usr/lib/bcc/libc.a
+ls -l a.out
+dd if=/home/dan/Desktop/CPTS460/mtx of=tail bs=1024 skip=1
+dd if=/home/dan/Desktop/CPTS460/mtx of=head bs=1024 count=1
+dd if=a.out of=head bs=1024 count=1 conv=notrunc
+cat head tail > dos.img
+rm tail
+rm head
+rm *~

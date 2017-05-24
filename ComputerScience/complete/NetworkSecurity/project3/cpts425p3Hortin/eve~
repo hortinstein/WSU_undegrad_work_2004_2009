@@ -1,0 +1,141 @@
+#!/usr/bin/python
+import sys, os, socket ,time
+#######################################################################################################################################
+#	eve
+#
+#	eve is a program that is essentially a message link between alice and bob.  It has defined rules about messages in terms of 
+#	misuses of the messenger link as well as anomalies in traffic patterns.  
+#
+#######################################################################################################################################
+totalmessagesrecv = ""
+VALID = True
+INVALID = False
+START_TIME = time.time() 
+TAGS_VALID = ['MSG', 'SRC', '/SRC', 'DEST', '/DEST', 'USER', '/USER', 'VALUE', '/VALUE', 'TEXT', '/TEXT', '/MSG']
+THREASHOLD_CUR = 0
+TOTAL_MESSAGES=0
+#handling the command line arguments
+for arg in enumerate(sys.argv):
+	if sys.argv[arg[0]] == "-h" or sys.argv[arg[0]] == "--host": host = sys.argv[arg[0]+1]	#found the host
+	if sys.argv[arg[0]] == "-f" or sys.argv[arg[0]] == "--forward": forw_user,forw_port = sys.argv[arg[0]+1], int(sys.argv[arg[0]+2])	#found the forward port
+	if sys.argv[arg[0]] == "-r" or sys.argv[arg[0]] == "--recieve": recv_user,recv_port = sys.argv[arg[0]+1], int(sys.argv[arg[0]+2])	#found the recieve port	
+	if sys.argv[arg[0]] == "-l" or sys.argv[arg[0]] == "--length": m_len = sys.argv[arg[0]+1]#found the max message length	
+	if sys.argv[arg[0]] == "-s" or sys.argv[arg[0]] == "--seconds": THRESHOLD_MAX = sys.argv[arg[0]+1]#found the max message length	
+	
+if "-h" not in sys.argv and "--host" not in sys.argv: host = "localhost"
+
+#setting up the message anomaly and misuse detection parameters
+print "...eve : initial setup:"	
+if "-r" not in sys.argv and "--recieve" not in sys.argv: 
+	print "...eve : input user expected to recieve from followed by their port ie 'alice 2000'"	
+	recv_user,recv_port = sys.stdin.readline().split()
+if "-f" not in sys.argv and "--forward" not in sys.argv: 
+	print "...eve : input user expected to forward to followed by their port ie 'bob 2001'"	
+	forw_user,forw_port = sys.stdin.readline().split()
+if "-s" not in sys.argv and "--seconds" not in sys.argv: 
+	print "...eve : input maximum messages per second expected"	
+	THRESHOLD_MAX = sys.stdin.readline()
+if "-l" not in sys.argv and "--length" not in sys.argv: 
+	print "...eve : input max characters a forwarding message can contain"	
+	m_len = int(sys.stdin.readline())
+
+#######################################################################################################################################
+#function for checking misuse cases
+#######################################################################################################################################
+def check_misuse(msg):
+	###############################################################################################################################
+	#
+	# Misuse Case #1 - Proper Message Tag Formatting
+	#
+	# This misuse case checks is a message is properally tagged.  The messages are expected in the following format. This misuse
+	# case parses through the tags of the recieved message and finds errors in tag pairs or finds missing message tags from our 
+	# given ruleset as shown below: 
+	#	
+	#	<MSG>
+	#	  <SRC>source</SRC>
+	#	  <DEST>destination</DEST>
+	#	  <USER>user</USER>
+	#	  <VALUE>value</VALUE>
+	#	  <TEXT>text</TEXT>
+	#	</MSG>
+	#
+	###############################################################################################################################	
+	print "...eve : checking misuse case #1 - proper message tag formatting"
+	tags = []	
+	for items in msg.split("<")[1:]:
+		tags.append(items.split(">")[0])
+	if tags != TAGS_VALID:
+		print ("...eve : invalid message tags MISSING:")
+		print [item for item in TAGS_VALID if not item in tags]
+		return INVALID	
+	###############################################################################################################################
+	#
+	# Misuse Case #2 - Port Combination Pairs for Users 
+	#
+	# This reads in the data from the message contained in the destination and source fields within the message and compares them
+	# to the record of what the destination and recieve ports should be according to what eve has specified.  	
+	#
+	###############################################################################################################################	
+	print "...eve : checking misuse case #2 - Port Combination Pairs for Users"
+	tags = []		
+	for items in msg.split("<")[1:]:
+		if items.split(">")[0] == "SRC" and int(items.split(">")[1]) != int(recv_port) : #looking for proper port		
+			print ("...eve : invalid source <SRC> ports contained in message to "+recv_user) 			 
+			return INVALID
+		if items.split(">")[0] == "DEST" and int(items.split(">")[1]) != int(forw_port) : 		#looking for proper port		
+			print ("...eve : invalid forward <DEST> ports contained in message to " +forw_user) 			 
+			return INVALID
+	return VALID #the message passed both checks will be routed
+#######################################################################################################################################
+#function for checking anomaly cases
+#######################################################################################################################################
+def check_anomaly(msg):
+	###############################################################################################################################
+	#
+	# Anomaly Case #1 - Threshold Metric for Maximum message Rate 
+	#
+	# This allows a user only a certain ammount of messages per Minutes before the messages are dropped.  If it passes it will 
+	# recompute a slightly different threshold to use the next time based on current usage
+	#
+	###############################################################################################################################	
+	print "...eve : checking anomaly case #1 - Message Rate Allowed"	
+	THRESHOLD_CUR = 10*(TOTAL_MESSAGES/(time.time()-START_TIME)) 	
+	if int(THRESHOLD_CUR) > int(THRESHOLD_MAX):
+			print ("...eve :  dropped due to maximum messages " + str(THRESHOLD_MAX)  + " being exceeded "+str(THRESHOLD_CUR))
+			return INVALID#the threshold has been passes
+	###############################################################################################################################
+	#
+	# Anomaly Case #2 - Threshold Metric for Denied Messanger Service 
+	#
+	# This allows a user only a certain ammount of charactes in their messages 
+	#
+	###############################################################################################################################	
+	print "...eve : checking anomaly case #2"
+	if len(msg) > int(m_len) : #looking for proper port		
+			print ("...eve : msg length too long") 			 
+			return INVALID
+	return VALID #the message passed both checks will be routed
+
+
+#setting up the sockets to user
+recv_address = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#tcp socket stream
+recv_address.bind((host,int(recv_port)))#binding listening port for the message
+forw_address = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#tcp socket stream
+
+while 1:
+	recv_address.listen(5)#listening for another connection	
+	connection, address = recv_address.accept()			
+	msg = connection.recv(1000000)
+	TOTAL_MESSAGES+=1
+	print "...eve : recieved msg:\n"+msg
+	if check_misuse(msg) and check_anomaly(msg):
+		print "...eve : message passed inspection - being routed"
+		forw_address.connect((host,int(forw_port)))	
+		forw_address.send(msg)#sending it
+		forw_address.close()	
+		forw_address = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#tcp socket stream
+	else: 
+		print "...eve :	message being dropped"	
+	connection.close()				
+	
+

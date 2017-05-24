@@ -1,0 +1,8 @@
+Demo text file for Program #1
+Hello {~World~}!
+abcdef
+ABCDE
+abcd
+ABC
+AB
+a

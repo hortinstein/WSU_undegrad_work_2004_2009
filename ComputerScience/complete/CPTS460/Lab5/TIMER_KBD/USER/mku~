@@ -1,0 +1,21 @@
+#Usage : mku filename
+
+A=/root/dosemu/a
+
+bcc -c $1.c
+as86 -o u.o u.s
+ld86 u.o $1.o ../mtxlib /usr/lib/bcc/libc.a
+
+#mount /dev/fd0 /fd0
+#cp a.out /fd0/$1
+#cp a.out /fd0/bin/$1
+#umount /dev/fd0
+
+mount -o loop /root/dosemu/mtximage $A
+cp a.out $A/$1
+cp a.out $A/bin/$1
+umount $A
+
+rm *.o a.out
+
+echo done u1

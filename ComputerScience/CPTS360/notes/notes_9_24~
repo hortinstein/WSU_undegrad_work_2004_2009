@@ -1,0 +1,14 @@
+lab4pre due next week
+
+mystat [filename] => ./
+
+print as in ls -l of unix
+
+main(int argc, char* argv[]
+{
+	int r;
+	r = lstat(    ,p);
+
+
+}struct stat mystat, *p
+

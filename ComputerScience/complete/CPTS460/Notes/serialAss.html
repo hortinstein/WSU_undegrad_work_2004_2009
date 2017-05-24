@@ -1,0 +1,33 @@
+<Title>460 Class Notes</Title>
+<Body bgcolor="#00ffcc" text="#000000">
+
+<H1>460 Assignment for April 3, 2009</H1>
+
+<PRE>
+
+1. Attend Friday (April 3) Lab session. Get serial port driver code and
+   other needed files from Victor.
+
+2. Run the mk script to generate mtx
+   In USER/, run mku u1; mku u2 to generate /u1 and /u2
+   CONFIGURE YOUR dosemu or Vmware to have 2 serail ports at
+      0x3F8  and  0x2F8
+
+   Boot up mtx. From Kmode, run the 'o' command 
+                                and 'i' command.
+==============================================================
+
+                  REQUIREMENTS:
+
+   Read the input driver code:  do_rx() and sgetc():
+
+        do_rx() enters keys into a CIRCULAR input buffer
+        sgetc() uses sleep() to wait for input chars
+ 
+                   DO THIS :
+   Modify the keyboard driver, kbd.c, to use a CIRCULAR
+   input buffer, and let the process sleep() if there is
+   no input char.
+  
+   Generate mtx with YOUR modified kbd.c.
+   Boot up mtx and demonstate that your kbd driver works.

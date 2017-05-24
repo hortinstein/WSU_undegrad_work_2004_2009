@@ -1,0 +1,29 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \author       Alex Hortin
+/// \date         4/3/06
+/// \brief        A simple program to test out the network stuff
+///
+/// I am creating this to test the simple network
+///
+/// REVISION HISTORY:
+///
+/// NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// INCLUDES
+
+#include "Socket.h"
+#include <vector>
+#include <iostream>
+#include <stdlib.h>
+// FUNCTIONS
+
+int main(void)
+{
+	Socket mConnection;
+	mConnection.connect("127.0.0.1",9931);
+	//std::cout << mConnection.recv(true) << std::endl;
+	mConnection.connect("127.0.0.1",atoi(mConnection.recv(true).c_str()));
+	std::cout << mConnection.recv(true) << std::endl;
+}

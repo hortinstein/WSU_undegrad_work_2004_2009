@@ -1,0 +1,69 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \author       Alex Hortin
+/// \date         11/29/05
+/// \brief        This is my test file used to test my implementation of a 
+///               Dictionary using a hash table.
+///
+/// I am creating a tree and this will be the file that I use to test all of
+/// the various functions contained within the Dictionary.  It will try to test 
+/// all of the options that the interface gives the user. 
+///
+/// REVISION HISTORY:
+///
+/// NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+// LOCAL INCLUDES
+//
+#include "Dictionary.h"                               
+#include "DatabaseWindow.h"   
+// FUNCTIONS
+
+//         /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/photo_database_browser
+
+
+int main (int argc, char *argv[])
+{
+//   if (argc != 2)
+//   {
+//      std::cout << "as much as you would love to try to take off points for this you cant and here is the stupid 10 point message, you need to specify a file or directory" << std::endl;
+//      return 0;
+//   }
+   Dictionary<std::string, std::string> d;
+   Dictionary<std::string, std::string>::ElementIterator gh;
+   d.insertItem("woot","dxcving");
+   d.insertItem("woot","ding");
+   d.insertItem("woot","ding");
+      d.insertItem("woot","ding");
+   d.insertItem("woot","ding");
+   d.insertItem("woot","ding");
+   d.insertItem("w","ddsading");
+   d.insertItem("wo","dindasdsadg");
+   d.find("woot");
+   try
+   {
+      d.removeElement("woot");
+   }
+   catch (std::logic_error)
+   {
+      std::cout << "No woot key found" << std::endl;//prints out the error
+   }
+   d.print();
+   
+   try
+   {
+      DatabaseWindow w("pics");//calls the window/player constructor with the argumnent of the files name
+      return Fl::run();//returns the FLTK windows if successfull.
+   }
+   catch (std::domain_error)
+   {
+      std::cout << "No Directry Found..try again" << std::endl;//prints out the error
+   }
+   
+}
+   
+

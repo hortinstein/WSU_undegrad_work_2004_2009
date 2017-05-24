@@ -1,0 +1,327 @@
+<html><head><title>460 Notes</title></head><body bgcolor="#00cccc" text="#000000">
+
+<h1>460 Notes #3</h1>
+
+<pre>
+               CS460 NOTES on Multi-Tasking
+
+              A Simple Multi-tasking System
+
+1. Download the following files form ~samples/LAB2:
+            s.s, t.c, mk
+which are shown below.
+
+!-------------- s.s file --------------------------
+
+.globl begtext, begdata, begbss                      ! needed by linker
+
+.globl _main, _getc, _putc
+.globl _tswitch, _running, _scheduler
+.globl _proc, _procsize
+	 
+.text                                              
+begtext:                                           
+.data                                              
+begdata:
+.bss
+begbss:
+.text           
+
+start:
+        mov     ax, cs                  ! establish segments 
+        mov     ds, ax                  ! Let DS,SS,ES = CS=0x1000.
+        mov     ss, ax                   
+        mov     es, ax
+
+        mov     sp, #_proc	 
+        add     sp, _procsize           ! sp-&gt;HI end of proc[0]
+	
+        call _main                      ! call main() in C
+
+dead:	jmp dead                        ! loop if main() ever returns
+
+	
+_tswitch:
+SAVE:	push ax
+        push bx
+	push cx
+	push dx
+	push bp
+	push si
+	push di
+        pushf
+	mov   bx, _running
+	mov   2[bx], sp
+
+FIND:	call _scheduler
+
+RESUME: mov   bx, _running
+	mov   sp, 2[bx]
+	popf
+	pop  di
+	pop  si
+	pop  bp
+	pop  dx
+	pop  cx
+	pop  bx
+	pop  ax
+	ret
+
+
+_getc:
+        xorb   ah,ah 
+        int    0x16  
+        ret 
+
+_putc:           
+        push   bp
+        mov    bp,sp
+        movb   al,4[bp]
+        movb   ah,#14  
+        mov    bx,#0x000B 
+        int    0x10    
+        pop    bp
+        ret
+
+
+
+/************************** t.c file **********************************/
+#define NPROC     4        
+#define SSIZE  1024       // per proc kstack size 
+
+#define FREE      0       // proc status 
+#define READY     1      
+#define RUNNING   2
+#define ZOMBIE    3
+
+typedef struct proc{
+    struct proc *next;   
+    int  *ksp;            // saved sp; offset = 2
+
+    int  pid;
+    int  ppid;
+    int  priority;        // scheduling priority
+    int  status;          // FREE|READY|.... 
+    int  exitValue;       // exit code  
+
+    int kstack[SSIZE];    // per proc kmode stack 
+}PROC;
+
+PROC proc[NPROC], *running, *freelist, *readyqueue;
+int  procsize = sizeof(PROC);
+
+int body();
+PROC *getproc();
+PROC *dequeue();
+
+#include "io.c"    // YOUR gets, printf functions
+
+int initialize()
+{
+  int i;
+  PROC *p;
+
+  printf("initialize ....\n");
+
+  for (i = 0; i &lt; NPROC; i++){
+    proc[i].pid = i;                        // pid = 0,1,2,3 */    
+      proc[i].status = FREE;
+      proc[i].priority = 1;                 // all have priority = 1        
+      proc[i].next=(PROC *)&amp;proc[(i+1)];       
+  }
+  freelist = &amp;proc[0];                      // all proc's in freelist
+  proc[NPROC-1].next = 0;
+
+  readyqueue = 0;                          // readyqueue = empty
+
+  // create P0
+  printf("create P0 as running\n");
+  p = getproc();
+  p-&gt;status = RUNNING;
+  p-&gt;priority = 0;                        // P0 has lowest priority
+  running = p;
+
+  printf("create P1, put into readyqueue\n");
+  p = getproc();
+  p-&gt;status = READY;
+  p-&gt;priority = 1;
+
+  /****************************************************************
+   stack frame = -1    -2  -3  -4  -5  -6  -7  -8  -9
+                 body  ax  bx  cx  dx  bp  si  di  flag
+                                                    |
+                                                   ksp
+  ****************************************************************/
+   for (i=2; i&lt;=9; i++)
+       p-&gt;kstack[SSIZE - i] = 0;
+   p-&gt;kstack[SSIZE - 1] = (int)body;
+   p-&gt;ksp = &amp;p-&gt;kstack[SSIZE - 9];
+
+   enqueue(p);
+   printqueue();
+
+   prints("initialization done\n"); 
+}
+
+int body()
+{  
+   char c;
+   while(1){
+     printf("I am Proc%d : Input a char [p|s|q] : ", running-&gt;pid); 
+     c=getc();
+     printf("\n");
+
+     switch(c){
+        case 'p': ps();        break;
+        case 's': tswitch();   break;
+        case 'q': kexit(1);    break;
+        default :              break;  
+     }
+   }
+}
+
+
+main()
+{
+   printf("\nWelcome to the 460 MTX System\n");
+   initialize();
+
+   printf("P0 switch to P1\n");
+     tswitch();
+   printf("main resumes: happy ending\n");
+}
+
+int scheduler()
+{
+    PROC *p;
+
+    if (running-&gt;pid&gt;0){
+       if (running-&gt;status == RUNNING){
+           running-&gt;status = READY;
+           enqueue(running);
+       }
+    }
+    running = dequeue();
+    
+}
+
+
+// utility functions
+
+PROC *getproc()             // get a pointer to a FREE proc
+{
+  PROC *p = freelist;
+  if (p){
+    freelist = p-&gt;next;
+  }
+  return p;
+}
+
+int putproc(p) PROC *p;   // return p to freelist
+{
+  p-&gt;status = FREE;
+  p-&gt;next = freelist;
+  freelist = p;
+
+}
+
+int enqueue(p) PROC *p;   // enter p into readyqueue
+{
+  if (readyqueue==0)
+     readyqueue = p;
+  else{
+        // enter p into readyqueue by priority
+  }
+  p-&gt;next = 0;
+}
+
+
+PROC *dequeue()         // remove and return FIRST proc from readyqueue
+{
+  PROC *p = readyqueue;
+
+  if (p){
+    readyqueue = p-&gt;next;
+    p-&gt;status = RUNNING;
+    return p;
+  }
+  return &amp;proc[0];        // if readyqueue empty =&gt; return P0
+}
+
+int printqueue()          // print readyqueue 
+{
+  PROC *p = readyqueue;
+  printf("readyqueue = ");
+  while (p){
+    printf("%d-&gt; ",p-&gt;pid);
+    p = p-&gt;next;
+  }
+  printf("NULL\n");
+}
+
+
+char *pStatus[] = {"FREE   ","READY  ","RUNNING","ZOMBIE ", 0};
+
+int ps()                 // print all proc pid and status
+{
+  PROC *p;
+
+  printf("---------------------------\n");
+  p = &amp;proc[0];
+
+  while (p &lt; &amp;proc[NPROC]){
+    printf("%d   %s\n", p-&gt;pid, pStatus[p-&gt;status]);
+    p++;
+  }
+  printf("---------------------------\n");
+  printqueue();  
+}
+
+char *gasp[NPROC]={
+     "Oh! You are killing me .......\n",
+     "Oh! I am dying ...............\n", 
+     "Oh! I am a goner .............\n", 
+     "Bye! Bye! World...............\n",      
+};
+
+int grave(){
+  printf("*****************************************\n"); 
+  printf("Proc%d %c %s", running-&gt;pid, 7, gasp[(running-&gt;pid) % NPROC]);
+  printf("*****************************************\n");
+  running-&gt;status = ZOMBIE;
+
+  tswitch();   /* journey of no return */        
+}
+
+int kexit(v) int v;
+{
+  printf("Proc%d in kexit(): exitValue=%d\n", running-&gt;pid, v);
+  running-&gt;exitValue = v; 
+  grave();
+}
+
+/******************** end of t.c file *******************************/
+
+
+#----------------- mk sh script -----------------
+bcc -c t.c
+as86 -o s.o s.s
+ld86 -d s.o t.o /usr/lib/bcc/libc.a
+ls -l a.out
+
+#mount /dev/fd0 /fd0
+#cp a.out /fd0/boot/mtx
+#cp a.out /fd0/sys/mtx
+#umount /fd0
+
+mount -o loop /root/dosemu/mtximage A
+cp a.out A/boot/mtx
+umount A
+#--------------------------------------------------
+
+
+2. Under Linux, use the mk script to generate a bootable mtximage disk (image)
+   containing   /boot/mtx
+   Boot up mtx and test run it.
+
+</pre></body></html>

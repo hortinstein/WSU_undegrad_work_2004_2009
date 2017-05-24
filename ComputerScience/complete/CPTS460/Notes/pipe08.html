@@ -1,0 +1,307 @@
+<Title>460 Class Notes</Title>
+<Body bgcolor="#00cccc" text="#000000">
+
+<H1>460 NOTES and ASSIGNMENT on Pipes</H1>
+
+<Pre>
+
+1. OBJECTIVES:
+   Process synchronization, files and pipes
+
+                          REQUIREMENT:
+         ====================================================
+         |    Implement and test pipes for the MTX system   | 
+         ====================================================
+
+2. BACKGROUND:
+2-1. File Descriptors:
+
+     #include &lt;fcntl.h&gt;
+
+     int fd = open("file", flag); /* O_RDONLY, O_WRONLY, O_RDWR, ... */
+
+     On success, open() returns a fd >= 0, called a file descriptor, which is
+     an index in the fd[NFD] array in the proc structure.
+     Each fd[i] is a pointer to an OpenFileTable (OFT) entry, which points to 
+     the file's (in-memory) inode. Refer to CS360 notes for file descriptors, 
+     OFTE and inodes.
+
+2-2. Pipes:
+    
+         int pd[2];
+         int r = pipe(pd);  
+
+     creates 2 file descriptors. pd[0] is for READ the pipe, pd[1] is for WRITE
+     the pipe. After crating a pipe, it appears that the process can do both
+     READ and WRITE operations on the pipe. However, this is NOT so! As will be
+     shown later, pipes are NOT for one process to use, i.e. a process should 
+     be either a READER or a WRITER of a pipe, but NOT both. A READER process 
+     must close its write descriptor pd[1]. A WRITER process must close its 
+     read descriptor pd[0]. To find out why, try to run the following program 
+     under Linux:
+
+     main()
+     {
+        int pd[2]; char buf[8192]; 
+        pipe(pd);
+        read(pd[0], buf, 1);     // OR   write(pd[1], buf, 8192); 
+     }
+
+     What would happen are these. The read() syscall would cause the process 
+     to hang (sleep in Kernel, waiting for data from a WRITER, but who is the 
+     WRITER?). In Linux, the pipe size is 4KB. When a process tries to write 
+     more than the pipe size, the pipe becomes FULL, which causes the process
+     to wait for rooms in the pipe, which can only be created by some process 
+     reading the pipe, but who is the READER here?). In either case, the 
+     process locks itself out since it would wait forever (for itself!). So,
+     what's the correct way of using a pipe? 
+
+2-3. File Sharing:
+     When a process forks, the child process inherits all the file descriptors
+     of the parent. Thus, pipe descriptors are also passed on to children and
+     descendant processes, allowing them to share the pipe..
+
+2-4. Processes sharing pipes:
+     A pipe may be regarded as a FIFO device with 
+            psize = pipe size (in bytes);
+            room  = empty space in pipe (initial = psize);
+            data  = number of bytes in pipe (initial = 0)
+     and 2 sets of processes; READERS and WRITERS, which behave as follows:
+
+(A). WRITER Processes: They call
+
+            n = write(pd[1], buf, nbytes);
+
+     which tries to write nbytes of data to the pipe, subject to these 
+     constraints.
+          ------------------------------------------------------------------
+     (1). If (no READER on the pipe) ===> return BROKEN_PIPE_ERROR;
+          ------------------------------------------------------------------
+          (pipe still have READERs):
+     (2). If (pipe has room)  ===> write as much as it can until all nbytes are
+                                         written or (3).
+                                  "wakeup" READERs that are waiting for data.  
+     (3)  If (no room in pipe)===>"wakeup" READERs that are waiting for data
+                                  "wait" for room; 
+                                   then try to write again from (1).
+          ------------------------------------------------------------------
+
+(B). READER Processes: They call  
+      
+             n = read(pd[0], buf, nbytes);
+
+      which tries to read nbytes from the pipe, subject to these constraints:
+      ---------------------------------------------------------------------
+      (1). If (no WRITER on the pipe)
+               read as much as it can; either nbytes or until no more data.
+                                       return ACTUAL number of bytes read.
+           --------------------------------------------------------------
+           (pipe still have WRITERs)
+      (2). if (pipe has data)    ==> read until nbytes or (3).
+                                     "wakeup" WRITERs that are waiting for room
+      (3). if (NO data in pipe)  ==> "wakeup" WRITERs that are waiting for room
+                                     "wait" for data; 
+                                     then try to read again from (1).
+      ---------------------------------------------------------------------
+
+(C). Synchronization between READERS and WRITERS:
+
+       As shown, WRITERS may "wait" because there are no room in the pipe. 
+       If so, READERS must "wakeup" such WRITERS after reading (which creates
+       rooms). Similarly, READERS may "wait" because of no data in the pipe. 
+       If so, WRITERs must "wakeup" any such READERS after writing.
+
+       NOTE that I have quoted the terms "wait" and "wakeup", where 
+       "wait" means the process indicates the waiting condition and suspends
+       itself until the awaited condition becomes true, and
+       "wakeup" means a process makes one or more processes READY to run again
+       when their awaited condition is satisfied. 
+
+(D). Synchronization Tools:
+
+     The above "wait"/"wakeup" operations are known as synchronization tools
+     because they allow processes to synchronize their operations or behavior.
+
+     One example of "wait"/"ewakeup" is the sleep()/wakeup() operations of our
+     MTX kernel, which are similar to those of the Unix kernel.
+
+     In addition to sleep()/wakeup(), there are other synchronization tools, 
+     such as SEMAPHORES. Semaphores will be covered in details later.
+
+    ************************************************************************
+     For this lab assignment, use sleep()/wakeup() for task synchronization.
+    ************************************************************************
+
+     In fact, sleep()/wakeup() are the most suitable synchronization mechanism
+     for pipes, due to their special semantics:
+
+     (1). Pipes only guarantee FIFO of data (into and out-of of the pipe), but
+          does NOT enforce any sepcific order of the processes reading/writing
+          the pipe.
+     (2). Processes may read/write pipes in different units; e.g. writers may 
+          write "lines" to the pipe while readers may read "bytes". 
+          For example, in a typical pipe usage
+
+                       cmd_1 | cmd_2  
+
+          it is unreasonable to expect that cmd_2 MUST read input data in the 
+          same units generated by cmd_1.
+
+
+//********************** Unix Pipe Example ***************************
+// 1. Run this program under Linux.
+// 2. See what happens if you let
+//        the child  process (pipe reader) die first.
+//        the parent process (pipe writer) die first.
+//********************************************************************
+int  pd[2], n, pid;
+char line[256], *s="data from pipe";
+
+main()
+{
+  pid = getpid();
+  printf("parent=%d\n", pid);
+
+  pipe(pd);
+
+  if (fork()){
+    printf("parent %d close pd[0]\n", pid);
+    close(pd[0]);
+
+    while(1){
+      sleep(2);
+      printf("parent %d writing pipe : %s\n", pid, s);
+      write(pd[1], s, strlen(s));
+    }
+  }
+
+  else{
+    pid = getpid();
+    printf("child  %d close pd[1]\n", pid);
+    close(pd[1]);
+
+    while(1){
+      printf("child  %d reading pipe : ", pid);
+      n = read(pd[0], line, 256);      
+      line[n]=0;
+      printf("%s\n", line);
+    }
+  }
+}
+
+
+3. HELPs for Pipe Implementation:
+
+     Constants: PIPE_SIZE 10;  NPIPE, NFD : 10;
+
+3-1. Data Structures:
+     =====================================================================
+     typedef struct ofte{
+             int mode;        /* READ, WRITE, READ_PIPE, WRITE_PIPE, etc */  
+             int refCount;    
+
+             struct pipe *pipe_ptr;
+
+             // INODE    *indoePtr;
+             //long offset;   /* for ordinary files */      
+     }OFTE;
+     ====================================================================
+     typedef struct pipe{
+             char  buf[PIPE_SIZE];
+             int   head, tail, data, room;
+             int   nreader, nwriter; // number of readers, writers
+             int   status;   /* IN_USE or FREE */
+     }PIPE;
+     ====================================================================
+     typedef struct proc{
+             struct proc *next;
+             int  *saved_ksp;    
+             ushort uss, usp;
+
+             int   pid;            /* pid = 1 to NTASK */
+             int   status; 
+             int   pri;            /* priority, all 0 */
+           ...............................................   
+             int   event;          /* event to sleep on */  
+
+             OFTE  *fd[NFD];       /* ADD open file descriptors */
+
+             int   kstack[SSIZE];  // as before, kstack[] MUST be last in PROC
+     }PROC;
+     ===================================================================
+3-2. Global Variables:
+
+     PIPE pipe[NPIPE];
+     OFTE ofte[NFTES];
+
+     ===================================================================
+3-3. Functions:
+     do_pipe()   ===> create a pipe, return 2 file descriptors, e.g.
+                      even for READ, odd for WRITE.
+     ----------------------------------------------
+     do_read()   ===> n =  kread(fd, buf, nbytes);
+     do_write()  ===> n = kwrite(fd, buf, nbytes);
+     ----------------------------------------------
+     which call the following functions to read/write file or pipe (depending
+     on the OFTE.mode):
+                /* ignore these for this assignment */
+                      read_file()  
+                      write_file()
+
+               ----- DO THESE FOR THE ASSIGNMENT -----
+                      read_pipe()
+                      write_pipe()
+     ----------------------------------------------
+     do_close()  ===> kclose(fd) a file descriptor ==> special handling of pipes.
+     ===================================================================
+
+3-4. Modifications to MTX system Kernel:
+(1). We already have sleep(event)/wakeup(event) in the MTX kernel.  
+     In sleep()/wakeup(), show which task is being blocked/awakened.
+     Initialize fd[] to 0 in all PROCs.
+
+(2). In kfork() (for fork() from Umode): 
+        Allow the child proc to share ALL opened file descriptors with 
+        the parent.
+
+(3). In do_exit()
+        The dying proc must close ALL opened file descriptors (which
+        may free the OFTEs and/or pipes .... if it's the last proc).
+
+
+4. TESTING:
+(1). In Umode, add the commands 
+       ----------------------------------
+        pipe   pfd   close  read   write  
+       ----------------------------------
+     which do the following:
+
+(2). pipe: create a pipe, which sets up 2 file descriptors for the
+           running proc.
+(3). pfd : display current open file descriptors, e.g.
+              fd     type    mode
+            -----   ------  -------
+              4      PIPE    READ
+              5      PIPE    WRITE
+           -------------------------
+(4). close: for task to close a fd
+
+(5). read: ask for a fd and nbytes. Then try to read nbytes from the
+           pipe to Umode. Display the bytes read in Umode.
+
+(6). write: ask for a fd and a text string, e.g. "abcdefghij", then
+            try to write the text string to the pipe.
+
+In addition, you should also implement a function
+             showPipe(p) PIPE *p;
+which displays the contents of the pipe, e.g.
+      ------------------------------------------------------   
+       #data = number of chars currently in the pipe;
+       #room = number of rooms available in the pipe;
+       contents = "........."; (actual chars in the pipe).
+      ------------------------------------------------------
+Inside the read()/write() function, it would be very informative if you 
+call showPipe() to display the pipe conditions and contents.
+
+5. DEMO PROGRAM:
+   samples/LAB6/460pipe.gz and README for usage

@@ -1,0 +1,21 @@
+mckinnon$
+mckinnon$
+mckinnon$ ./prog2demo.sh
+Alice: Starting...
+Alice: msg= Happy Birthday to You!
+Bob-12345: client is at ('127.0.0.1', 58348)
+Bob-12345: len(CipherText)=  483
+Bob-12345: msg= <MSG>Happy Birthday to You!</MSG>
+Alice: Starting...
+Alice: msg= One year older
+Bob-98765: **NEW** Bob keys generated
+Bob-12345: client is at ('127.0.0.1', 58349)
+Bob-12345: len(CipherText)=  474
+Bob-12345: msg= <ERROR--CANT DECRYPT>
+Alice: Starting...
+Alice: msg= and wiser too.
+Bob-98765: client is at ('127.0.0.1', 58350)
+Bob-98765: len(CipherText)=  474
+Bob-98765: msg= <MSG>and wiser too.</MSG>
+mckinnon$
+mckinnon$

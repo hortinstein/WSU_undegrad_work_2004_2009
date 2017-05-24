@@ -1,0 +1,147 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \class        ServerConnection
+/// \author       Alex Hortin 
+/// \date         April 3 2006
+/// \brief        A polymorphic class that handles communication
+///
+/// All this class is is a polymorphic container class for chris's class that
+/// that handles all of my communication for me.  This inherits 
+///
+/// REVISION HISTORY
+///
+/// None
+///
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+#include <iostream>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <sstream>
+// LOCAL INCLUDES
+//
+#include "Connection.h"//the node to be defined
+#include "ServerConnection.h"//the node to be defined
+#include "Socket.h"
+// FORWARD REFERENCES
+//
+
+// CONSTANTS
+//
+
+///////////////////////////////////////////////////////////////////////
+/// Default constructor.
+/// \pre    None
+/// \post   An instance of player is constructed and new stats file will be contructed
+/// \param  string for the username
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+ServerConnection::ServerConnection(int players)
+{
+	mNumOfPlayers = players;
+	mRed = true;
+	mBlue = true;
+	mGreen = true;
+	mYellow = true;
+
+}
+
+///////////////////////////////////////////////////////////////////////
+/// Destructor.
+/// \pre    There must be something to destroy
+/// \post   Poof! that virtual bitch is gone!
+///////////////////////////////////////////////////////////////////////
+ServerConnection::~ServerConnection( void )
+{
+}
+
+// OPERATORS
+
+// OPERATIONS
+
+///////////////////////////////////////////////////////////////////////
+/// makeConnection
+/// \pre    a connection class with a type is made
+/// \post   All the connections will be made
+/// \param  none
+/// \return none
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+void ServerConnection::makeConnection(std::string username)
+{
+	mUserName = username;
+	int clients = 0;
+
+	Socket mLogin;
+
+	while (clients < mNumOfPlayers)
+
+	{
+
+		Socket * NewConnection = new Socket;
+
+		mLogin.listen(9931);//listening on login port
+
+		
+
+		std::stringstream port;
+
+		clients++;//incrimenting clients
+
+		port << (9931 + clients);//setting the port string
+
+ 		std::cout << "Login Detected, sending dedicated port" <<  port.str() << std::endl;
+
+		mLogin.send(port.str());//sending dedicated port to client
+
+		
+
+		mConnections.push_back(NewConnection);
+
+		mConnections[clients - 1]->listen(9931 + clients);
+
+		std::stringstream msg;
+
+		msg << clients;
+
+		mConnections[clients - 1]->send(msg.str());
+
+	}
+	for (unsigned int i = 0; i < mConnections.size();i++)
+	{
+		mConnections[i]->send("Everyone is connected proceed");
+	}
+}
+
+///////////////////////////////////////////////////////////////////////
+/// changestate
+/// \pre    A connection with everyone present
+/// \post   it will ping every client and get information
+/// \param  none
+/// \return none
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+void ServerConnection::changestate(std::string process_check)
+{
+	std::cout << red() << " " << blue() << " " << green() << " " << yellow() << std::endl;
+	for (unsigned int i = 0; i < mConnections.size();i++)
+	{
+		mConnections[i]->send("send");
+		std::string state_change = mConnections[i]->recv(true);
+		this->switchColor(state_change);
+		//std::cout << "asking client " << i << "for state change, rec:" << state_change << std::endl;
+	}
+	this->switchColor(process_check);
+	std::stringstream reply;
+	reply << red() << " " << blue() << " " << green() << " " << yellow();
+	for (unsigned int i = 0; i < mConnections.size();i++)
+	{
+		mConnections[i]->send(reply.str());
+	}
+}
+// ACCESS and MUTATE
+	
+// INQUIRY

@@ -1,0 +1,10 @@
+bcc -c $1.c
+as86 -o u.o u.s
+ld86 u.o $1.o ../mtxlib /usr/lib/bcc/libc.a
+
+sudo mount -t ext2 -o loop ../mtximage /media/floppy
+sudo cp a.out /media/floppy/$1
+sudo cp a.out /media/floppy/bin/$1
+sudo umount /media/floppy
+
+rm *.o a.out

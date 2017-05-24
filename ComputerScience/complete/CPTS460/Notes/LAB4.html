@@ -1,0 +1,106 @@
+<Title>460 Class Notes</Title>
+<Body bgcolor="#00cccc" text="#000000">
+
+<H1>460 Lab Assignment #4</H1>
+
+<Pre>
+                      460 LAB Assignment #4
+                        DUE: to be posted
+1. OBJECTIVES:
+   fork and exec in MTX
+
+2. REQUIREMENTS:
+
+   Implement the following system calls for the MTX system:
+
+===========================================================================
+(8).  pid = fork()  : fork a child process with an identical Umode image;
+                       parent returns child's pid, child returns 0.
+
+(9).  r = exec(file) : change image to the specified (executable) file
+
+As usual, return -1 if the syscall fails.      
+===========================================================================
+
+                    3. HELPS and SUGGESTIONS:
+
+1. HOWTO fork():
+
+(1). Do the same as kfork() to create a child proc in such a way that when the
+     child starts to runs (in Kmode), it RESUMES TO goUmode().
+     
+(2). Determine the child's segment as  ushort child_segment. 
+
+     Set child's   PROC.uss = child_segment, and
+                   PROC.usp = running->usp   (See below for WHY?)
+
+     But DO NOT load any Umode image (file) to child's segment because it 
+     will have the SAME Umode iamge of its parent (the running proc). 
+                       
+(3). Use get_word()/put_word() to implement a 
+               copy_image(child_segment)
+     function, which copies the Umode image of running to child_segment.
+
+     *********************** NOTE ******************************************
+     In general, each process should have a Umode image size recorded in its 
+     PROC structure. ufork() should allocate a child Umode image area of exactly 
+     the same size, and copy_image() should only copy the exact amount form
+     the parent to the child. So far, we have assumed that each proc's Umode 
+     image is a full segment (64 KB), so you may copy the entire 64KB segment.
+     Later, with memory management, this CAN be changed to suit the Umode 
+     image size of the process that's doing ufork().
+     ***********************************************************************
+
+     copy_image() implies that the Umode images of parent and child are
+     IDENTICAL. So, their saved usp must also be the same value (each is an 
+     offset relative to its own segment).
+      
+(4). While copy_image() is easy, the important part is how to fix the 
+     child's ustack contents so that it will
+
+            . return to Umode in its OWN SEGMENT, and
+            . as if it had executed
+                    pid = fork();
+              but with a return pid = 0 
+              (Recall that the parent returns with the chid's pid) 
+
+     That's the fun part!!!! Think about how to do these first.
+=============================================================================
+
+2. HOWTO exec("filename");    
+
+(1). In general:
+     Locate the file "filename", verify it's eXecutable, read file header
+     to determine the TOTAL memory needed, allocate a memory area for the 
+     NEW Umode image, then load the EXECUTABLE part of the file into memory.
+
+     ----------------------------------------------------------------------
+      For this assignment: all executable files are generated with a 32-byte 
+      header (because the loader in mtxlib expects them to have headers), but 
+      you may ignore the size requirement since each process has a fixed Umode 
+      image size of 64 KB.
+     ----------------------------------------------------------------------
+
+(2). After loading the new Umode image, fix the ustack contents to make the
+     process execute from virtual address 0 when it returns to Umode. Refer to 
+     the diagram again:
+
+     (LOW)  uSP                                | by INT 80  |   HIGH
+     ---------------------------------------------------------------------
+           |uDS|uES| di| si| bp| dx| cx| bx| ax|uPC|uCS|flag| XXXXXX
+     ---------------------------------------------------------------------
+            -12 -11 -10  -9  -8  -7  -6  -5  -4  -3  -2  -1 | 0 
+
+        (a). re-establish ustack to the very high end of the segment.
+        (b). "pretend" it had done  INT 80  from (virtual address) 0: 
+             (c). fill in uCS, uDS, uES in ustack
+             (d). execute from VA=0 ==> uPC=0, uFLAG=0x0200, 
+                                        all other registers = 0;
+             (e). fix proc.uSP to point at the current ustack TOP (-24)
+
+     Finally, return from exec() ==> goUmode().
+
+
+Sample Solution:  samples/LAB4/lab4.bin.gz
+
+

@@ -1,0 +1,250 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \class        SquaresWin
+/// \date         2/28/06  
+/// \brief			This is a window that tests the HandOfCards class
+///
+/// This Class is the window that you will see that contains all the work 
+/// behind the program interface.  It will display graphics for hands, and 
+/// pop up error messages when nessecary.
+///
+///       
+/// REVISION HISTORY:
+///
+/// NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+#include <FL/Fl.H>//the FLTK source files
+
+#include <FL/Fl_Window.H>//the FLTK source files
+
+#include <FL/Fl_Button.H>//the FLTK source files
+
+#include <FL/Fl_Input.H>//the FLTK source files
+
+#include <FL/Fl_Output.H>//the FLTK source files
+
+#include <FL/Fl_GIF_Image.h>//the FLTK gif class
+
+#include <Fl/fl_ask.H>
+
+#include <FL/fl_draw.H>
+
+#include <FL/Fl_Output.H>//the FLTK source files
+
+#include <FL/Fl_Multiline_Output.H>
+
+#include <FL/Enumerations.H>
+
+#include <string>//string.h include
+
+#include <vector>//vector.h include
+
+#include <stdio.h>
+
+#include <sstream>
+
+#include <unistd.h> 
+
+#include <FL/Fl.H>
+
+#include <FL/Fl_Double_Window.H>
+
+#include <FL/Fl_Shared_Image.H>
+
+#include <FL/Fl_JPEG_Image.H>
+
+#include <FL/Fl_Box.H>
+
+#include <FL/Fl_Dial.H>
+
+#include <stdlib.h>
+
+#include <stdexcept>
+
+#include <math.h>
+// LOCAL INCLUDES
+//
+#include "Connection.h"//this file!!!11!
+#include "SquaresWin.h"
+// FORWARD REFERENCES
+//
+
+// CONSTANTS
+//
+
+// LIFECYCLE
+static SquaresWin * thi;
+static std::string s_process;
+///////////////////////////////////////////////////////////////////////
+/// Default constructor.
+/// \pre    None
+/// \post   An instance of the MyWindow is created.
+/// \param  None
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+SquaresWin::SquaresWin(Connection* connections) : Fl_Double_Window(100,100, "Squares Network")
+{
+	mConnection = connections;
+	make_this(this,mProcess);
+	redraw();
+	int i = fork();
+	if(i)
+	{ //parent
+	} 
+	else
+	{
+		Fl::add_timeout(2, update);
+	}
+}
+
+///////////////////////////////////////////////////////////////////////
+/// Destructor.
+/// \pre    An instance of PlaybackWindow has been created.
+/// \post   The instance of PlaybackWindow is destroyed.
+///////////////////////////////////////////////////////////////////////
+SquaresWin::~SquaresWin()//the destructor
+{
+}
+// OPERATORS
+
+// OPERATIONS
+
+// ACCESS and MUTATE
+
+// INQUIRY
+
+// MEMBER VARIABLES
+
+// OPERATIONS
+
+///////////////////////////////////////////////////////////////////////
+/// draw
+/// \pre    A valid window
+/// \post   a window is added
+/// \param none
+/// \return none
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+void SquaresWin::draw(void)
+{
+	Fl_Window::draw();
+	//the red box
+	if (mConnection->red() == true)
+	{
+		fl_draw_box(FL_FLAT_BOX,0,0,50,50, FL_RED);
+	}
+	else 
+	{
+		fl_draw_box(FL_FLAT_BOX,0,0,50,50, FL_BLACK);
+	}
+	
+	//the blue box
+	if (mConnection->blue() == true)
+	{
+		fl_draw_box(FL_FLAT_BOX,0,50,50,50, FL_BLUE);
+	}
+	else 
+	{
+		fl_draw_box(FL_FLAT_BOX,0,50,50,50, FL_BLACK);
+	}
+	
+	//the green box
+	if (mConnection->green() == true)
+	{
+		fl_draw_box(FL_FLAT_BOX,50,0,50,50, FL_GREEN);
+	}
+	else 
+	{
+		fl_draw_box(FL_FLAT_BOX,50,0,50,50, FL_BLACK);
+	}
+	
+	//the yellow box
+	if (mConnection->yellow() == true)
+	{
+		fl_draw_box(FL_FLAT_BOX,50,50,50,50, FL_YELLOW);
+	}
+	else 
+	{
+		fl_draw_box(FL_FLAT_BOX,50,50,50,50, FL_BLACK);
+	}
+}
+
+///////////////////////////////////////////////////////////////////////
+/// handle
+/// \pre    a button is clicks
+/// \post   a card is added
+/// \param  the event number
+/// \return the event number
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+int SquaresWin::handle(int event)
+{
+	int r = Fl_Window::handle(event);
+	
+	if (event == FL_RELEASE)
+	{
+		
+		int y_mouse = Fl::event_y();
+		int x_mouse = Fl::event_x();
+		if (y_mouse < 50 && x_mouse < 50)
+		{
+			mProcess = "red";
+		}
+		if (y_mouse > 50 && x_mouse > 50)
+		{
+			mProcess = "yellow";
+		}
+		if (y_mouse < 50 && x_mouse > 50)
+		{
+			mProcess = "green";
+		}
+		if (y_mouse > 50 && x_mouse < 50)
+		{
+			mProcess = "blue";
+		}
+		make_this(this,mProcess);
+		mProcess.clear();
+		redraw();
+	}
+
+	return r;
+
+
+}
+///////////////////////////////////////////////////////////////////////
+/// make_this
+/// \pre    a button is clicks
+/// \post   a card is added
+/// \param  the event number
+/// \return the event number
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+void SquaresWin::make_this(SquaresWin * w, std::string process)
+{
+	thi = w;
+	s_process = process;
+}
+
+// ACCESS and MUTATE
+
+///////////////////////////////////////////////////////////////////////
+/// update is the call that the program makes when the DrawT errain button
+/// is pressed.
+/// \pre   None
+/// \post  The terrain is mapped to the box
+/// \param  a widget pointer
+/// \return void
+/// \throw  n/a
+///////////////////////////////////////////////////////////////////////
+void SquaresWin::update( void* v )//the button for tell me
+{
+	//std::cout << s_process << std::endl;
+	thi->mConnection->changestate(s_process);
+	thi->redraw();
+	s_process.clear();
+	Fl::repeat_timeout(.1, update);
+}
+

@@ -1,0 +1,49 @@
+Alex Hortin
+Assignment 5
+
+3:	If one-time pads are provably secure, why are they so rarely used in practice?
+
+	One time pads are not used often due to the fact that that the key must be securely transmitted, so 
+	Why use a one-time pad if you have a way to securely transfer data in the first place.  
+
+6:	Let k be the encipherment key for a Caesar cipher. The decipherment key differs; it is 26 k. 
+	One of the characteristics of a public key system is that the encipherment and decipherment keys are different. 
+	Why then is the Caesar cipher a classical cryptosystem, not a public key cryptosystem? Be specific.
+
+	Because K is a simple function of the public key, a linear function to be exact.  The encipherment algorithm uses 
+	a slightly different key than the decipherment one, but this differnce is known and readily computable and decipherered
+	in linear time.  To be effective a public key encryption system requires the private decryption key to be unfeasible to 
+	generate using the public key, not a simple system like the Ceasar Cipher.  
+	
+
+17:	Suppose Alice and Bob have RSA public keys in a file on a server. They communicate regularly using authenticated,
+	confidential messages. Eve wants to read the messages but is unable to crack the RSA private keys of Alice and Bob.
+	However, she is able to break into the server and alter the file containing Alice's and Bob's public keys.
+
+	1	How should Eve alter that file so that she can read confidential messages sent between Alice and Bob, and forge
+ 		messages from either?
+
+		If these 
+
+		Assuming that Alice and Bob use this file everytime to refer to the key and encrypt any unauthenticated data and 
+		she could intercept and block any messages between Alice and Bob, She could copy the current public keys than change 
+		their public keys to one that she had generated and had a copy of the private key.  She could than read the unauthenticated
+		messages, reencrypt with the original and forward the message.  Since the message is said to be authenticated this is 
+		not the case.   
+		
+	2	How might Alice and/or Bob detect Eve's subversion of the public keys?
+
+		They would notice if the messages were authenticated.  They also might notice write times on the file.  They could
+		notice if they had a locally stored version of the key.
+
+18:	Is the identity function, which outputs its own input, a good cryptographic checksum function? Why or why not?
+
+
+
+21:	The example involving the DES-MAC cryptographic hash function stated that a birthday attack would find collisions given
+ 	232 messages. Alice wants to take advantage of this to swindle Bob. She draws up two contracts, one that Bob has agreed to
+ 	sign and the other that Bob would not sign. She needs to generate a version of each that has the same checksum. 
+	Suggest how she might do this. (Hint: Adding blank spaces, or inserting a character followed by a backspace, 
+	will not affect the meaning of either contract.)
+
+

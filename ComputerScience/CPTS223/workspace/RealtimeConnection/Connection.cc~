@@ -1,0 +1,163 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \class        Connection
+/// \author       Alex Hortin 
+/// \date         April 3 2006
+/// \brief        A polymorphic class that handles communication
+///
+/// All this class is is a polymorphic container class for chris's class that
+/// that handles all of my communication for me
+///
+/// REVISION HISTORY
+///
+/// None
+///
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+#include <iostream>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <sstream>
+#include <vector>
+// LOCAL INCLUDES
+//
+#include "Connection.h"
+#include "Socket.h"
+#include "ServerConnection.h"
+
+#include "ClientConnection.h"
+// FORWARD REFERENCES
+//
+
+// CONSTANTS
+//
+
+
+// LIFECYCLE
+
+///////////////////////////////////////////////////////////////////////
+/// Default constructor. PURE VIRTUAL
+/// \pre    None
+/// \post   An instance of player is constructed and new stats file will be contructed
+/// \param  string for the username
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+Connection::Connection(void )
+{
+	mRed = true;
+	mBlue = true;
+	mGreen = true;
+	mYellow = true;
+}
+
+
+///////////////////////////////////////////////////////////////////////
+/// Destructor.
+/// \pre    There must be something to destroy
+/// \post   Poof! that virtual bitch is gone!
+///////////////////////////////////////////////////////////////////////
+Connection::~Connection( void )
+{
+
+}
+// OPERATORS
+
+// OPERATIONS
+
+///////////////////////////////////////////////////////////////////////
+/// makeConnection
+/// \pre    a connection class with a type is made
+/// \post   All the connections will be made
+/// \param  none
+/// \return none
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+//virtual void makeConnection(std::string username) = 0;
+
+///////////////////////////////////////////////////////////////////////
+/// changestate
+/// \pre    A connection with everyone present
+/// \post   it will ping every client and get information
+/// \param  none
+/// \return none
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+//virtual void changestate() = 0;
+
+///////////////////////////////////////////////////////////////////////
+/// switchColor
+/// \pre    the connection is set
+/// \post   a color specified is switched
+/// \param  none
+/// \return none
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+void Connection::switchColor(std::string color)
+{
+	if (color == "red")
+		mRed = ! red();
+	else if (color == "blue")
+		mBlue = ! blue();
+	else if (color == "green")
+		mGreen = ! green();
+	else if (color == "green")
+		mYellow = ! yellow();
+}
+// ACCESS and MUTATE
+
+// INQUIRY
+
+///////////////////////////////////////////////////////////////////////
+/// red
+/// \pre    the connection is set
+/// \post   none
+/// \param  none
+/// \return a bool if it is on or not
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+bool Connection::red()
+{
+	return mRed;
+}
+
+///////////////////////////////////////////////////////////////////////
+/// blue
+/// \pre    the connection is set
+/// \post   none
+/// \param  none
+/// \return a bool if it is on or not
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+bool Connection::blue()
+{
+	return mBlue;
+}
+
+///////////////////////////////////////////////////////////////////////
+/// green
+/// \pre    the connection is set
+/// \post   none
+/// \param  none
+/// \return a bool if it is on or not
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+bool Connection::green()
+{
+	return mGreen;
+}
+
+///////////////////////////////////////////////////////////////////////
+/// yellow
+/// \pre    the connection is set
+/// \post   none
+/// \param  none
+/// \return a bool if it is on or not
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+bool Connection::yellow()
+{
+	return mYellow;
+}

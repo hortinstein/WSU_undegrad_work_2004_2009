@@ -1,0 +1,215 @@
+int pid, me, status;
+int num = 0; 
+char cmdLine[64];
+char parsedLine[20][16];
+//int pd[2];//for the pips
+#include "ucode.c"       /* contains syscall functions */
+#define O_RDONLY	     00
+#define O_WRONLY	     01
+#define O_RDWR		     02
+#define O_CREAT		   0100	/* not fcntl */
+#define O_TRUNC		  01000	/* not fcntl */
+#define O_APPEND	  02000
+
+int menu()
+{
+  printf("#############################################################\n");
+  printf("#  ls       cd     pwd    cat   more    cp     mv   >   >>  #\n");
+  printf("#  mkdir    rmdir  creat  rm    chmod   chown  lpr  <   |   #\n");
+  printf("#############################################################\n");
+}
+///////////////////////
+//This function tokenizes the command line into a parsed line of commands
+///////////////////////
+token(cmd) char * cmd;
+{
+	char* tmp;
+	int numargs = 0;
+	char copy[64];
+	strcpy(copy,cmd);
+	tmp = strtok(copy, " "); 
+	while( tmp != '\0')
+	{
+		strcpy(parsedLine[numargs++],tmp);
+		tmp = strtok('\0', " ");
+	}
+	strcpy(parsedLine[numargs],'\0');	
+	num = numargs;
+}
+int execChild(cmd) char * cmd;
+{
+	pid = fork();
+     	if (pid){
+        	printf("...parent sh waits for child to die\n");
+        	pid = wait(&status);
+     
+	}
+     	else{
+         	printf("...child task %d exec to %s\n", getpid(), parsedLine[0]);
+            	exec(cmd);
+         	printf("...exec failed\n");//child failed exiting!
+	}
+}
+
+int parseRedirect(cmd,nummer,ischild) char * cmd; int nummer;int ischild;
+{
+	char  *recurCmd = malloc(100 * sizeof(char)), *recur_pointer;
+	int numarg = 0,i=nummer-1,i2=0,i3,newcmdi=0,redir = 0,isorig=0,pid_redux;
+	int pd[2];
+	printf("\nunparsed command %s\n",cmd);
+/////////////////////////////
+//Checks for processes that can be executed within the current umode
+/////////////////////////////	
+	token(cmd);   /* break up cmdLine into parsedLine[0], parsedLine[1],.... */
+	if (strcmp(parsedLine[0], "?")==0 || strcmp(parsedLine[0], "help")==0){//prints the menu
+       		menu(); return;
+    	}
+	if (strcmp(parsedLine[0], "logout")==0)//logs the user out
+         	exit(0);
+	if (strcmp(parsedLine[0], "cd")==0)//checks to see if the directory must be changed
+	{
+		chdir(parsedLine[1]);
+		return;
+	}
+
+/////////////////////////////
+//Checks for processes that can be executed within the current umode
+/////////////////////////////		
+	while (0<= i){
+		//printf("\n%s\n",parsedLine[i]);
+		//this line is to see if redirection is found if it is the tail of command is removed and this is called recursively
+		if (0==strcmp(parsedLine[i],"<") ||0==strcmp(parsedLine[i],"|") ||0==strcmp(parsedLine[i],">") ||0==strcmp(parsedLine[i],">>") ){
+			redir = 1;		
+			printf("\n...redirection found arg: %s\r",parsedLine[i]);//going through all the commands to see if any are redirected			
+			parsedLine[i] == '\0';			
+////////////////////////////////////BUILD the new command for recursive calls////////////////						
+			while ((i>i2)){							/////
+			//	printf("\n%s\n",parsedLine[i2]);			/////	
+				while (parsedLine[i2][i3] != '\0'){			/////
+					recurCmd[newcmdi] = parsedLine[i2][i3];		/////
+					newcmdi++;					/////
+					i3++;						/////
+				}							/////
+				recurCmd[newcmdi] = ' ';				/////
+				i2++;i3=0;newcmdi++;					/////
+											/////
+			}								/////
+			recurCmd[newcmdi] = '\0';					/////
+			printf("\n\nrecurCmd %s tail %s \n\n",recurCmd,cmd+newcmdi+2);				/////
+////////////////////////////////////BUILD the new command for recursive calls////////////////						
+
+////////////////////////////////////Forking the child for redirection////////////////////////						
+
+			pid = fork();
+     			if (pid){
+        			printf("...parent sh waits for child to die\n");
+  		      		pid = wait(&status);
+     
+			}
+     			else{
+/////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////changing the std io based on instruction/////////////////						
+				printf("...child task %d exec to %s\n", getpid(), parsedLine[0]);
+				if (0==strcmp(parsedLine[i],"<") ){
+					close(1);//closing stdin
+					open(parsedLine[i+1], O_RDONLY);		
+					parseRedirect(recurCmd,i2,1);
+					return;
+				}
+				if (0==strcmp(parsedLine[i],">") ){
+					close(1);//closing stdout
+					open(parsedLine[i+1], O_WRONLY|O_CREAT);
+					parseRedirect(recurCmd,i2,1);									
+					return;
+				}
+				if (0==strcmp(parsedLine[i],">>") ){
+					close(1);//closing stdin
+					open(parsedLine[i+1], O_WRONLY|O_APPEND);
+					parseRedirect(recurCmd,i2,1);
+					return;  
+				}          			
+				//parseRedirect(recurCmd);
+         			//printf("...exec failed\n");//child failed exiting!
+////////////////////////////////////Handling some dirttttty pipes////////////////////////////						
+/*2-2. Pipes:
+    
+         int pd[2];
+         int r = pipe(pd);  
+
+      	pd[0] is for READ the pipe, 
+	pd[1] is for WRITE
+      	A READER process must close its write descriptor pd[1]. 
+	A WRITER process must close its read descriptor pd[0]. 
+ */
+
+
+				if (0==strcmp(parsedLine[i],"|") ){
+					//pid = fork();
+     					//if (pid){
+        				//	printf("...forking for pipe....\n");
+					//	pid = wait(&status);
+					//}
+				     	//else{
+						printf("...writer forking reader (writer | reader) ");
+					    	pipe(pd);
+						pid_redux = fork();
+						if (pid_redux){//the parent here is the writer
+							close (0);//closing the read descriptor
+							close( pd[1]);
+							dup(pd[0]);//opens up another file descriptor
+							printf("\nhere\n");							
+							exec(cmd+newcmdi+2);
+							return;							
+							//parseRedirect(cmd+newcmdi+2,i2,1);
+						}			
+						else {//reader
+							close (1);//closes the write
+							close(pd[0]);
+							dup(pd[1]);//opens up another file descriptor		
+							parseRedirect(recurCmd,i2,1);
+						
+					 	}
+					//}  
+				}          			
+						
+								
+			}
+			
+		
+				
+		
+								
+		}	
+			
+		i--; 	
+	}
+	if (redir == 1)
+		return;
+	else if (ischild ==1)
+		exec(cmd);
+	else 
+		execChild(cmd);	
+}
+main(argc, argv) int argc; char *argv[];
+{
+  me = getpid();
+  printf("HortinSHell: Enter ? for help menu\n");
+  	while(1){
+     		printf("\nHortinSHell: $");
+     		gets(cmdLine);
+     		if (cmdLine[0]==0)//no input
+        	 	continue;
+		token(cmdLine);
+        	parseRedirect(cmdLine,num,0);
+     /****************************************************************
+        NOTE: some commands, e.g. cd, MUST be done by sh itself.
+              OTHER commands will be done as shown below:
+      ****************************************************************/
+        
+     /***** fork a child to execute the command ******/
+     		
+	
+  	}
+}
+
+

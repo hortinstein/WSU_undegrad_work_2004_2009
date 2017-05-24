@@ -1,0 +1,103 @@
+#!/usr/bin/python
+import sys, os, socket 
+#######################################################################################################################################
+#	bob
+#
+#	This program is used to send or recieve a secure messages with another user.  If a message is specified in the command line
+#	the program will encrypt that message using the intended recipients public key stored in the public_key_path.  Than it will
+#	send the encrypted message on the given host and port. If no message option is specified in the command line it will wait 
+#	untill it recieves a message.  When a message is recieved it will attempt to decode using alice's private key stored in her 
+#	private folder.
+#
+#	If a new generation of keys is required, this may be done with the command line argument "-g" or "-generateKeys".  This will
+#	create a new public/private rsa key pair and copy the public key into the public_key_path.  It will also create an x509 
+#	certificate of the resulting key pair and store it within the private user path.   
+#
+#	flags
+#		-p [#] or --port [#] : specifies the port to send to/recieve from
+#		-h [address] or --host [address] : specifies the address to send to/recieve from 
+#		-m "string" : specifies the message to be sent as encrypted
+#	
+#	The test environment is composed of folders that look like the following
+#	/cpts425p2Hortin
+#			/UserSpaces
+#			           /alice_Private
+#			           /bob_Private
+#			           /eve_Private
+#				   /Public_Keyring
+#				   
+#
+#	sample usage "./alice --generateKeys --host localhost --port 1337 -m "Hello World!" 
+#	sample usage "./alice -g -h localhost -port 1337 
+#
+#	The following is the openssl expression used to generate the private rsa key
+#		$openssl genrsa -out private.pem 1024 
+#
+#	The following is the openssl expression used to generate the public rsa key using a private key as input
+#		$openssl rsa -in private.pem -pubout -out public.pem
+#
+#	The following is the openssl expression used to encrypt the message using the recipients (bob) public key
+#		$openssl rsautl -in plain_msg -out enc_msg -encrypt -pubin -inkey bob_public.pem")
+#
+#	The following is the openssl expression used to decrypt the message using alice's private key
+#		$openssl rsautl -in enc_msg -out dec_msg -decrypt -inkey alice_private.pem")	
+#
+# generate new cert : openssl req -new -x509 -days 365 -out cert.pem -keyout cert.pem
+#######################################################################################################################################
+user = "bob"
+rec = "alice"
+public_key_path = "UserSpaces/Public_Keyring/"
+path = ("UserSpaces/"+ user + "_Private/"+user);
+
+for arg in enumerate(sys.argv):
+	if sys.argv[arg[0]] == "-h" or sys.argv[arg[0]] == "--host": host = sys.argv[arg[0]+1]	#found the host
+	if sys.argv[arg[0]] == "-p" or sys.argv[arg[0]] == "--port": port = int(sys.argv[arg[0]+1])	#found the port
+	if sys.argv[arg[0]] == "-m": msg = sys.argv[arg[0]+1]	#found the message
+
+message_address = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#tcp socket stream
+
+		
+
+#this is the code to generate all new keys 		
+if "-g" in sys.argv:
+	print ("..." + user + ": generating new rsa keys")	
+	os.system("openssl genrsa -out "+path+"_private.pem 1024") #this generates the private key and stores in users private folder
+	os.system("openssl rsa -in " +path+"_private.pem -pubout -out "+path+"_public.pem ") #generates the public key using private and stores in users private folder
+	os.system("cp "+path+"_public.pem "+public_key_path)#makes a copy of the public key and puts it to the public key directory
+
+#generate a new x509 certificate
+if "-x" in sys.argv:
+	os.system("openssl req -new -x509 -days 365 -out cert.pem -keyout "+path+"x509cert.pem -in " +path+"_private.pem")
+if "-h" not in sys.argv or "--host" not in sys.argv: host = "localhost"
+#sending the message to rec	
+if "-m" in sys.argv:
+	message_address.connect((host,port))
+	print ("..." + user + ": starting in send mode with destination: [host] "+host+" [post] " + str(port))
+	os.system("touch "+path+"temp_msg")
+	os.system("echo \"<MSG>" + msg + "</MSG> \" > "+path+"temp_msg")
+	print("..."+user+": $"+"openssl rsautl -in "+path+"temp_msg -out  "+path+"enc_msg -encrypt -pubin -inkey "+public_key_path+rec+"_public.pem")		
+	os.system("openssl rsautl -in "+path+"temp_msg -out  "+path+"enc_msg -encrypt -pubin -inkey "+public_key_path+rec+"_public.pem")
+	tempread,msg = open(path +"enc_msg", 'r'),'';#opens up the resulting encrypted message for sending
+	for line in tempread: msg += line #compiling the message		
+	message_address.send(msg)#sending it
+#recieving the message and decoding it	
+else:
+	message_address.bind((host,port))#binding listening port for the message
+	message_address.listen(5)#listening for another connection
+	while(1):
+		connection, address = message_address.accept()			
+		msg = connection.recv(1000000)
+		temp_write= open(path +"enc_msg",'w')
+		temp_write.write(msg)	
+		temp_write.close()
+		os.system("openssl rsautl -in "+path+"enc_msg -out "+path+"dec_msg -decrypt -inkey "+path+"_private.pem") #decrypting using user's private key
+		print("..."+user+" $"+"openssl rsautl -in "+path+"enc_msg -out "+path+"dec_msg -decrypt -inkey "+path+"_private.pem")	
+		tempread,msg = open(path +"dec_msg", 'r'),"";#opens up the resulting decrypted message for sending
+		for line in tempread:
+			msg +=line
+		if msg[0:5] != "<MSG>":
+			print("..."+user+": failed at decryption")
+		else:	
+			print("..."+user+": has decrypted messge:\n" + msg)
+		connection.close()
+		os.system("rm "+path+"*_msg")

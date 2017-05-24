@@ -1,0 +1,4 @@
+/y 4 def
+/g { y } def
+/f { /y 7 /x 8 def def g } def
+f

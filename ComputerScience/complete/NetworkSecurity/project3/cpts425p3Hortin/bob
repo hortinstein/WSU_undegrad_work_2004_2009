@@ -1,0 +1,24 @@
+#!/usr/bin/python
+import sys, os, socket 
+#######################################################################################################################################
+#	bob
+#
+#	Bob is simply a dumb recieve client that displays data forwarded to it by eve (the IDS system)	
+#
+#######################################################################################################################################
+for arg in enumerate(sys.argv):
+	if sys.argv[arg[0]] == "-h" or sys.argv[arg[0]] == "--host": host = sys.argv[arg[0]+1]	#found the host
+	if sys.argv[arg[0]] == "-p" or sys.argv[arg[0]] == "--port": port = int(sys.argv[arg[0]+1])	#found the port
+	
+
+if "-h" not in sys.argv or "--host" not in sys.argv: host = "localhost"
+
+message_address = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#tcp socket stream
+message_address.bind((host,port))#binding listening port for the message
+message_address.listen(5)#listening for another connection
+
+while(1):
+	connection, address = message_address.accept()			
+	msg = connection.recv(1000000)
+	print msg
+	connection.close()

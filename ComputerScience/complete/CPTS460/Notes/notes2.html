@@ -1,0 +1,395 @@
+<html><head><title>460 Notes</title></head><body bgcolor="#00cccc" text="#000000">
+
+<h1>460 Notes #2</h1>
+
+<pre>                      CS460 NOTES #2
+
+                        BOOTING
+1. Booting in General:
+   The process of starting up an operating system from a disk is called 
+   booting or bootstrap. Different machines may have different sequence 
+   of actions during booting. To be more specific, we shall consider the 
+   booting sequence of PCs.
+
+   Every PC has a ROM, which contains a set of programs called the BIOS.
+   When power is turned on or following a reset, the CPU starts executing
+   BIOS.  BIOS checks the system hardware, initializes itself, including 
+   setting up the interrupt vectors at low memory area to point to its
+   service routines.  Then, it starts to look for a device to boot. The 
+   searching order is usually A:, then C: If there is a  diskette in A:, 
+   BIOS will try to boot form it. Otherwise, it will try to boot from C:.
+
+   A booter is a program that boots up itself first. Then it loads another 
+   program, such as an operating system, into memory for execution. A booter 
+   usually occupies the first sector (or block) of a bootable device. 
+   
+   Assume that there is a disk in A:  BIOS will load the very first sector
+   (512 bytes) of the disk into (segment, offset)=(0x0000, 0x7C00), and jump 
+   to there to executes the booter.  After this, it is entirely up to the 
+   booter code to do the rest.
+
+   In order to make room for the OS to be loaded, the booter usually relocates
+   itself to a high memory area, from where it continues to load an operating
+   system image into memory. When loading completes, the booter simply 
+   transfers control to the OS, causing it to start up.
+
+   Booting from a hard disk is only slightly more complex. A hard disk is 
+   usually divided into several logically independent units, called 
+   partitions.  The start cylinder, end cylinder and size of the partitions 
+   are recorded in a Partition Table. The very first sector of a hard disk 
+   is called the Master Boot Record (MBR). It contains a boot program, the 
+   Partition Table, and the boot signature at the end. Each partition may 
+   contain a bootable system. If so, each partition has its own booter in
+   the first sector (or block) of that partition.
+
+   During booting, BIOS will load the MBR to (0x0000, 0x7C00) as usual, and 
+   turn control over to it. The MBR's boot program typically searches the 
+   Partition Table for an Active partition, which is simply a partition marked
+   as such. When it finds an active partition, it knows where that partition 
+   begins on the disk. The MBR first relocates itself to a different memory 
+   area. It then loads the boot sector of that partition to 0x7c00 and truns 
+   control over to that booter. It is now up to the partition's booter to load
+   and start the OS on that partition.
+
+2. Disk I/O using BIOS:
+   In order to load other programs, the booter must be able to do disk I/O.
+   During booting, the only thing available is BIOS. So, you must call BIOS 
+   to do I/O. In addition to getc()/putc(), BIOS also provides disk I/O 
+   functions via INT 0x13. The following table shows the parameters for BIOS 
+   disk I/O functions:
+   =========================================================================== 
+                         1.44MB
+           Registers:    floppy       Hard disk
+          -----------    -----       ----------
+          (DL)=drive      0-1         0x80,0x81
+          (DH)=head       0-1         0-#heads
+          (CH)=cyl        0-79        0-1023
+          (CL)=sector     1-18        1-63
+          ------------------------------------------
+          (AL)=number of sectors to R/W   
+          (AH)=2(R), 3(W), 4(Verify), 5(format), etc.
+         --------------------------------------------
+          Memory Address=(ES, BX) = EX &lt;&lt; 4 + BX 
+
+          int 0x13  ===&gt; to BIOS  
+          Upon return : if (carry bit != 0) ==&gt; error.
+    =========================================================================
+    Notes that BIOS counts sector from 1, not 0. However, for unfiromity,we 
+    shall count sector from 0. The code segment below can be used to load ONE 
+    disk block into memory.
+    
+    .globl _diskr, _myprints
+       !---------------------------------------
+       ! void diskr(cyl, head, sector, buf)  parameters are on stack
+       !             4     6     8     10    byte offset from FP 
+       !---------------------------------------
+    _diskr:                             
+        push  bp               ! use bp as Frame Pointer  FP
+        mov   bp, sp           ! 
+
+        movb  dl, #0x00        ! drive 0 = fd0
+        movb  dh, 6[bp]        ! head
+        movb  cl, 8[bp]        ! sector; count from 0
+        incb  cl               ! inc sector by 1 to suit BIOS
+        movb  ch, 4[bp]        ! cyl
+        mov   ax, #0x0202      ! READ 2 sectors 
+        mov   bx, 10[bp]       ! BX = buf ==&gt; address = (ES,buf)
+        int   0x13             ! call BIOS to read the block 
+        jb    error            ! jmp to error if CarryBit on (read failed)
+
+        mov   sp, bp
+        pop   bp
+        ret
+
+        !------------------------------
+        !       error &amp; reboot
+        !------------------------------
+    error:
+        mov   bx, #bad
+        push  bx
+        call  _myprints
+        
+        int   0x19            ! reboot
+    bad:      .asciz  "Error!"
+===============================================================================
+    You may call diskr() from C as:
+
+                 int  cyl, head, sector;    
+                 char buf[1024];
+
+                /* COMPUTE cyl, head, sector values; then call */
+    
+                 diskr(cyl, head, sector, buf);
+
+    The memory address is determined by (ES, BX). If ES is set to the same 
+    segment as DS and SS, and char buf[1024] is an address in your C code,
+    then buf[] is relative to DS (or SS). Thus, (ES, buf) would be the right
+    REAL address of buf[].
+
+3. Disk I/O from C:
+   A disk consists of a sequence of 512-byte sectors. However, all file systems
+   use disk BLOCKs as storage units. For instance, Linux uses 1KB block size 
+   for floppy disk (and 4KB for HD). Thus, on a floppy disk each block consists
+   of 2 consecutive sectors.
+
+   Disk sectors or blocks are numbered sequentially as 0,1,2, ....., known as
+   linear address. To load a disk block into memory, you MUST convert the block
+   number blk to (cyl, head, sector), known as the CHS address. This is because
+   BIOS only accepts CHS, NOT block number for FD. (EXTENDed BIOS may accept 
+   linear sector address for hard drives).
+.
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   Figure out HOW to do the conversion. Then write C code for the function:
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+     int  get_block(blk, buf) 
+              unsigned short blk; char *buf;
+          {
+             (1). Compute cyl, head, sector from blk;
+                  NOTE: cyl, head, sector are all counted from 0.
+
+             (2). diskr(cyl, head, sector, buf);
+                  
+             (3). return SUCCESS or FAIL;
+          }
+
+   which reads the disk block blk into buf[].
+
+=============================================================================
+                 NOTES on EXT2 file system
+
+1. An EXT2 file system on a FD has the format:
+
+      0     1     2      3      4       5 ........ 
+    |Boot|Super|GpDes|bBitMap|iButMap| InodeBlocks | FileBlocks
+
+ 
+2.  Each inode is identified by an i_number, which counts from 1. The #2 inode
+    is that of the / directory. The INODE structure is shown below.
+
+    For non-special files, (i.e. DIR or REGULAR file) the array    
+                     i_block[15]  
+    of each inode records the disk blocks of the file.
+   
+         i_block[0] to i_block[11]  are    DIRECT blocks.
+         i_block[12] is the INDIRECT block, which  contains 256 block numbers.
+         i_block[13] is the DOUBLE_INDIRECT block.
+         i_block[14] is the TRIPLE_INDIRECT block (not applicable to FD).
+
+    The number of actual disk blocks of a file is determined by its fileSize.
+    An unused i_block[i] usually contains 0. 
+
+3.  An EXT2 directory contains DIR entries of variable length.
+
+-----------------------------------------------------------------------
+
+4 How to traverse the file system tree?
+  Suppose we want to search for the file: 
+
+           /boot/linux
+
+  The steps are:
+
+(1). Read in the GroupDescriptor 0 (in block #1) to find out where INODES 
+     blocks start. (This step is optional for FD; it's always block #5).
+
+(2). Read in the first inode block.  The second inode is the root inode.
+     From the root inode:
+          read in its 0th file block, which contains DIR entries
+          search for the string "boot" in the DIR entries of this block;  
+          if found:  { get the i_number of /sys; break;}
+          else: repeat for file blocks 1, 2,..., 11
+                (You may ASSUME every dir only has direct blocks).
+     /* Assume  /boot  exists  AND  is a DIRectory */
+     
+(3). From the i_number of /sys, read in (the block containing) its
+     inode. Then the situation becomes identical to that of (2).
+
+     Thus, repeat (2) and (3) for each component of the pathname.
+     The outcome is either: failed at some stage OR
+                            found the inode of the file.
+    
+(4). From the inode of a file, we have ALL the infomation about the file.  
+     In particular, we can easily find out WHERE are its disk blocks. 
+     From its data blocks, we can get the file's contents.
+===========================================================================
+5. INODE and DIR structures:
+
+#define u8  unsigned char
+#define u16 unsigned short
+#define u32 unsigned long
+
+typedef struct ext2_inode {
+	u16	i_mode;		/* File mode */
+	u16	i_uid;		/* Owner Uid */
+	u32	i_size;		/* Size in bytes */
+	u32	i_atime;	/* Access time */
+	u32	i_ctime;	/* Creation time */
+	u32	i_mtime;	/* Modification time */
+	u32	i_dtime;	/* Deletion Time */
+	u16	i_gid;		/* Group Id */
+	u16	i_links_count;	/* Links count */
+	u32	i_blocks;	/* Blocks count */
+	u32	i_flags;	/* File flags */
+        u32     dummy;
+	u32	i_block[15];    /* Pointers to blocks */
+        u32     pad[7];         /* inode size MUST be 128 bytes */
+} INODE;
+
+typedef struct ext2_dir_entry_2 {
+	u32	inode;			/* Inode number */
+	u16	rec_len;		/* Directory entry length */
+	u8	name_len;		/* Name length */
+	u8	file_type;
+	char	name[255];      	/* File name */
+} DIR;
+
+===========================================================================
+               CS460 NOTES #2.1 Bootable MTX Image
+
+MTX is a samll operating system developed for CS460. It is designed to run on
+Intel-based PCs in the real (unprotected) mode or any PC emulators, such as 
+DOSEMU, BOCHS, VMware, etc.
+    ---------------------------------------------------------------
+    The goal of this class is to implement the MTX operating system.
+    ---------------------------------------------------------------
+MTX can run from either a floppy disk or a hard disk partition. For simplicity
+(and safety), we shall begin with MTX on floppy disks.
+
+From the ~cs460/samples/LAB1 directory, you can download the file mtximage.gz.
+Uncompress and dump it to a floppy disk by
+           gunzip mtximage.gz
+           dd if=mtximage of=/dev/fd0
+
+The resulting floppy disk is a bootable MTX system composed of the following
+
+    block0 | EXT2 file system (1 KB blocks)
+    BOOTER |             /
+                         |
+               ------------------------
+               bin  boot dev  etc  user
+                     | 
+                    mtx
+
+where block0 contains a MTX booter and /boot/mtx is a bootable MTX image file.
+During booting, the MTX booter is loaded into memory and runs first. It prompts
+for a MTX image (file) name in the /boot directory to boot. The default image 
+name is mtx. It loads the mtx image to the segment 0x1000, and then jumps to
+(segment, offset)=(0x1000, 0) to start up MTX.
+  
+
+               CS460 NOTES #2.2  Bootbale Linux Image
+
+1. Bootable Linux Image: 
+   A bootable Linux image (zImage), as it exists on a floppy disk, is composed
+   of the following components:
+
+     Sector#0        : BOOT, a boot program in 16-bit machine code.
+     Sector#1 to 11  : SETUP, also in 16-bit machine code;
+     Sector#12 onward: Linux Kernel, about 500 KB in size.
+  
+2, Linux Booting Sequence:
+
+2-1. BIOS loads BOOT:
+     During booting, BIOS first loads BOOT to memory (segment) 0x07C0, and
+     jumps to there to execute BOOT.
+
+2-2. BOOT:
+     BOOT first moves itself (512 bytes) from 0x07C0 to 0x9000, thus
+     freeing the memory area for Linux Kernel. It then jumps (in)to 
+     0x9000 to continue execution. 
+
+     It loads  SETUP (Disk Sectors 1,2,3,4,5,6,7,8,9,10,11) to 0x9020 AND 
+               Linux Kernel (Sectors 12,13,,......)         to 0x1000.
+ 
+     After loading completes, BOOT jumps to (0x9020, 0) to execute SETUP.
+
+2-3. SETUP:
+     SETUP sets up the starting environment for the Linux Kernel, such as
+     the root device, video display mode, changing CPU from 16-bit mode 
+     to 32-bit mode, etc. It then jumps to (0x1000, 0) to start up Linux.
+
+     The above booting sequence works ONLY IF THE BOOTABLE LINUX IMAGE IS ON
+     A FLOPPY DISK as described above.
+
+     If the Linux image is STORED AS A FILE, such as /sys/linux, Linux's
+     BOOT code becomes useless. (WHY?) In this case, a different boot 
+     program must be used.
+     
+     When a linux image is stored as a file, it's easy to see that the 
+     file's layout is as follows (assuming 1KB blocks):
+
+        BOOT and SETUP would be in the file's Block#0 to Block#5,
+        Linux Kernel   would be in Block#6,7,8 ...........
+      
+3. Another Way of Booting Linux:
+
+   Assume that the Linux bootable image is a FILE. If we write a boot 
+   program in such a way that 
+
+   (1). it sits in the boot BLOCK of the file system so that BIOS will 
+        load (512 bytes of) it to 0x07C0 during booting.
+
+   (2), Once execution starts, it can load the entire boot program to 
+        high memory, and continues in high memory. 
+
+   (3). Then it FINDs a Linux bootable image FILE to boot. If it loads 
+        the blocks of the Linux image file in exactly the same way as does 
+        Linux's BOOT, i.e.
+
+           load Linux's SETUP to 0x9020 and load Linux Kerenl to 0x1000, 
+           then transfer control to Linux's SETUP,
+
+        Linux should start up.
+
+   With this reasoning, we shall develop such a Boot Program. 
+   It should be stressed that the purpose here is NOT to write yet another 
+   Linux boot program. Rather, it is intended to achieve the following 
+   objectives:
+
+   (1). Understand PC's archtecture, BIOS operations and booting;
+   (2). Practice linking of assembly and C programs;
+   (3). Practice file and disk I/O;
+   (4). Learn to write LEAN and efficient C code.
+
+4. Working Environment:
+
+   When the PC starts up, it is in the so called 16-bit or unprotected 
+   mode. While in this mode, it can only execute 16-bit code (and access
+   1M bytes of memory).
+
+   During booting, we must use BIOS to do I/O because there is NO operating
+   system yet. BIOS functions are called by the  
+               INT  #n   
+   instruction, where the number n indicates which BIOS function we are 
+   calling. Parameters to BIOS functions are passed in CPU registers.
+   Return value is in the AX register.
+
+   Boot programs are usually written entirely in (16-bit) assembly code
+   becaue their logic is quite simple, namely, to load the disk sectors
+   of an OS into memory. They do not have to know how to FIND the image 
+   of an OS. 
+
+   Based on the above discussions, a quick summary is in order:
+
+                    During booting:
+
+   (1). We must call BIOS functions to do I/O, so assembly code is
+        un-avoidable !!!!  But this should be kept to a minimum.  
+
+   (2). Our boot program must FIND a Linux bootable image file to load.
+        For example, it may prompt for a system image to boot first.
+        If the user enters the string  /sys/linux, it should boot the file
+        /sys/linux. If the user enters /sys/image, it should boot that file, 
+        etc.
+   
+        Although it is possible to write such a program in assembly, it would 
+        be rather silly to do so. The major part of it should be written in C.
+
+   (3). Linux's gcc compiler generates 32-bit code, whcih is unusable during 
+        booting.  We must use a C compiler and a linker that generate 16-bit 
+        machine code.
+
+   (4). To meet these requriements, we will use bcc, as86 and ld86 package,
+        which runs under Linux but generates 16-bit code for Intel processors.
+</pre></body></html>

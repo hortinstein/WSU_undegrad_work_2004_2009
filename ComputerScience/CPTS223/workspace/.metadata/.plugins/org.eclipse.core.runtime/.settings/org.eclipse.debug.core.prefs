@@ -1,0 +1,3 @@
+#Wed Sep 28 03:25:23 PDT 2005
+prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8"?>\n<watchExpressions>\n<expression text\="public" enabled\="true"/>\n<expression text\="public" enabled\="true"/>\n<expression text\="_M_dataplus" enabled\="true"/>\n</watchExpressions>\n
+eclipse.preferences.version=1

@@ -1,0 +1,21 @@
+echo "compiling mtx..."
+bcc -c t.c
+as86 -o ts.o ts.x
+ld86 -d ts.o t.o mtxlib /usr/lib/bcc/libc.a
+ls -l a.out
+echo "dumping a.out to /boot/mtx ...."
+mount -t ext2 -o loop mtximage temp
+cp a.out temp/boot/mtx
+umount temp
+
+echo "making user apps"
+cd USER/
+./mku u1
+./mku u2
+cd ../
+
+echo "copying image to dosemu folder"
+cp mtximage /var/lib/dosemu/
+rm *.o a.out
+echo "done making mtx"
+

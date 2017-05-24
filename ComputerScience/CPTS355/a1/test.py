@@ -1,0 +1,36 @@
+#	Assignment 1 - Fun with Python
+#	test.py - Performs a test of all the functions in Assignment 1
+#	9/5/2007	
+#	Alex Hortin
+
+import trans
+import histo
+import digraphs
+#
+# Testing trans.py
+#
+
+s1 = 'abcd'
+s2 = 'dcba'
+s = 'abcd'
+
+#Testing trans and untrans
+print trans.trans((s1,s2),s)
+print trans.untrans((s1,s2) ,trans.trans((s1,s2),s) )
+#Testing the error checking
+#s1 = 'abcde'
+#print trans.trans((s1,s2),s)
+
+s = 'abcdddddDDd'
+
+# Testing histo.py
+print histo.histo(s)
+
+# Testing trans.py
+print digraphs.digraphs('dededede')
+
+cryptogram = 'ZYX WVU TSRQS POZYNR, ZYX TSVMXWZ WRSQX ZN LX KNJRI NR ZYX UWTSRI, HNWZTO URYSLUZW ZYX GJRMTXW NK ZYX TNF ENJRZVO, NEESWUNRSTTO ZYX TNFXV YUTTW, LJZ NKZXR RXSV FSZXV. UZ UW TUMYZ LVNFR FUZY ISVQ LVNFR HSVQURMW. ZYX LNIO UW ENRWUIXVSLTO ZYUEQXV ZYSR UR HNWZ WRSQXW, SRI ZYX WRSQX ESR SZZSUR S TXRMZY NK 7 HXZVXW, STZYNJMY ZYX SDXVSMX UW 5 HXZVXW. ZYX POZYNR TSRMJSMX YSW RNZYURM ZN IN FUZY WRSQXW.'
+print histo.histo(cryptogram)
+print digraphs.digraphs(cryptogram)
+print '\n\n TRANSLATION \n\n'
+print trans.trans(('ZYXUSRINWQFMTJKVLPOGHED','theiandoskwglufrbpyjmcv'),cryptogram)

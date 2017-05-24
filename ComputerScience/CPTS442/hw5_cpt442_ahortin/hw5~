@@ -1,0 +1,57 @@
+1)
+    A)
+        To solve this problem you muse first solve to find the vector from p that is perpendicular to L
+
+        The equation of the line is currently in slope intercept form, and I will rewrite it as y= form
+            
+            y = (-1 * (A/B) * x) - (C/B)
+        
+
+        Given this equation we can see that points on the line will have vector cords.  The slope is -a/b
+
+            [           x            ]        [     0       ]           [   -b   ]
+            [                        ]    =   [             ]   - (1/b) [        ]    x
+            [    (-a/b)*x - (c/b)    ]        [    (-c/b)   ]           [    a   ]
+
+    
+        The following vector is parallel to the line 
+
+                [   -b  ]
+            v = [       ]            
+                [   a   ] 
+
+        
+        and vp will be perpendicular to the given line
+                 [   a   ]
+            vp = [       ]
+                 [   b   ]
+
+        than by plugging in x and y to v and vp you can find the intersection of the two vectors starting at the x and y given by p
+
+    B)
+
+2)
+
+    Psuedocode
+
+        def linemag(line)
+        def distance(line,q):
+            
+
+        line1 = p0,p1
+        line2 = p1,p2
+        line3 = p2,p0
+
+        #checking to see what the smallest distance from any of the lines are                
+        Distance_to_point = distance(line1,q)        
+        if distance(line2,q) < Distance_to_point
+            Distance_to_point = distance(line2,q)
+        if distance(line3,q) < Distance_to_point
+            Distance_to_point = distance(line3,q)        
+   
+            
+
+
+
+
+

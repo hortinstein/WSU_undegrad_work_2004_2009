@@ -1,0 +1,286 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"><title>460 Class Notes</title>
+</head><body text="#000000" bgcolor="#00cccc">
+
+<h1>460 Lab Assignment #3</h1>
+
+<pre>                      460 LAB Assignment #3
+                        DUE : TO BE POSTED
+
+1. OBJECTIVES:
+   Kernel/User mode images and system calls
+
+2. REQUIREMENTS:
+
+   Implement the following system call functions for the MTX system:
+   For each syscall, the return (int) value &gt;= 0 for OK, or -1 for BAD.
+***************************************************************************
+(0). pid = getpid()  : return the proc's pid
+
+(1). ps()        : enter Kerenl to print the status info of the procs
+ 
+(2). chname(char *s) : ask for a string *s, enter Kernel to change the
+                       running proc's name to *s.
+(3). kmode()         : enter Kernel to execute body() function.
+
+(4). kswitch()       : enter Kernel to switch process (call tswitch()).
+
+(5). pid = wait(int *exitValue) : enter Kernel to wait for death of a child,
+                                  return its pid (or -1 if no child) and its
+(6). exit(int exitValue) : enter Kernel to die with an exitValue.
+
+***************************************************************************
+
+                    3. HELPS and SUGGESTIONS:
+
+(1). How to generate Umode image files:
+
+   The following u.s file may be combined with a .c file to generate an 
+   a.out that can be loaded to and executed from ANYWHERE in memory.
+   Naturally, you may add more functions to it as needed.
+
+!=========================== u.s file =======================================
+.globl begtext, begdata, begbss                      ! needed by linker
+
+.globl _getc, _putc                                  ! for user mode I/O
+.globl _main, _syscall, _getcs, _exit                ! GLOBALS
+
+.text                                                ! these tell as:	
+begtext:                                             ! text,data,bss segments
+.data                                                ! are all the same.
+begdata:
+.bss
+begbss:
+.text               
+
+!--------------------------------------------------------------------------
+!     NOTE: CS,DS,SS,ES and SP will be set up properly in Kernel BEFORE CPU 
+      gets to here, we simply call main() in C. 
+!     Later, we shall pass a (command-line) string to main(), so that
+!     you may even write main() as
+!                        main(s) char *s; 
+!---------------------------------------------------------------------------
+
+start:  
+        call _main
+
+! syscall die(0)
+        push #0            ! push exit_value 0
+        call _exit
+
+
+_getc: ! SAME as before
+_putc: ! SAME as before
+
+! int getcs()
+_getcs:    mov  ax, cs
+           ret
+
+!  int  syscall(a,b,c,d)    in C:   LISTEN TO THE LECTURE !!!!!
+_syscall   
+           int 80          
+           ret
+
+!================  end of u.s ==============================================
+
+(2). Combine u.s with the following piece of C code to generate a.out (with
+     header!!) cp a.out to /u1 and /bin/u1 on a MTX disk.
+
+#include "io.c"     // YOUR io.c file: printf(),... etc
+#include "ucode.c"  // Given in samples/LAB3
+
+main()
+{ 
+  char line[128]; 
+  int pid, cmd; 
+
+  while(1){
+       pid = getpid();         /* YOUR getpid() function */
+
+       printf("==============================================\n");
+       printf("I am proc %d in U mode running at segment %x\n",
+               pid, getcs());
+       show_menu();           /* display a command MENU */
+
+       printf("Command ? ");
+
+       gets(line);            /* input a command line */ 
+       if (line[0]==0)
+          continue;
+
+       cmd = find_cmd(line);  /* map command to a number */
+       switch(cmd){
+           /*************** FOR LAB #3 *********************************/
+           case 0 : getpid();    break;
+           case 1 : ps();        break;
+           case 2 : chname();    break;
+           case 3 : kmode();     break; 
+           case 4 : kswitch();   break;
+           case 5 : wait();      break;
+           case 6 : exit();      break;
+          
+           /************** For LAB #4 **********************************/
+           case 7 : ufork();     break;
+           case 8 : exec();      break; 
+           /************************************************************/
+
+           default: printf("invalid command\n"); break;
+       }
+  }
+}
+
+===========================================================================
+Each of the command function issues a syscall to enter Kernel to do the 
+work as required.
+
+Your   syscall(a,b,c,d);  calls the assembly function _syscall (in u.s)
+       which issues an INT 80 to enter Kernel. 
+========================= END OF umode image files ===========================
+
+
+                          MTX Kernel:
+
+The entry point of  INT 80 handler is (in ts.s file)
+
+       _int80h:
+        SAVE:    ! save registers in ustack; switch to Kernel space;
+                 ! save uSS, uSP in proc
+
+                 call _kcinth      ! call int kcinth() in C; fix return value
+
+        _goImode:! restore SS, SP from saved uSS, uSP;
+                 ! pop ustack to restore CPU registers
+                 ! IRET        return to where INT 80 was issured in Umode
+                           
+                  
+
+AFTER SAVE:, the task's ustack contains:
+
+ (LOW)  uSP                         | by INT 80  |   by syscall()    | (HIGH) 
+ -------------------------------------------------------------------------
+       |uDS|uES|di|si|bp|dx|cx|bx|ax|uPC|uCS|flag|ret| a | b | c | d |XXXX
+ --------------------------------------------------------------------------
+         0   1  2  3  4  5  6  7  8   9   10  11  12  13  14  15  16 
+
+where the numbers are offsets from the saved uSP.
+uSS and uSP are saved in proc.uss and proc.usp, respectively.
+
+From the above diagram and YOUR utility functions
+
+     (int) word = get_word(segment, offset);
+                  put_word(word, segment, offset);
+
+you should be able to access ANY item that's of interest. For example, in YOUR
+
+                   int  kcinth(){................. }
+
+           HOW TO GET THE SYSCALL parameters a,b,c,d?
+
+           HOW TO let kcinth() return a value to Umode?
+
+If you understand these, you should have no problem in completing this lab.
+===========================================================================
+
+(4). How to install interrupt handlers:
+     In order to issue    INT 80  ,    (or any vector number)
+     You MUST install a handler in the interrupt vector. 
+
+                     Here is HOW:
+     Assume int80h() is the handler function.
+     (1).  Vector 80 means memory locations   80*4,        80*4+2  
+           should contain                   PC=int80h     CS=0x1000
+     (2).  Use    put_word(w, segment, offset);   to set the vector contents.
+           
+
+(5). How to create process with a Umode image:
+
+     Modify your MTX's kfork() function as follows:
+            
+     kfork()
+     {
+       ushort segment;
+       (1).  /* kfork() as YOU DID in LAB #2 before */
+              but ADD THE FOLLOWLING:
+
+       (2). Let segment = (pid + 1)*0x1000; 
+
+            Example: pid=1 ==&gt; 0x2000, pid=2 ==&gt; 0x3000, etc
+
+            
+            load(filename, segment) char *filname; ushort segment;  
+
+            function (in mtxlib) to load filename "/u1" OR /bin/u1 to segment. 
+            Thus, every newly forked proc has /u1 as its Umode image BUT in 
+            its own segment. 
+ 
+       (3). initialize the new task's Umode environment AS IF IT WAS RUNNING IN
+            UMODE BEFORE, AND IT CALLED syscall() WITH NO PARAMETER FROM ITS 
+            VIRTUAL ADDRESS 0, so that when it goUmode() it would return to 
+            (segment, 0) to execute, which is the beginning of the loaded /u1 
+            code.
+
+            Specifically, initialize its ustack to contain the following:
+
+ (LOW)  uSP                                | by INT 80  |     HIGH
+ -------------------------------------------------------------------------
+       |uDS|uES| di| si| bp| dx| cx| bx| ax|uPC|uCS|flag|XXXXXXXXXXXXXXXXX
+ --------------------------------------------------------------------------
+        -12 -11 -10  -9  -8  -7  -6  -5  -4  -3  -2  -1 | 0 
+
+        Refer to the above diagram.        
+               segment registers uCS,uDS,uES = segment;
+               all other Umode registers, (ax,bx,cx,dx,bp,si,di) = 0
+               uPC =  0; uFlag=0x0200;
+
+                                    NOTE !!! 
+               All these are in the ustack, which is at the HIGH end of 
+               the segment. READ the notes carefully again. 
+               ===========================================================
+                         Then, save these in it PROC structure:
+               uSS = segment;  and
+               uSP = ustack top !!!  (LISTEN TO the LECTURE)
+               ===========================================================
+               With these, the proc will have a Umode image to return to.
+        }        
+
+
+(6). How to test YOUR (new) MTX system:
+
+     As before, MTX creates P0, which kfork() P1 and then tswitch() to P1.
+     P1 runs in Kmode but it is ready to goUmode to its Umode image in the
+     segment 0x2000.  From now on, every process is created by kfork(),
+     so every process has a Umode image (/u1) in its OWN segment.
+
+(7). Implement a 'u' command which calls goUmode(), causing the running proc 
+     to go Umode.
+
+(8). Once in Umode, you should print messages to identify the process, e.g
+     
+           I am proc 1 in U mode running at segment=0x2000
+
+     followed by a menu. e.g.
+
+           ******************  MENU  *****************
+           *  ps  chanme  kmode  switch  wait  exit  *
+           *******************************************
+    
+   Then, ask for a command, do a syscall into Kernel to execute the command.
+
+============================================================================
+4. DEMO PROGRAM:
+                  samples/LAB4/mtximage.gz
+   download, uncompress, dd to a FD disk and re-boot from the FD.
+============================================================================
+
+                                  HELP FILES:
+
+                   samples/LAB3/ contains these files:
+     ------------------------------------------------------------------
+      |                      |                 |     |      |
+   mtximage.gz              USER               mk   ts.s   t.c
+   (solution)     -------------------------   (for MTX Kernel)
+                   |     |      |        |   
+                  mku   u.s    ucode.c  u1.c
+                       (for /u1 Umode image)
+
+</pre></body></html>

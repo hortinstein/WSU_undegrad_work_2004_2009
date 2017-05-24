@@ -1,0 +1,130 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \class        ClientConnection
+/// \author       Alex Hortin 
+/// \date         April 3 2006
+/// \brief        A polymorphic class that handles communication
+///
+/// All this class is is a polymorphic container class for chris's class that
+/// that handles all of my communication for me.  This inherits 
+///
+/// REVISION HISTORY
+///
+/// None
+///
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+#include <iostream>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <sstream>
+// LOCAL INCLUDES
+//
+#include "Connection.h"//the node to be defined
+#include "ClientConnection.h"//the node to be defined
+#include "Socket.h"
+// FORWARD REFERENCES
+//
+
+// CONSTANTS
+//
+
+// LIFECYCLE
+
+///////////////////////////////////////////////////////////////////////
+/// Default constructor.
+/// \pre    None
+/// \post   An instance of player is constructed and new stats file will be contructed
+/// \param  string for the username
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+ClientConnection::ClientConnection(std::string ip)
+{
+	mConnection = new Socket();
+	mRed = true;
+	mBlue = true;
+	mGreen = true;
+	mYellow = true;
+	mIP = ip;
+}
+
+///////////////////////////////////////////////////////////////////////
+/// Destructor.
+/// \pre    There must be something to destroy
+/// \post   Poof! that virtual bitch is gone!
+///////////////////////////////////////////////////////////////////////
+ClientConnection::~ClientConnection( void )
+{
+}
+
+
+// OPERATORS
+
+// OPERATIONS
+
+///////////////////////////////////////////////////////////////////////
+/// makeConnection
+/// \pre    a connection class with a type is made
+/// \post   All the connections will be made
+/// \param  none
+/// \return none
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+void ClientConnection::makeConnection(std::string username)
+{
+	mUserName = username;	
+
+
+	mConnection->connect(mIP,9931);
+
+	//std::cout << mConnection.recv(true) << std::endl;
+
+	mConnection->connect(mIP,atoi(mConnection->recv(true).c_str()));
+
+	int mMyTurnNumber = (atoi(mConnection->recv(true).c_str()));
+
+	std::cout << "You are the " << mMyTurnNumber << " to connect" << std::endl;
+	mConnection->recv(true);
+
+}
+
+///////////////////////////////////////////////////////////////////////
+/// changestate
+/// \pre    A connection with everyone present
+/// \post   it will ping every client and get information
+/// \param  none
+/// \return none
+/// \throw  None
+///////////////////////////////////////////////////////////////////////
+void ClientConnection::changestate(std::string process_check)
+{
+	std::cout << red() << " " << blue() << " " << green() << " " << yellow() << std::endl;
+	std::string ping = mConnection->recv(true);
+	if (process_check.size() > 0)
+	{
+		mConnection->send(process_check);
+	}
+	else
+	{
+		mConnection->send("null");
+	}
+	std::stringstream new_state ;
+	new_state << mConnection->recv(true);
+	bool red_temp;
+	bool blue_temp;
+	bool green_temp;
+	bool yellow_temp;
+	new_state >> red_temp >> blue_temp >> green_temp >> yellow_temp;
+	mRed = red_temp;
+	mBlue = blue_temp;
+	mGreen = green_temp;
+	mYellow = yellow_temp;
+	 
+}
+	
+// ACCESS and MUTATE
+	
+// INQUIRY

@@ -1,0 +1,15 @@
+Alex Hortin
+10732085
+Assignment 4
+11/26/2007
+
+Using python from the python website on Ubuntu 7.04
+
+run "python sps.py -d text" for dynamic should get 7
+
+run "python sps.py -s text" for static should get 4
+
+I have included only the text asked for in the assignment, but I have performed other tests and it seems to run fine
+
+Thanks
+		Alex

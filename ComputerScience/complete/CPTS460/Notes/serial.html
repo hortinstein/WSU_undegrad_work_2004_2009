@@ -1,0 +1,240 @@
+<Title>460 Class Notes</Title>
+<Body bgcolor="#00ffcc" text="#000000">
+
+<H1>460 NOTES on SERIAL INTERFACE</H1>
+
+<Pre>
+
+1. RS232C Serial Protocol (25 Signal lines)
+
+       DTE                           DCE
+      ------                      ---------
+   Pin  2    <------   Rx    <------  2
+        3    ======>   Tx    ====>    3
+        4    ======>   RTS   ====>    4
+        5    <------   CTS   <------  5
+        6    <------   DSR   <------  6
+        7    -------- Ground -------  7     
+        8    <------   DCD   <------  8
+        20   ======>   DTR   ====>   20
+
+   *****************************************
+
+
+     Protocol Timing Sequence
+
+      DTE                DCE
+   ---------           ----------    
+   (1). DTR  ========>
+
+             <-------   DSR  (2) 
+             <-------   DCD  (8)
+
+   (3). RTS  ========> 
+
+             <-------  CTS  (4)
+
+   (5). Send data   ........>  while (DSR, DCD, CTS)
+        Receive data <-------  send data while DTR. 
+                         
+  ********************************************
+
+
+2. Serial Data:
+
+     Space                                             Space  
+   ---------                                         -------------
+            |     7   6   5   4   3   2   1   0      |
+            |---|---.---.---.---.---.---.---.---.|---| 
+           start|< --- 8 data bits -------------> Stop
+            bit                                   bit
+
+    Bits timing is controlled by a (local) clock, which determines the
+    Baud rate = number of signal level changes per second; 9600, 19200, etc.
+                With binary signals, baud = bits/sec.
+    
+    ASCII code = 7 bits ===> may use a Even/Parity bit at bit 7. 
+
+
+3. PC Serial Ports:
+
+COM1: 3f8-3ff,  COM2: 2f8-2ff
+IRQ :   4               3
+
+COM1; 	3f8	Data register : Txbuf,Rxbuf
+	3f9	division#, InterruptEnable
+	3fa	InterruptID
+	3fb	LineControl
+	3fc	ModemControl
+	3fd	LineStatus
+	3fe	ModemStatus
+
+3fB: LineControl
+     7  6  5  4  3  2  1  0 word bits
+                       ---->00 = 5  01= 6, 10 = 7, 11 = 8
+                    2 ----> number of stop bits 0 = one, 1=two
+                  3 ------> parity enable
+               4 -------->  0 = odd, 1 = even parity   	
+             5 -----------> stick parity
+         6 ---------------> set break
+      7 ------------------> divisor latch access bit: 
+                            1 to use 3f9,3f8 as divisor
+                            e.g. 3f9,3f8 = 12 ===> 9800 bauds.
+
+3fD: line Status
+     7  6  5  4  3  2  1  0
+                          --> Rxbuf full (data char ready)
+                       1 ---> ovrrun error
+                    2 ------> parity error
+                 3 ---------> frame error
+              4 ------------> break interrupt
+           5 ---------------> TxReg empty (may write another char)
+        6-------------------> TxShiftReg empty
+     7 ---------------------> always 0
+
+3fA: InterruptId
+     7  6  5  4  3  2  1  0
+                          0 ----> 0 if interrupt pending
+                    2, 1  ------> Interrupt ID bits
+     |<-all 0 -->|
+
+3f9: interrupt enable
+     7  6  5  4  3  2  1  0
+                          0 ----> Rx enable
+                       1 -------> Tx enable
+                    2 ----------> Line status interrupt
+                 3 -------------> Modem status changed
+     7, 6, 5, 4  ---------------> all 0.
+
+3fC: Modem control
+     7  6  5  4  3  2  1  0
+                          0 ----> DTR
+                       1 -------> RTS
+                 1 -------------> enable hardware interrupts 
+     ----------------------------> ignore these bits
+
+3fE: Modem Status
+     7  6  5  4  3  2  1  0
+              4 -----------------> CTS 
+           5 --------------------> DSR
+        6 -----------------------> Ring Indicator
+     7 --------------------------> receive line detect
+
+**********************************************************************
+
+PC's Serial Ports are DTE's by default. As such, they are intended to connect 
+to and control DCE's such as modems, serial printers, etc.
+
+We are going to connect a TVI serial terminal to a PC's COM1 port.
+The TVI terminal is a DTE, so is the PC's COM1 port.  This poses a problem
+since we cannot connect two DTE's directly; one must be a DCE, or at least 
+each DTE thinks the other side is a DCE.
+
+There are two possible ways to do this:
+
+(1). Change one of them to DCE.   ===> The TVI terminal cannot be changed.
+     So we must change the COM port of the PC to DCE.  Then, we may use 
+     ordinary DTE to DCE cable, which is wired striaght-through.
+
+(2). Fool both DTE to think the other side is a DCE. ==> cross some wires
+     in the cable. The simplest fooling, which requires only 3 wires,
+     is shown below.  Two DTE's connected this way don't even know whether 
+     the other side is there.
+ 
+       Rx     2 <---    3     ---->   2
+       Tx     3 <---    2     ---->   3
+
+      RTS     4                       4
+      CTS     5 <-- |       | ---->   5      
+      DSR     6 <---|       | ---->   6
+      DCD     8 <---|       |         8
+      DTR    20 ---->       <------  20
+
+                  
+                         QUESTION: 
+Show how to use a 4-wire cable to connect two DTE's such that either side
+can break up the connection, e.g. stop the other party from sending data.
+
+===============================================================================
+
+  The COM1 Serial Port is at the I/O address 0x3F8 to 0x3FF:
+
+1. Serial Port Initialization:
+
+   ---------------------------------------------------
+   Port I/O requires reading from/writing to the Port addresses, each of which
+   is an 8-bit register. The following utility functions may be called from C:
+
+          char c;
+          c = in_byte(PORT) & 0x7F;    /* read a byte from PORT  */
+          out_byte(PORT, c);           /* write a byte to  PORT  */
+
+   ---------------------------------------------------
+
+   Initialization Values to COM1 Port, in the order as shown:
+
+    0x80 to 3FB: ===> bit#7 = 1  ===> Use 3F9,3F8 as divisor
+    0x00 to 3F9  ===> 0 value
+    0x0C to 3F8  ===> divisor = 12 ==> 9600 baud
+
+    0x03 to 3FB  ===> line control = 0001 1010 ==> EvenParity,7_bit data
+                                     0000 0011 ==> NoParity,  8_bit data
+   
+    0x0B to 3FC  ===> Modem control= 0000 1011
+                                          IRQ4,RTS,DTR on
+   
+    0x01 to 3F9  ===> InterruptControl = 0000 0001 ==> Tx off, Rx on.
+                                         0000 0011 ==> Tx on,  Rx on
+
+2. Set Interrupt Vector for COM1, which uses IRQ4:
+   IRQ4 is fed to a 8259 InterruptEncoder chip, which is programmed to generate
+   vector# = 8 + IRQ#. ===> An IRQ4 interrupt to the CPU is the same as INT 12
+   (decimal). ===> Fix vector 12 contents to point at the handler routine, 
+   which can be installed by the INTH macro (in ts.s) as
+   
+   _sinth:   INTH(shandler)
+
+/*****************************************************************
+
+3. Implement the shandler() function such that
+     (a). it first determines which type of interrupt has occurred:
+          The types of interrupts can be found in 
+
+     3FA: InterruptID Register: bits  2   1   0           More Info in
+                                      ----------         --------------
+                                      1   1   0 : errors    LSR 3FD
+                                      1   0   0 : Rx
+                                      0   1   0 : Tx
+                                      1   1   0 : ModemStatusChanged
+
+     3FD: Line Status Register:
+          7  6  5  4  3   2  1  0
+                                0 ---> RxBufFull ===>    read char from 3F8.
+                5 -------------------> TxBufEmpty ==> may write char to 3F8.
+
+
+                 
+     // Serial interrupt handler in C, called from assembly entry point
+     int shandler()
+     {
+        int IntID, LineStatus, ModemStatus, intType;
+
+        IntID       = in_byte(0x3FA);      /* read IntID Reg */
+        LineStatus  = in_byte(0x3FD);      
+        ModemStatus = in_byte(0x3FE);
+
+        intType = IntID & 7;               /* mask in lowest 3 bits */
+
+        switch(int_type){
+           case 6 : do_errors();  break;
+           case 4 : do_rx();      break;
+           case 2 : do_tx();      break;
+           case 0 : do_Modem();   break;
+        }
+        out_byte(0x20, 0x20);      /* re-enable the 8259 Int. Controller */
+     } 
+-------------------------------------------------------------------------------
+4. For simplicity, we shall ignore the interrupts due to error and 
+   ModemStatusChanges. So the problem becomes "how to implment 
+   do_rx() and do_tx()?". 
+------------------------------------------------------------------------------

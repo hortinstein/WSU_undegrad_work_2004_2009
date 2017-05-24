@@ -1,0 +1,28 @@
+#! /usr/bin/env python
+
+#Homework #1
+#atinlay
+#CPTS481
+#Alex Hortin
+#10732085
+
+import igpay
+import sys
+from string import whitespace
+if ((len(sys.argv) < 2)):
+	print "...usage error please supply a filename"
+	exit(1)
+filename = sys.argv[1]
+print "...opening " + filename + " for conversion"
+input_file = file(filename, 'r')
+text = input_file.readlines() #reading in all lines of the input file
+word = ""
+myline = ""
+for line in text:
+	for chars in line:
+		if chars.isalpha(): word = word + chars
+		else:
+			myline = myline + igpay.igpay(word) + chars  
+			word = ""
+print myline
+		

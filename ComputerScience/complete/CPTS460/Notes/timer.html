@@ -1,0 +1,152 @@
+<Title>560 Class Notes</Title>
+<Body bgcolor="#00cccc" text="#000000">
+<H1>460 Notes on Timer</H1>
+<Pre>
+          460 NOTES on TIMER and LAB #6
+
+0. BACKGROUND:  NOTES on Interrupts
+
+1. PC's timer:
+   PC's timer has a base frequency of 1193182 Hz. It can be programmed to 
+   generate a timer interrupt once every 1/60 of a second (commonly known 
+   as one clock tick).  It interrupts at IRQ0 (vector 8).
+
+2. The code shown below initializes the timer.
+
+============================================================================
+/* Timer parameters. */
+
+#define LATCH_COUNT     0x00	/* cc00xxxx, c = channel, x = any */
+#define SQUARE_WAVE     0x36	/* ccaammmb, a = access, m = mode, b = BCD */
+				/* 11x11, 11 = LSB then MSB, x11 = sq wave */
+#define TIMER_FREQ   1193182L	/* clock frequency for timer in PC and AT */
+#define TIMER_COUNT ((unsigned) (TIMER_FREQ/60)) /*initial value of counter*/
+
+#define TIMER0       0x40
+#define TIMER_MODE   0x43
+#define TIMER_IRQ       0
+
+#define INT_CNTL     0x20       /* 8259 interrupt control register */       
+#define INT_MASK     0x21       /* bit i = 0 means enable interrupt i */ 
+
+/*==========================================================================*
+ *				enable_irq				    *
+ *==========================================================================*/
+int enable_irq(irq_nr) ushort irq_nr;
+{
+  /* Assume IRQ 0-7 ONLY. Clear the corresponding 8259 interrupt mask bit. */
+  out_byte(INT_MASK, in_byte(INT_MASK) & ~(1 << irq_nr));
+}
+
+int tick,sec,min,hr;                    /* Wall clock */
+
+/*===========================================================================*
+ *				timer_init				     *
+ *===========================================================================*/
+int timer_init()
+{
+ /* Initialize channel 0 of the 8253A timer to 60 Hz. */
+
+  tick = sec = min = hr = 0;            /* initialize wall clock to 0 */
+  out_byte(TIMER_MODE, SQUARE_WAVE);	/* set timer to run continuously */
+  out_byte(TIMER0, TIMER_COUNT)         /* load timer low byte */
+  out_byte(TIMER0, TIMER_COUNT >> 8);	/* load timer high byte */
+  enable_irq(TIMER_IRQ);                /* enable timer interrupts */
+}
+=============================================================================
+
+
+3. timer_init() initializes and starts the timer. Once started, it will 
+   interrupt (at IRQ0 or vector 8) once every 1/60 seconds. To handle such 
+   interrupts, a timer interrupt handler MUST be installed BEFORE starting
+   the timer.
+
+4. Stack for Interrupt Processing:
+
+   (1). Timer interrupt may occur anywhere, i.e. either in Umode or in Kmode.
+        Interrupt processing must be performed in Kernel. 
+
+   (2). When a timer interrupt occurs, the CPU saves [flag, CS, PC] of the 
+        interrupted point into the CURRENT stack. Then it follows the vector #8 
+        contents to continue execution from
+                    [_tinth, 0x1000]
+        in the MTX kernel. At this moment, all other CPU registers are still
+        those of the interrupted point.  Similar to _int80h, we may let _tinth 
+        save all CPU registers into the CURRENT stack.
+
+        Then a decision must be made in order to set up the correct execution
+        environment:
+
+        (a). If the CPU was in Umode, we MUST change DS,SS,ES to kernel's
+             segment (0x1000), save the interrupted Umode SS,SP, and establish
+             a kstack, then call a C handler function (as we did for INT 80) to
+             continue processing the interrupt.
+
+             In this case, the situation is exactly the same as that when the 
+             task enters Kmode via INT 80. So, we may save the interrupted
+             (SS, SP) into (proc.uss, proc.usp), and use the task's kstack
+             from scratch (i.e. let sp -> High end of prunning proc's kstack[]).
+
+        (b). However, if the CPU was in Kmode, then there is no need to change 
+             DS,SS,ES since they are already at 0x1000, and (more importantly) 
+             we must continue to use the running proc' kstack AS IS since it 
+             already contains the (saved) interrupted point.
+
+        How do we know which mode the CPU was in before the interrupt?
+           
+                  Listen to my lecture !!!! 
+
+   While processing an interrupt, execution is in Kmode so that CS=DS=SS=ES=
+   0x1000 and stack is the running proc's kstack[ ]. 
+   
+   (4). call thandler() in C, which IMPLEMENTS the actual timer interrupt
+        processing, i.e. it may update time count, display wall clock, start 
+        timer-dependent work, etc, including
+       
+           switch process !!!! but before switching to another process,
+           it must re-enable the 8259 by writing 0x20 to port 0x20.
+             
+           If a process switch occurs, the running proc's resume point is
+           saved in its kstack, as it should.
+
+   (5). When thandler() finishes, _tinth returns to the interrupted point by
+        _treturn: 
+              cli                          ! mask out interrupts
+
+              if (was in Umode){ 
+                 restore interrupted (SS,SP);  // from proc.uss, proc.usp
+              }
+
+              pop registers in reverse order
+              iret 
+
+   NOTE: For nested interrupts, the first interrupt may occur in Umode, but
+   any subsequent interrupts MUST occur in Kmode (i.e. in the middle of 
+   handling an interrupt). In the latter case, we continue to use the proc's
+   kstack to save interrupted point and then return to the interrupted point.
+   Therefore, our scheme can handle nested interrupts (of upto 15 levels).
+   Of course, each task's kstack[] must be big enough to contain upto 15
+   layers of saved interrupted points AND their stack frames (i.e. calling 
+   chain and local variables, etc).
+   
+
+5. Implement Timer in MTX:
+
+   Simliar to INT80 interrupts, the steps are:
+
+   (1). Mask out ALL interrupts (by CLI or a given lock(), which issues CLI).
+
+   (2). Initialize MTX kernel as before. Create P0 and let P0 kfork P1 with a
+        Umode image. In kfork(), set the SAVED flag register to 0x0200 (so that 
+        the proc will run with interrupts masked in even in Kmode).
+
+   (4). Set interrupt vectors (int80 for syscall and int8 for timer).
+        Specifically: vector80 ==> (_int80h, 0x1000)
+                      vector8  ==> (_tinth,  0x1000)
+ 
+   (5). Initialize and ENABLE the timer by timer_init(); ==> Timer interrupts 
+        will occur immediately but they are MASKed out for now.
+
+   (6). tswitch(), which will load CPU's flag register with Ibit=1 ==>
+        CPU begins to accept interrupts.
+

@@ -1,0 +1,9 @@
+bcc -c login.c
+bcc -c crt0.c
+as86 -o u.o u.s
+ld86 u.o crt0.o login.o /usr/lib/bcc/libc.a
+sudo losetup /dev/loop0 dos.img
+sudo mount /dev/loop0 /home/dan/Desktop/t
+sudo cp a.out /home/dan/Desktop/t/bin/login
+sudo umount /home/dan/Desktop/t
+sudo losetup -d /dev/loop0

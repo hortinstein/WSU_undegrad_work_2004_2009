@@ -1,0 +1,21 @@
+#
+# Makefile for Binary Search Tree Dictionary Implementation
+#
+# Compiler: Eclipse
+# Linker: Eclipse
+# 
+CXXFLAGS = -O0 -g3 -Wall -I/usr/local/include -I/usr/X11R6/include
+LDFLAGS = `fltk-config --ldflags`
+
+all: binarysearchtreedictionaryimplementation
+
+test: binarysearchtreedictionaryimplementation
+	./binarysearchtreedictionaryimplementation 
+	
+binarysearchtreedictionaryimplementation: binary_search_tree_dictionary_implementation.o DatabaseWindow.o
+	g++ binary_search_tree_dictionary_implementation.o DatabaseWindow.o -o binarysearchtreedictionaryimplementation $(LDFLAGS) 
+
+clean:
+	- rm *.o hashtabledictionaryimplementation
+	- rm *.o DataBaseWindow
+	- rm core*

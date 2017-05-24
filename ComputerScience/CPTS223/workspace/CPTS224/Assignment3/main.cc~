@@ -1,0 +1,18 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \author       Alex Hortin
+/// \date         2/28/06
+/// \brief        A simple implementation of Connect4 using makefiles 
+///         
+///////////////////////////////////////////////////////////////////////////////
+
+// INCLUDES
+
+#include <iostream>
+#include "connect_four.h"
+#include "board.h"
+
+int main(void)
+{
+	std::cout << "hello" ;
+	
+}

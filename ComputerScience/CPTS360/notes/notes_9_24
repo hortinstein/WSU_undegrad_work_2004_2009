@@ -1,0 +1,20 @@
+lab4pre due next week
+
+mystat [filename] => ./
+
+print as in ls -l of unix
+
+main(int argc, char* argv[]
+{
+	int r;
+	r = lstat(    ,p);
+
+
+}struct stat mystat, *p
+
+                |<-persimmion_>         |
+_ _ _ _ | _ _ _ | _ _ _ | _ _ _ | _ _ _ |
+type     usage    owner   samegr other 
+0100dir
+1000reg
+1010syntin

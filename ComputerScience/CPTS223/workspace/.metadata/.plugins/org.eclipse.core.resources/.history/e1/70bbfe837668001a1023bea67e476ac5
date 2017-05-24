@@ -1,0 +1,48 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \author       Alex Hortin
+/// \date         11/29/05
+/// \brief        This is my test file used to test my implementation of a 
+///               Dictionary using a hash table.
+///
+/// I am creating a tree and this will be the file that I use to test all of
+/// the various functions contained within the Dictionary.  It will try to test 
+/// all of the options that the interface gives the user. 
+///
+/// REVISION HISTORY:
+///
+/// NONE
+///            
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+// LOCAL INCLUDES
+//
+#include "Dictionary.h"                               
+#include "DatabaseWindow.h"   
+#include "BinaryTree.h"
+// FUNCTIONS
+
+//         /.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/photo_database_browser
+
+
+int main (int argc, char *argv[])
+{
+   cout << "1 Testing various functions for basic binary tree" << endl;
+   BinaryTree<int> p(6);
+   BinaryTree<int>::Position root = p.root();
+   BinaryTree<int>::Position as = p.leftChild(root);
+   BinaryTree<int>::Position as2 = p.rightChild(root);
+   p.expandExternal(as);
+   p.expandExternal(as2);
+   p.replaceElement(as, 2);
+   p.replaceElement(as2, 7);
+   p.swapElements(as2,as);
+   p.print(p.root());
+   p.swapElements(as2,as);
+   cout << endl << "1 passed" << endl << endl;
+   
+   
+   
+}

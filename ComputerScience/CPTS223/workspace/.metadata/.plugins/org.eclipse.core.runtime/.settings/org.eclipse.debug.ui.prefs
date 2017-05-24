@@ -1,0 +1,5 @@
+#Mon Sep 26 11:11:47 PDT 2005
+org.eclipse.debug.ui.switch_perspective_on_suspend=always
+eclipse.preferences.version=1
+org.eclipse.debug.ui.opened_views=org.eclipse.cdt.debug.ui.MemoryView,org.eclipse.cdt.debug.ui.SharedLibrariesView,org.eclipse.debug.ui.RegisterView,org.eclipse.cdt.debug.ui.SignalsView,
+org.eclipse.debug.ui.views_to_not_open=org.eclipse.debug.ui.ExpressionView,

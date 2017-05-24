@@ -1,0 +1,88 @@
+#ifndef BOARD_H//guard conditional compilation
+#define BOARD_H//guard conditional compilation
+
+///////////////////////////////////////////////////////////////////////////////
+/// \class        board
+/// \author       Alex Hortin
+/// \date         2/28/06  
+/// \brief			This is a window that tests the HandOfCards class
+///
+///////////////////////////////////////////////////////////////////////////////
+
+// SYSTEM INCLUDES
+//
+
+#include <string>//string.h include
+#include <vector>//vector.h include
+#include <stdio.h>
+
+// LOCAL INCLUDES
+//
+
+// FORWARD REFERENCES
+//
+
+// CONSTANTS
+//
+
+class board
+{
+   public:
+
+// LIFECYCLE
+
+   /// Default constructor.
+   /// \pre    None
+   /// \post   An instance of the board is created.
+   /// \param  None
+   /// \throw  None
+   ConnectionWindow();//the basic constructor used for testing
+
+   /// Destructor.
+   /// \pre    An instance of board has been created.
+   /// \post   The instance of board is destroyed.
+   ~ConnectionWindow();//the destructor
+	
+// OPERATORS
+
+// OPERATIONS 
+
+// ACCESS and MUTATE
+
+// INQUIRY
+
+	/// returnConnection returns a pointer to the connection class contained within this window
+   /// \pre    A the connection is finised being created
+   /// \post   the connection will be passed into the scorch window
+	/// \param none
+   /// \return a pointer to the connection
+   /// \throw  None
+	Connection* returnConnection(void);
+	
+// MEMBER VARIABLES
+
+
+private:
+// OPERATIONS
+
+	/// draw draws all of the widgets
+   /// \pre    A valid window
+   /// \post   a window is added
+	/// \param none
+   /// \return none
+   /// \throw  None
+	void draw(void);
+	
+// ACCESS and MUTATE
+
+	
+   void cb_connect_i();
+	
+// MEMBER VARIABLES
+   Connection* mConnection;
+}; // end of class Name
+
+// INLINE METHODS
+//
+
+#endif  // DATABASEWINDOW_H

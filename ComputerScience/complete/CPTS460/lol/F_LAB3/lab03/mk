@@ -1,0 +1,20 @@
+echo Compiling...
+bcc -c t.c
+as86 -o ts.o ts.s
+
+echo Linking...
+ld86 -d ts.o t.o mtxlib /usr/lib/bcc/libc.a
+
+echo Check a.out
+ls -l a.out
+
+echo Moving a.out to mtximage...
+sudo mount -t ext2 -o loop mtximage /media/floppy
+sudo cp a.out /media/floppy/boot/mtx
+sudo umount /media/floppy
+
+echo Loading emulator...
+qemu -fda mtximage -boot a -no-fd-bootchk
+
+echo Cleaning up...
+rm *.o a.out

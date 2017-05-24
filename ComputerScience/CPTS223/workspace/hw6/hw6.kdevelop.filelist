@@ -1,0 +1,21 @@
+# KDevelop Custom Project File List
+Card.cc
+Card.h
+hand_of_cards.cc
+HandOfCards.cc
+HandOfCards.h
+hw6.kdevelop
+List.h
+ListIterator.h
+ListNode.h
+Makefile
+MyWindow.cc
+MyWindow.h
+mywindow_test.cc
+whist_test.cc
+test_whist.cc
+DeckofCards
+DeckofCards.h
+DeckofCards.cc
+Whist.h
+Whist.cc

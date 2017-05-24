@@ -1,0 +1,49 @@
+Material covered:
+	o Thread pools – pool sizing; thread-starvation; policies
+		--Pool Sizing:
+			Nthreads = Ncpu * U *(1 + W/C)
+    				* U == desired CPU utilization for the whole pool
+    				* W == task wait time, C == task compute time
+    				* Nthreads * (C/(C+W)) == Ncpu * U
+		--Thread starvation is when a waiting thread does not recieve anything from another thread
+			# Task A, currently executing in a thread, requires results from task B
+			# Task B cannot be executed because there are no available threads in the thread pool
+		--Thread Policies
+			executor sets the policy about use of threads			
+	o GUI issues – why single threaded; model-view-controller; idea of listeners; when and how to use concurrency
+		--Why single threaded?
+			If you have multiple threads updating the screen, you can get some ugly flicker and incorrect drawing.
+			That doesn't mean the application needs to be single threaded, however. There are certainly circumstances 
+			when you don't want this to be the case. If you click on a button that calculates pi to 1000 digits, you 
+			don't want the UI to be locked up and the button to be depressed for the next couple of days. This is 
+			when things like SwingWorker come in handy. It has two parts a doInBackground() which runs in a seperate 
+			thread and a done() that gets called by the thread that handles updating the UI sometime after the 
+			doInBackground thread has finished. This allows events to be handled quickly, or events that would take a 
+			long time to process in the background, while still having the single thread updating the screen.
+		--Model View Controller
+			Model: a collection of objects representing the state of the application
+			View: a collection of GUI objects showing the application on the screen
+			Controller: a collection of operations implementing changes to the state objects and GUI objects based on user input or program computation
+				May be distributed between Model and View objects or separate
+		--Idea of listeners
+			make sure it doesnt update GUI directly
+	o Deadlocks – wait-for graph; lock ordering; livelock; starvation; lock performance; processor atomic operations
+		-- Wait-For Graph in computer science is a directed graph used for deadlock detection in operating systems and 
+			relational database systems.  In Computer Science, a system that allows concurrent operation of multiple 
+			processes and locking of resources and which does not provide mechanisms to avoid or prevent deadlock must support
+			a mechanism to detect deadlocks and an algorithm for recovering from them. One such deadlock detection algorithm 
+			makes use of a Wait-For Graph to track which other processes a process is currently blocking on. In a Wait-for 
+			Graph, processes are represented as nodes, and an edge from process Pi to Pj implies Pj is holding a resource that
+			Pi needs and thus Pi is waiting for Pj to release its lock on that resource.	
+		--lock ordering
+			“A program will be free of lock-ordering deadlocks if all threads acquire the locks they need in a fixed global order”
+			
+	o Testing issues – not covered
+
+	o Erlang
+		+ Sequential – single assignment variables; lists; pattern matching
+		+ Concurrent – mailboxes, send and receive primitives, pattern matching on the mailbox, linked processes, system processes
+	+ Function closures and their use
+
+
+o You may use your notes on your computer; also any compiler. Turn off/disable the network!

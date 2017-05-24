@@ -1,0 +1,131 @@
+------------------------------------------------------------
+Lecture1
+------------------------------------------------------------
+@nocolor
+------------------------------------------------------------
+Lecture1
+	Basic terminology
+------------------------------------------------------------
+Terminology from Goetz
+
+process 
+   isolated, independently-executing program owning OS-based resources such as memory, file handles, security credentials
+   
+threads
+   multiple streams of execution within a process
+      threads share memory (hence share state)
+   each with its own: program counter and stack (and registers) (hence its own local variables)
+   AKA "lightweight processes"
+   independently scheduled by the OS (or by the language run-time) 
+   multiple threads in a program let that program make use of multiple processors (if OS-based thread scheduling is used)
+   each thread is inherently sequential -- it is always about to do exactly one thing -- execute its next instruction
+   hence, no issues of concurrency ever arise in a single thread running in isolation
+   
+other programming models for dealing with concurrency in the real world
+   interrupts and signals
+   explicit programmer-controlled multiplexing -- asynchronous I/O, select(), poll()
+------------------------------------------------------------
+Lecture1
+	Why use Threads
+------------------------------------------------------------
+Use multiple processors in a single program
+
+Use a single processor more intensely in a single program
+    example: doing I/O takes a long time; ST program waits (and OS uses processor for other processes; a MT program can itself do work while waiting).
+    
+Simplicity of modeling
+    Multiple activities to be modelled each with state persisting from one step to the next 
+    example: simulation
+        dump trucks: each truck get's loaded, get's weighed, drives off to a destination, dumps, returns. The state of each truck can be neatedly represented in a program counter. Alternative is explicit management of state in program data structures.
+        
+User interfaces
+    User is typing, mousing while program is computing.
+    Interestingly, most GUI frameworks use a *single* thread for processing input events. Multi-threading is used only for the parts of the program that consume and process input and events.
+------------------------------------------------------------
+Lecture1
+	What form of concurrency
+------------------------------------------------------------
+Armstrong (Erlang) takes the approach that threads interact *only* by passing messages. 
+
+Java, C (pthreads), python are examples of languages that use shared-state concurrency. Different threads read and write the same areas of memory. The reading and writing has to be coordinated to avoid chaos.
+
+I will try to demonstrate that this is a *much* saner world in which to do concurrent programming than is the shared-state world of Java, pthreads, python, etc. Even so, you need to know about shared-state because 
+
+a) it is the dominant model in the world and 
+
+b) it is usually required in order to implement message-passing.
+------------------------------------------------------------
+Lecture1
+	Risks in using threads
+		Race conditions
+------------------------------------------------------------
+@language java
+@NotThreadSafe
+public class UnsafeSequence {
+    private int value = 0;
+    
+    // Purpose: return a unique value
+    public int GetNext() {
+        return value++;
+    }
+}
+
+Recall discussion from last time: value++ is really at least 3 instructions. Two concurrent threads can both read the same value (returning it to GetNext's caller) and storing the same new value.
+
+GetNext() does not provide the expected service even though the program doesn't crash.
+ 
+in Java we fix this thusly:
+
+@ThreadSafe
+public class Sequence {
+   @GuardedBy("this") private int value = 0;
+   
+   public synchronized int GetNext() {
+       return value++;
+   }
+}
+
+Notes: @GuardedBy, @NotThreadSafe, @ThreadSafe are annotations introduced by the author to document thread-safety properties of code. They are at least warning to programmers, and may be processed by language tools to provide some automated checking.
+
+synchronized is a Java language keyword that specifies that the methods so-labelled in an object operate with *mutual exclusion*. (We'll study how this works.)
+------------------------------------------------------------
+Lecture1
+	Risks in using threads
+		Liveness hazards
+------------------------------------------------------------
+Liveness properties
+
+A race condition is an example of a violation of the first kind of correctness property, a so-called *safety property* -- the program computes a wrong or unexpected answer.
+
+Another kind of correctness property is called a *liveness property*. A liveness property says, for example, that eventually a program produces an answer. A liveness property violation in a sequential program would be, e.g., an infinite loop. 
+
+Because threads sometimes have to wait for one another to finish an action (e.g. synchronized above), there are a lot more possibilities for liveness violations. The classical example is called a *deadlock* -- you're waiting for me and I'm waiting for you. Other possibilities include: *starvation* -- thread is ready to run but is never scheduled by the OS; and *livelock* -- two (or more) threads each computing partway to an answer, giving up due to changes made by the other thread, and starting over.
+------------------------------------------------------------
+Lecture1
+	Risks in using threads
+		Performance hazards
+------------------------------------------------------------
+If your program typically has more ready threads than processors available to it there is almost always going to be a faster design for your program (but (very important) you have to decide whether the work of creating that design is worthwhile!). Why?
+
+Because switching between threads is a relatively heavyweight operation (compared, say, to a procedure call). Typically all of the processor registers have to be saved for a thread switch, only a fraction for a procedure call. Also, because the IP and SP move to unrelated places and the variables referred to by different threads are in different locations, thread switches have bad effects on reference locality (which is important for caches to be effective).
+
+Thread switches are less work though than process switches which in addition to all the above issues also contend with having to change the memory mapping settings to switch into a new address space.
+------------------------------------------------------------
+Lecture1
+	Using threads safely
+------------------------------------------------------------
+In Java, C, C#, Python, etc. the whole issue with thread programming is summed up by Goetz as 
+
+    "Writing thread-safe code is, at its core, about managing access to *state*, and in particular, to *shared, mutable state.*
+
+Contrast Joe Armstrong's perspective:
+    "Side effects [i.e., shared state] and concurrency don't mix. You can have sequential code with side effects or you can have code and concurrency that is free from side effects. You have to choose. There is no middle way."
+    
+In this class we're going to look at both world views in depth: learn the mechanisms, techniques and patterns that go with shared, mutable state; learn the techniques and patterns that go with message passing concurrency.
+
+Performance matters too (not always and not as an overriding concern -- correcness should count for more!). What performance do you trade off for the correctness benefits of message passing? Remember you have to "charge" the shared-state concurrency for all the costs associated with using mechanisms correctly. Let's plan to do some experiments.
+
+Next time: 
+I will introduce some of the basic Java language features related to concurrency and show an example of how even obvious mis-uses of threading may be very difficult to detect with testing.
+
+Read chapter 2 of the Java book.

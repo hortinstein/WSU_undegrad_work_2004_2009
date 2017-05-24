@@ -1,0 +1,21 @@
+#! /usr/bin/env python
+
+#Homework #2
+#findroot
+#CPTS481
+#Alex Hortin
+#10732085
+
+from rootfinder import root_find 
+import sys
+from string import whitespace
+eq = ""
+for args in sys.argv:
+	if (args != sys.argv[0]):	
+		eq += str(args) + " "
+print eq	
+
+def func(x):
+	return float(eval(eq))
+print "root is " + str(root_find( func, float(0), float(1), float(10**-6)))
+		

@@ -1,0 +1,71 @@
+#!/usr/bin/python
+######################################################
+#Alex Hortin
+#PA1
+#CPTS 425 
+#March 2009
+#ceasarAttack
+######################################################
+import sys,string
+
+if "-c" not in sys.argv or "-f" not in sys.argv or "-p" not in sys.argv or "-o" not in sys.argv: 
+	print "...usage: -c input_file(ciphertext) -f input_file(normaltext) -p output_file(phifile) -o output_file(normaltext)"
+	exit(1)
+print "...ceasar cipher"
+for arg in enumerate(sys.argv):
+	if sys.argv[arg[0]] == "-c":#found the infile flag
+		print "...opening '", sys.argv[arg[0]+1], "' for ciphertext read"
+		f_cipher_read = open((sys.argv[arg[0]+1]), 'r')
+	if sys.argv[arg[0]] == "-f":#found the outfile flag
+		print "...opening '", sys.argv[arg[0]+1], "' for frequency count read"
+		f_freq_read = open((sys.argv[arg[0]+1]), 'r')
+	if sys.argv[arg[0]] == "-p":#found the outfile flag
+		print "...opening '", sys.argv[arg[0]+1], "' for the phi file write"
+		f_phi_write = open((sys.argv[arg[0]+1]), 'w')
+	if sys.argv[arg[0]] == "-o":#found the outfile flag
+		print "...opening '", sys.argv[arg[0]+1], "' for output write"
+		f_o_write = open((sys.argv[arg[0]+1]), 'w')
+
+
+phi_list,file_cipher_as_string,freq_plainfile_dict,freq_cipherfile_dict = [],"",{},{}#initializing needed variables
+#This is the dictionary for looking up p(c - i)
+for line in f_freq_read:#loading the file into the data structure for later lookup
+	line = line.split(' ')#dividing the input file for read	
+	if len(line) == 4:freq_plainfile_dict[" "] = float(line[0])#since args are split by spaces need this little condition  	
+	else: freq_plainfile_dict[line[1]] = float(line[0])
+	
+for line in f_cipher_read: file_cipher_as_string+=line#appending all the lines for the cipher into a string
+
+#This generates: f(c)
+for i in range(95): #for all the possible characters in cipher file generate occurances 	
+	freq_cipherfile_dict[chr(i+32)] = float(file_cipher_as_string.count(chr(i+32)))/ float(len(file_cipher_as_string))#build a list of the tuples (occurance,char)
+#generating phi for all possible values
+for i in range(95):
+	phi = 0	
+	for c in file_cipher_as_string:
+		if ord(c) <= 126 and ord(c) >= 32: #if the value is in the acceptible range   		
+			phi += 	(	(freq_cipherfile_dict[c])*freq_plainfile_dict[chr(((ord(c)-32)+i)%95 + 32)]	)
+	phi_list.append((phi,i))
+phi_list = sorted(phi_list)#sorting the phi list
+for p in range(5): print phi_list[-1 - p]#printing out the top 5 phi values to the screen
+
+for p in range(len(phi_list)):
+	f_phi_write.write(str(phi_list[-1 - p][1])+ "	" +str(phi_list[-1 - p][0])+" \n")
+
+decrypt_text = ""
+for p in range(len(phi_list)):
+	for c in file_cipher_as_string:
+		if ord(c) <= 126 and ord(c) >= 32: #if the value is in the acceptible range 
+			decrypt_text+=chr(((ord(c)-32) + phi_list[-1 -p][1])%95 + 32)	#writing all the values back with the proper adjustment  
+		else: 
+			decrypt_text+=c#writing values that needed no adjustment
+	print decrypt_text
+	print("Trying list # ",(int(p+1)),": Is this decrypted (y/n) ")	
+	ui = sys.stdin.readline()	
+	if (ui == 'y\n'):
+		print "...outputing to output file"
+		f_o_write.write(decrypt_text)
+		exit()
+	else :
+		decrypt_text = ""
+

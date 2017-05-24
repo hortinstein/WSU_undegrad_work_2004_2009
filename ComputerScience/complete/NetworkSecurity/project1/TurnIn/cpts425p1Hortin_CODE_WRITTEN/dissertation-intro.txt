@@ -1,0 +1,407 @@
+The following is a text-only adaptation of Chapter One from
+
+A. David McKinnon, SUPPORTING FINE-GRAINED CONFIGURABILITY WITH MULTIPLE 
+QUALITY OF SERVICE PROPERTIES IN MIDDLEWARE FOR EMBEDDED SYSTEMS, Ph.D.
+Dissertation, Washington State University (December 2003).
+
+Copyright by A. David McKinnon, 2003, All rights reserved.
+--------------------------------------------------------------------------
+
+Chapter One
+Introduction
+
+Computing systems have evolved dramatically over the last several decades.
+Initially, computers were room sized devices dedicated to single-purpose
+applications. Now, computing systems are smaller, often general purpose, and
+much more commonplace. Significant advances have been made in the realm of
+embedded computing hardware in recent years. Microprocessors and small
+computers are now being embedded into a wide range of systems---from small room
+thermostats to large jumbo-jets. As a result, traditional desktop computers now
+use just a few percent of the microprocessors produced annually, while the rest
+are in embedded devices, often hidden from view.
+
+Recent advances in networking technologies, especially wireless technologies,
+have made it more feasible to develop distributed systems composed of embedded
+devices. However, software development tools have not kept pace with the
+advances in hardware capabilities. The lack of adequate software development
+frameworks and tools for the development of distributed embedded systems with
+severe resource constraints that must be accommodated motivated the research
+that is presented in this dissertation.
+
+This dissertation describes a novel middleware framework for
+resource-constrained embedded systems. In order to better understand its
+context and significance the following subsections are presented in this
+Chapter. First, distributed systems and then middleware are defined and
+discussed. Then an overview of embedded systems is presented. Quality of
+Service is presented next. Following these four subsections, the thesis and
+contributions of this dissertation are given. This introductory chapter then
+concludes with the outline of the remaining chapters of this dissertation.
+
+1.1 Distributed Systems
+
+Distributed systems are computing systems that are composed of two or more
+computers that are interconnected and cooperate in order to achieve a common
+goal. A major advantage of distributed systems is that resources such as data
+or processing power can be accessed, and hence shared, by the individual
+computers that are within the distributed system. A well designed distributed
+system can leverage the strengths of each of its individual systems in order to
+achieve objectives beyond the capability of any of its individual systems. For
+example, in the the travel industry, a travel agent can access reservation
+information for dozens of airlines and thousands of hotels---information well
+beyond the abilities of a single personal computer.
+
+There are many distributed system design architectures. Some distributed
+systems are designed and deployed in a very hierarchical manner. For example,
+consider Automated Teller Machines (ATM). Each ATM acts as a ``client'' of a
+larger banking system. When a bank customer desires to make a withdrawal the
+ATM must first query the bank's (centralized) database in order to determine
+whether the customer is authorized and able to withdraw the amount desired.
+Other distributed systems are very decentralized. For example, several
+peer-to-peer file sharing networks operate without any centralized control.
+Collectively, thousands or millions of files can be accessible on a given
+peer-to-peer network even though each node within the network is capable of
+storing only a relatively small number of files. Distributed systems can also
+be designed and implemented so that the computational power of a super computer
+can be accessed and shared by a researcher's desktop workstation.
+
+The many benefits of distributed systems do not come without challenges. Some
+of the key challenges derive from the heterogeneity of the individual systems
+within the distributed system. The three examples briefly mentioned in the
+preceding paragraph illustrate some of these challenges. Namely, each of these
+distributed systems can be deployed on varying hardware platforms (e.g., a
+bank's centralized database may be deployed on a mainframe computer, but it
+would be too costly to deploy ATMs with mainframe computers). Nor can one
+assume that a common operating system exists on all platforms (e.g., vendors
+ship different operating systems with workstations and super computers). The
+networking technology that interconnects each system within the distributed
+system will also be different (e.g., a cell-phone sharing files via a wireless
+link versus a home computer with a broadband connection). Yet another challenge
+is that, in many cases, different programming languages and tools will exist
+for the different systems within the distributed system (e.g., C for the ATM
+versus COBOL on the bank's mainframe or Java on the researcher's workstation
+versus FORTRAN on the super computer).
+
+Each of the challenges just presented can be overcome. However, they each add
+to the complexity of developing distributed applications. Individual developers
+simply do not have the time to become experts on multiple operating systems,
+networks, programming languages, etc. Furthermore, advances in software tools
+and development frameworks have simply not kept pace with advances in hardware
+technologies. Thus, we are confronted with what is commonly called the
+``software crisis'' as developers with their limited time are forced to develop
+distributed application on ever increasingly complex hardware.
+
+1.2 Middleware
+
+One partial solution to the ``software crisis'' is middleware. Middleware is a
+layer of software that exists in between the operating system and
+application-specific software layers---hence the name middleware, because it
+exists in the middle. By occupying this strategic position within the software
+hierarchy, middleware is able to shield an application programmer from many of
+the low-level details inherent within a distributed system by providing a
+common programming interface across all of the systems within the larger
+distributed system. Thus, a portion of the ``software crisis'' is alleviated
+because the developer is freed from the low-level complexities that result from
+the use of multiple hardware platforms, operating systems, and networking
+technologies within large, distributed systems. This freedom, in turn, means
+that developers can focus more on application design and implementation.
+
+Two key benefits of middleware are its ability to mask system heterogeneity and
+to provide transparency. Depending upon the middleware technology used,
+dissimilar hardware, networks, operating systems, or programming languages may
+be used. Heterogeneous system components can be used, because each system's
+middleware development tools provides a common Application Programming
+Interface (API) to the distributed system developer. These common APIs also can
+provide transparency with regard to location, concurrency, replication, and
+other facets because the APIs do not typically present this information to the
+developer once a connection has been established between systems.
+
+The middleware framework that is presented in this dissertation is based upon a
+distributed object paradigm. Distributed object middleware allows a developer
+to transparently access remote objects as if they were local objects. For
+example, if the method \code{foo} is invoked on a local object, \code{lObj},
+with the syntax \code{lObj.foo()}, then an invocation on a remote object,
+\code{rObj}, is similarly given by \code{rObj.foo()}. Distributed object
+middleware generally uses some form of an interface definition language that
+allows the distributed system developer to specify the object and method calls
+that will be implemented within a distributed application. Given these
+specifications, the middleware tools then map the object and method calls to
+each system's specific hardware, network, and operating system APIs.
+
+Consider, for example, a distributed ATM banking system. With a distributed
+object based middleware, an ATM system developer is able to specify
+\code{account} objects that have a \code{withdraw(amount)} method. This
+specification is then used by the distributed object middleware tools to
+auto-generate stub and skeleton routines that perform all of the low-level
+parameter marshalling, network transmission, and other functionality associated
+with \code{account.withdraw(...)} invocations. Because the middleware tools
+handle all of the heterogeneity and transparency details, the developer can
+better focus on the core ATM issues of whether \code{account.withdraw(...)}
+invocations are performed according to the bank's business policies. Developers
+do not have to concern themselves with low-level socket programming,
+hand-coding layouts of parameter lists and data structures, etc., but rather
+all of this is generated for them, usually with strong type checking
+
+As illustrated by the previous ATM example, middleware allows software
+developers to design at a very high-level. The developers are freed from
+focusing on the low-level implementation details (e.g., connecting to remote
+sockets, big endian vs. little endian byte ordering, etc.) commonly associated
+with distributed systems development, thereby allowing them to focus on
+correctly implementing the application's core logic and functionality.
+
+Traditionally, middleware has been focused on the corporate computing
+environment, and, to a lesser extent but much earlier, on wide-area military
+environments \cite{STB86:cronus}. Middleware tools were developed for these
+environments in order to increase developer efficiency by allowing the
+developer to focus on application constraints and logic rather than on the
+low-level implementation details of a distributed system. With the aid of
+middleware tools, developers can interconnect disparate systems. They can also
+connect newer desktop workstations to a corporation's legacy back-end computing
+systems. In fact, the ability to ``wrap'' a small middleware layer around an
+existing legacy application has extended the useful life of many of these
+systems because once again the legacy data and computing power can be easily
+accessed.
+
+Thus, for a number of reasons, middleware has become a highly successful tool
+that reduces the complexity of developing distributed systems. This, in part,
+helps reduce the ``software crisis'' associated with distributed systems
+development. However, very few middleware frameworks exist that were designed
+for the low-end of the computing environment. Research on and development of
+middleware frameworks for distributed embedded systems is very limited compared
+to the large number and type of embedded systems deployed today
+\cite{Ten00:acm}. This is a significant concern, because as will be pointed out
+in the next section, distributed embedded systems are being deployed at a
+rapidly increasing rate.
+
+1.3 Embedded Systems
+
+Embedded systems are not easily defined by a fixed set of functional criteria
+because embedded systems span a broad range of the computing spectrum. However,
+embedded systems can be defined in terms of their purpose and design goals. In
+most cases, embedded systems are designed with a single, specific task to
+accomplish under the control of a computational entity. Furthermore, the
+``computer'' in an embedded system is often both logically and functionally
+hidden from view.
+
+Embedded systems, like traditional computational system, may be composed into
+systems of systems. For example, a smart thermostat is a very
+resource-constrained embedded system. The thermostat's sole purpose is to
+acquire and report the ambient temperature in a room. Within a large building,
+thermostats can be composed into a much larger system that controls the
+building heating, ventilation, and air conditioning (HVAC) system. At a larger
+level, the building's HVAC system can also be classified as an embedded system.
+The HVAC system has a single purpose, controlling the building's environment,
+and this system does it without user intervention. In fact, most of the
+building occupants would not even be aware of all of the computing systems that
+are used to control the temperatures within building.
+
+The size of embedded systems varies greatly---from miniaturized sensors to
+large jumbo-jet flight control systems. Resource constraints within embedded
+systems vary widely with regard to memory, computation, communications, and
+power requirements. Another classification trait of embedded systems is their
+production quantity. Some embedded systems are produced in very small
+quantities (e.g., satellites), while others are mass produced in very large
+quantities (e.g., microwave ovens, automotive electronic ignitions). The
+cross-product of embedded systems traits (e.g., size, resources, production
+quantities) covers a very large number of separate embedded niche markets,
+development techniques, and concerns.
+
+A few common trends are appearing amongst all of the embedded systems niche
+markets. The first is that component miniaturization and decreased production
+costs have enabled a growing ubiquity of smart devices, or in other words, a
+ubiquity of embedded systems. Second, advances in communications technologies,
+especially wireless technologies, are enabling the development of networked
+embedded systems. Together, both of these trends are fuelling a rapid growth in
+the deployment of distributed embedded systems.
+
+However, traditional computer science research and development programs are not
+aimed towards this new growth area. David Tennenhouse, Director of research for
+Intel and former Director of DARPA's Information Technology Office, has cited
+the need to focus more research on this growing embedded systems market and
+what he calls ``PROactive'' computing \cite{Ten00:acm}. The `P' in
+``PROactive'' stands for physical, meaning that research must be focused on
+coupling computing systems to the real world; the `R' is for real-time, meaning
+that results much be achieved in real-time, and the `O' stands for out, meaning
+getting the human out of the decision processing loop as far as possible. These
+three concepts of ``PROactive'' computing are not new ideas for embedded
+systems developers, but these are concepts that have been underemphasized by
+the research community that is focused on developing techniques applicable to
+traditional workstation-based systems that comprise only 2% of the processors
+currently being produced \cite{Ten00:acm}.
+
+Developing software for any system is a complex task. However, the mass-market
+nature of many embedded systems niche markets further complicates software
+development. This is because high production numbers means that saving even a
+few cents per unit can add up to significant savings. Thus, there is a strong
+desire to use resource constrained devices in order to save costs. Furthermore,
+time-to-market considerations mean that software developers must maintain high
+levels of productivity.
+
+The need to tailor desired functionality to the available resources present
+within an embedded system and the need to ensure high levels of programmer
+productivity strongly motivate the need for embedded systems middleware
+frameworks. We note that this is a non-trivial task. Embedded systems software
+development is difficult, distributed systems development is harder, and the
+composition of these tasks---distributed embedded systems development---is even
+harder!
+
+1.4 Quality of Service
+
+The term Quality of Service (QoS) was originally used in the networking
+community to refer to the management of network resources such as bandwidth and
+latency, in a local area network, and without adapting to changing conditions.
+Without the proper management of these network resources, properties such as
+performance and perceived usability may not be met even if, in steady-state
+situations an application is capable of delivering the desired levels of
+service. For example, proper bandwidth allocation within a network ensures that
+a video-on-demand application can provide uninterrupted service.
+
+In the last 5--10 years, the term `QoS' has become to be used in a broader
+sense which encompasses the management of an application's ``non-functional''
+properties---properties that impact the perceived benefit of an application
+rather than its core logic and functionality. This broader definition of QoS
+includes properties such as security, dependability, and timeliness. In today's
+distributed computing environment, these broader QoS properties must be
+included in the overall design of an application because an application's
+performance can now depend upon security, dependability, and timeliness as much
+as it does upon network performance.
+
+Security is a key QoS property that must be designed into distributed systems.
+Security is a QoS property because of its non-functional nature. Or in other
+words, an application's security and its core functionality (i.e., application
+specific logic) are orthogonal design components. However, the success of an
+application might depend on its achieved security QoS. For example, no one
+would use an on-line banking service that allowed unauthorized users to
+withdraw money from their accounts, even if the bank could prove that every
+withdrawal was accounted for and it had a high degree of fault tolerance.
+
+Confidentiality, integrity, and availability are three classical security
+properties, each of which can be provided at varying levels. For example,
+longer cipher key lengths generally provide increased confidentiality, thus
+increasing key lengths will increase the confidentiality QoS of an application.
+Integrity QoS also varies widely, and can be provided by mechanisms that range
+from weak, but simple, parity checks to strong cryptographic message digest
+mechanisms. An application's continuity of service can be ensured by employing
+appropriate availability mechanisms.
+
+Fault tolerance is another key QoS property. A variety of mechanisms, each with
+varying strengths and weakness, can be employed to ensure that an application
+continues to function correctly in the presence of faults. Temporal, spatial,
+or value redundancy mechanisms can be used to overcome various communications
+faults. Redundancy must be tuned to a given application environment, in order
+to ensure a desired level of dependability QoS.
+
+Missing a timing deadline in a hard real-time system can, by definition, result
+in a fatal error. But in many other applications, achieving timely responses is
+a matter of perceived usefulness. Thus, depending upon application constraints,
+timeliness can either be a functional or a non-functional constraint and
+therefore a QoS system property. Some applications desire high response rates,
+while others require predictable patterns of behavior. As with other QoS
+properties, various mechanisms can be used to achieve the desired QoS
+timeliness constraints.
+
+The difference between QoS properties and QoS mechanisms is in essence a
+difference between \emph{what} versus \emph{how}. When designing systems, QoS
+property constraints (i.e., the \emph{what}) must be focused on. By doing this
+greater flexibility and insight may be gained. For example, a designer should
+focus on the level of confidentiality needed for a given distributed
+application before deciding which security cipher (and key length) to deploy.
+
+Distributed applications often have multiple QoS property requirements. Two
+examples will be presented to illustrate this point. First, consider a payroll
+system with the requirements that only authorized managers can certify time
+cards and that payroll checks are deposited directly into the employees bank
+accounts. Security QoS is needed to ensure that only authorized managers can
+access the system. Fault tolerance QoS is needed to ensure that correct direct
+deposit amounts are sent to the bank and timeliness QoS is needed to ensure
+that the deposits are made on pay day (and not a day later). Second, consider
+an online bussiness---security QoS protects customer payment transactions,
+dependability QoS ensures that orders are not lost, and timeliness QoS
+guarantees (perhaps probabilistically, not absolutely) that orders are
+processed and shipped in a timely manner. Full support for QoS properties
+within distributed systems will only be achieved when designers are presented
+with design frameworks and tools that treat Quality of Service properties as
+first-class system design requirements.
+
+Support for multiple QoS properties is also needed for embedded systems
+development. Often, an embedded system's functional constraints are met in a
+manner that hard-codes a given QoS point solution (i.e., a solution that works
+for only one point in a multi-dimensional set of constraints) into the overall
+embedded system. Indeed, this is often the case precisely because embedded
+systems developers have no other choice, given the lack of rich support for QoS
+in middleware frameworks for embedded systems. Hard-coded, point solutions are
+costly to maintain and they also do not easily evolve to changing environments
+or requirments. Distributed systems environments often change, therefore tools
+need to be researched and developed which can present distributed embedded
+systems developers with a framework that is both highly configurable, in order
+to support the embedded systems environment, and also QoS aware.
+
+Distributed systems, embedded systems, and distributed embedded systems all
+have both functional and multiple non-functional or QoS requirements. Research
+has been conducted on individual QoS properties, and in some cases this
+research has even been conducted within a distributed systems domain. However,
+little research has been conducted in the area of composing multiple QoS
+properties within distributed embedded systems, even within the simpler
+distributed (non-embedded) systems domain. Without this research, the
+``software crisis'' in distributed embedded systems computing will likely
+continue to grow as even more application developers, who lack both embedded
+systems and QoS property training and backgrounds, enter this growing market.
+
+1.5 Thesis Statement
+
+This Chapter so far has presented a broad overview of distributed systems,
+middleware, embedded systems, and Quality of Service. Rapid advances in the
+miniaturization of microprocessors and related components are leading to the
+deployment of embedded systems in ever increasing numbers. Furthermore,
+advances in communications technologies, especially wireless networking, are
+leading to the rapid deployment of distributed embedded systems. Not only are
+these distributed embedded systems being deployed in existing domains, but the
+availability of low cost components is the driving force behind the emergence
+of completely new computing domains such as wireless sensor networks.
+
+The research behind and development of software frameworks and tools are
+unfortunately lagging the research behind their hardware counterparts thereby
+exacerbating the already existing ``software crisis.'' New frameworks must be
+developed that will leverage existing distributed systems, embedded systems,
+middleware frameworks, and quality of service mechanisms because it is simply
+unreasonable to assume that any one individual can be an expert in each of
+these computing fields. These facts lead to the following thesis.
+
+  Middleware frameworks for embedded systems can be designed with
+  fine-grained composability and they can also support multiple Quality of
+  Service properties.
+
+The need for such capabilities has been presented above, but the
+feasibility of providing such capabilities was unknown when this research
+began.
+
+In order to verify the above, this dissertation make the following research
+contributions:
+
+* A fine-grained middleware architectural design taxonomy, to better
+capture the wide variation of distributed systems interactions and hence how
+they can be configured.
+
+* The design and implementation of an architecture for a fine-grained and
+composable middleware framework.
+
+* An analysis of security requirements for embedded systems.
+
+* The design and implementation of a highly configurable security
+subsystem.
+
+* An experimental evaluation of MicroQoSCORBA's performance on three hardware
+platforms.
+
+1.6 Dissertation Organization
+
+The remainder of this dissertation is organized as follows.
+Chapter 2 presents related work. Chapter 3 presents
+the middleware taxonomy that was developed in order to better architect a
+finely composable middleware framework. Chapter 4 presents the
+architecture of MicroQoSCORBA, the middleware framework that was designed and
+implemented in support of this dissertation. Chapter 5 presents
+a discussion of security with regards to embedded systems.
+Chapter 6 presents the design and implementation of MicroQoSCORBA.
+Chapter 7 presents an evaluation of MicroQoSCORBA. And finally,
+Chapter 8 presents the conclusions of this dissertation.
+

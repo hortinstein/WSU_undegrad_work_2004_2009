@@ -1,0 +1,79 @@
+
+<html>
+<pre>
+<H1> 460 NOTES on Video Display and DEMO Driver</h1>
+ 
+//************ MTX t.c file *******************
+
+#include "vid.c"     <===== vid driver, will be given in PRE_LAB
+
+main()
+{
+   vid_init();       // MUST initialize video driver first
+
+   printf("Welcome to the 460 Multitasking System\n");
+   ..................................................
+}
+
+
+2. HOW does PC's color display work:
+
+ 1. Call vid_init() to initialize variables in the vid driver first.
+
+ 1. Screen = 25 rows X 80 cols = 2000 WORDs = [attribue byte|char byte]
+                                 4000 bytes 
+ 2. Video RAM at 0xB800, size=16 to 64 KB >> screen=4000 bytes;
+    To display a screen: write 4000 bytes (2000 WORDs) to the video RAM
+    at the current ORG location; tell the CRT register where the ORG is at.
+    The hardware will display the 2000 chars from ORG in the video RAM
+    to the screen.
+
+ 3. Cursor shape and position can be changed by writing to the CRT register.
+
+ 4. The vid driver must keep track of the Cursor position's (row,col). 
+    After displaying a char, must move the Curcor "to the right" by one, 
+    which may change (row,col) as follows: 
+           When col >= 80, reset col to 0 and inc row by 1
+           When row >= 25, must scroll up one row.
+
+5. To Scroll up one row:
+      inc ORG by one row (which tells CRT to display from the new ORG). 
+      write a row of blanks to ORG + one screen  in video RAM 
+      if the last row exceeds VRAM size, physically copy CURRENT screen
+      to VRAM beginning and reset ORG to 0
+
+********************* Main Source of Infomation  ************************
+www.osdever.net/FreeVGA : home of FreeVGA programming information
+www.osdever.net/FreeVGA/vga/crtcreg.htm : CRT Controller Registers
+
+Index 00h -- Horizontal Total Register 
+     Index 01h -- End Horizontal Display Register 
+     Index 02h -- Start Horizontal Blanking Register 
+     Index 03h -- End Horizontal Blanking Register 
+     Index 04h -- Start Horizontal Retrace Register 
+     Index 05h -- End Horizontal Retrace Register 
+     Index 06h -- Vertical Total Register 
+     Index 07h -- Overflow Register 
+     Index 08h -- Preset Row Scan Register 
+     Index 09h -- Maximum Scan Line Register 
+     Index 0Ah -- Cursor Start Register 
+     Index 0Bh -- Cursor End Register 
+     Index 0Ch -- Start Address High Register 
+     Index 0Dh -- Start Address Low Register 
+     Index 0Eh -- Cursor Location High Register 
+     Index 0Fh -- Cursor Location Low Register 
+     Index 10h -- Vertical Retrace Start Register 
+     Index 11h -- Vertical Retrace End Register 
+     Index 12h -- Vertical Display End Register 
+     Index 13h -- Offset Register 
+     Index 14h -- Underline Location Register 
+     Index 15h -- Start Vertical Blanking Register 
+     Index 16h -- End Vertical Blanking 
+     Index 17h -- CRTC Mode Control Register 
+     Index 18h -- Line Compare Register 
+Among these, only Registers 
+      10-11  control CURSOR height (# of scand lines)
+      12-13  display origin address
+      14-15  CURSOR position
+are of interests here.
+**************************************************************************

@@ -1,0 +1,11 @@
+MINODE *root;
+PROC   *running;
+MOUNT mountTable[NMOUNT];
+MINODE Minode[NMINODES];
+OFT oft[NOFT];
+PROC proc[NPROC];
+char rbuf[BLOCK_SIZE];
+int device = 0;
+int inode_start = 0;
+char* path[20];
+char* argue[20];

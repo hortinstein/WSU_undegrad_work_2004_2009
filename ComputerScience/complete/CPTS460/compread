@@ -1,0 +1,33 @@
+  HOW TO install and use the bcc package
+==============================================
+1. download these .tgz files to Linux under / 
+2. from the / directory, run
+     zcat FILENAME.tgz | tar xvf -
+===============================================
+
+3.  Read man pages of bcc, as86, ld86 for usage
+
+4. Assume you have  ts.s and t.c files
+
+   bcc -c t.c   ==> generates t.o file
+   as86 -o ts.o ts.s ==> generates ts.o file
+   ld86 -d ts.o t.o /usr/lib/bcc/libc.a  ==> generates a.out WITHOUT header
+
+   ld86    ts.o t.o /usr/lib/bcc/libc.a  ==> generates a.out WITH 32 bytes
+                                             header
+============================================================================
+                             
+         HOWTO install and use dosemu
+
+1. download the dosemu*.tgz files to Linux under /
+2. from the / directory, run
+     zcat FILENAME.tgz | tar xvf -
+
+3. cd /dosemu
+   cp xdosemu /bin
+
+   Under X-windows, run 
+         xdosemu         ===> should boot up freedos
+         xdosemu -A      ===> boot from A: drive 
+
+   

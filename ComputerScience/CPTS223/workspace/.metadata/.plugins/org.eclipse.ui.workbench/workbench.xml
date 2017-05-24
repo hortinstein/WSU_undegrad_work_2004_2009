@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbench version="2.0">
+<window maximized="true" x="288" y="88" width="1024" height="768">
+<fastViewData fastViewLocation="1024"/>
+<perspectiveBar>
+<itemSize x="160"/>
+</perspectiveBar>
+<coolbarLayout locked="0">
+<coolItem id="group.file" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="128" y="26"/>
+<coolItem id="additions" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.cdt.ui.CElementCreationActionSet" itemType="typeToolBarContribution" x="146" y="26"/>
+<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="112" y="26"/>
+<coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="62" y="26"/>
+<coolItem id="group.nav" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="104" y="26"/>
+<coolItem id="group.editor" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.cdt.debug.ui.editor.CDebugEditor" itemType="typePlaceholder" x="62" y="26"/>
+<coolItem id="org.eclipse.ui.DefaultTextEditor" itemType="typePlaceholder" x="-1" y="-1"/>
+<coolItem id="org.eclipse.cdt.ui.editor.CEditor" itemType="typeToolBarContribution" x="62" y="26"/>
+<coolItem id="org.eclipse.cdt.make.editor" itemType="typePlaceholder" x="36" y="26"/>
+</coolbarLayout>
+<page label="Workspace - C/C++" focus="true">
+<editors>
+<editorArea activeWorkbook="DefaultEditorWorkbook">
+<info part="DefaultEditorWorkbook">
+<folder expanded="2" appearance="1">
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+</presentation>
+</folder>
+</info>
+</editorArea>
+<editor title="BinaryTree.h" name="BinaryTree.h" id="org.eclipse.cdt.ui.editor.CEditor" tooltip="binary_search_tree_dictionary_implementation/BinaryTree.h" partName="BinaryTree.h" workbook="DefaultEditorWorkbook" path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/binary_search_tree_dictionary_implementation/BinaryTree.h">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/binary_search_tree_dictionary_implementation/BinaryTree.h"/>
+</editor>
+<editor title="Dictionary.h" name="Dictionary.h" id="org.eclipse.cdt.ui.editor.CEditor" tooltip="binary_search_tree_dictionary_implementation/Dictionary.h" partName="Dictionary.h" workbook="DefaultEditorWorkbook" activePart="true" focus="true" path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/binary_search_tree_dictionary_implementation/Dictionary.h">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/binary_search_tree_dictionary_implementation/Dictionary.h"/>
+</editor>
+<editor title="binary_search_tree_dictionary_implementation.cc" name="binary_search_tree_dictionary_implementation.cc" id="org.eclipse.cdt.ui.editor.CEditor" tooltip="binary_search_tree_dictionary_implementation/binary_search_tree_dictionary_implementation.cc" partName="binary_search_tree_dictionary_implementation.cc" workbook="DefaultEditorWorkbook" path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/binary_search_tree_dictionary_implementation/binary_search_tree_dictionary_implementation.cc">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/binary_search_tree_dictionary_implementation/binary_search_tree_dictionary_implementation.cc"/>
+</editor>
+<editor title="Dictionary.h" name="Dictionary.h" id="org.eclipse.cdt.ui.editor.CEditor" tooltip="hash_table_dictionary_implementation/Dictionary.h" partName="Dictionary.h" workbook="DefaultEditorWorkbook" path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/hash_table_dictionary_implementation/Dictionary.h">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/hash_table_dictionary_implementation/Dictionary.h"/>
+</editor>
+</editors>
+<views>
+<view id="org.eclipse.cdt.debug.ui.MemoryView" partName="Memory">
+<viewState/>
+</view>
+<view id="org.eclipse.ui.views.TaskList" partName="Tasks">
+<viewState columnWidth0="19" columnWidth1="19" columnWidth2="289" columnWidth3="108" columnWidth4="216" columnWidth5="668" verticalPosition="0" horizontalPosition="0">
+<selection/>
+</viewState>
+</view>
+<view id="org.eclipse.debug.ui.VariableView" partName="Variables">
+<viewState org.eclipse.debug.ui.variablesView.SASH_WEIGHTS-Length="2" org.eclipse.debug.ui.variablesView.SASH_WEIGHTS-0="684" org.eclipse.debug.ui.variablesView.SASH_WEIGHTS-1="315"/>
+</view>
+<view id="org.eclipse.cdt.ui.CView" partName="C/C++ Projects">
+<viewState verticalPosition="0" horizontalPosition="0">
+<expanded>
+<element path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/binary_search_tree_dictionary_implementation"/>
+<element path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/binary_search_tree_dictionary_implementation/pics"/>
+<element path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/binary_search_tree_dictionary_implementation/pics/1337pron"/>
+<element path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/binary_search_tree_dictionary_implementation/pics/onoes"/>
+<element path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/hash_table_dictionary_implementation"/>
+<element path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/photo_database_browser"/>
+</expanded>
+<selection>
+<element path="/.automount/zeus/vol/vol0/vol0/users/ahortin/workspace/hash_table_dictionary_implementation/Dictionary.h"/>
+</selection>
+<customFilters userDefinedPatternsEnabled="false">
+<xmlDefinedFilters>
+<child filterId="org.eclipse.cdt.internal.ui.CView.ArchiveFilter" isEnabled="false"/>
+<child filterId="org.eclipse.cdt.ui.CView_patternFilterId_.*" isEnabled="true"/>
+<child filterId="org.eclipse.cdt.internal.ui.CView.NonCElementFilter" isEnabled="false"/>
+<child filterId="org.eclipse.cdt.internal.ui.CView.ExecutableFilter" isEnabled="false"/>
+<child filterId="org.eclipse.cdt.internal.ui.CView.SharedFilter" isEnabled="false"/>
+<child filterId="org.eclipse.cdt.internal.ui.CView.ObjectFilter" isEnabled="false"/>
+<child filterId="org.eclipse.cdt.internal.ui.CView.NonCProjectsFilter" isEnabled="false"/>
+<child filterId="org.eclipse.cdt.internal.ui.CView.ClosedProjectFilter" isEnabled="false"/>
+</xmlDefinedFilters>
+</customFilters>
+</viewState>
+</view>
+<view id="org.eclipse.debug.ui.DebugView" partName="Debug">
+<viewState/>
+</view>
+<view id="org.eclipse.ui.views.PropertySheet" partName="Properties">
+<viewState/>
+</view>
+<view id="org.eclipse.cdt.debug.ui.SharedLibrariesView" partName="Shared Libraries">
+<viewState/>
+</view>
+<view id="org.eclipse.debug.ui.RegisterView" partName="Registers">
+<viewState org.eclipse.debug.ui.variablesView.SASH_WEIGHTS-Length="2" org.eclipse.debug.ui.variablesView.SASH_WEIGHTS-0="684" org.eclipse.debug.ui.variablesView.SASH_WEIGHTS-1="315"/>
+</view>
+<view id="org.eclipse.ui.views.ResourceNavigator" partName="Navigator">
+<viewState sorter="1" LINK_NAVIGATOR_TO_EDITOR="0">
+<filters>
+<filter element="*.class" isEnabled="false"/>
+<filter element=".*" isEnabled="false"/>
+</filters>
+<expanded>
+<element path="/hash_table_dictionary_implementation"/>
+<element path="/vector_iterators"/>
+</expanded>
+<selection>
+<element path="/hash_table_dictionary_implementation/Dictionary.h"/>
+</selection>
+</viewState>
+</view>
+<view id="org.eclipse.ui.console.ConsoleView" partName="Console">
+<viewState/>
+</view>
+<view id="org.eclipse.ui.views.ContentOutline" partName="Outline">
+<viewState/>
+</view>
+<view id="org.eclipse.cdt.make.ui.views.MakeView" partName="Make Targets">
+<viewState/>
+</view>
+<view id="org.eclipse.debug.ui.BreakpointView" partName="Breakpoints">
+<viewState>
+<isTrackingSelection value="false"/>
+</viewState>
+</view>
+<view id="org.eclipse.cdt.debug.ui.SignalsView" partName="Signals">
+<viewState/>
+</view>
+<view id="org.eclipse.ui.views.ProblemView" partName="Problems">
+<viewState columnWidth0="19" columnWidth1="477" columnWidth2="50" columnWidth3="100" columnWidth4="280" verticalPosition="0" horizontalPosition="0">
+<selection/>
+</viewState>
+</view>
+</views>
+<perspectives activePerspective="org.eclipse.cdt.ui.CPerspective" activePart="org.eclipse.cdt.ui.editor.CEditor">
+<perspective version="0.016" editorAreaVisible="1" fixed="0">
+<descriptor id="org.eclipse.ui.resourcePerspective" label="Resource" class="org.eclipse.ui.internal.ide.ResourcePerspective"/>
+<actionSet id="org.eclipse.search.searchActionSet"/>
+<actionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<actionSet id="org.eclipse.ui.edit.text.actionSet.openExternalFile"/>
+<actionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
+<actionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<actionSet id="org.eclipse.update.ui.softwareUpdates"/>
+<actionSet id="org.eclipse.ui.NavigateActionSet"/>
+<alwaysOnActionSet id="org.eclipse.search.searchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.openExternalFile"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<alwaysOnActionSet id="org.eclipse.update.ui.softwareUpdates"/>
+<alwaysOnActionSet id="org.eclipse.ui.NavigateActionSet"/>
+<show_view_action id="org.eclipse.ui.views.ResourceNavigator"/>
+<show_view_action id="org.eclipse.ui.views.BookmarkView"/>
+<show_view_action id="org.eclipse.ui.views.ContentOutline"/>
+<show_view_action id="org.eclipse.ui.views.PropertySheet"/>
+<show_view_action id="org.eclipse.ui.views.ProblemView"/>
+<show_view_action id="org.eclipse.ui.views.TaskList"/>
+<show_view_action id="org.eclipse.ant.ui.views.AntView"/>
+<show_view_action id="org.eclipse.pde.runtime.LogView"/>
+<new_wizard_action id="org.eclipse.ui.wizards.new.folder"/>
+<new_wizard_action id="org.eclipse.ui.wizards.new.file"/>
+<perspective_action id="org.eclipse.cdt.ui.CPerspective"/>
+<perspective_action id="org.eclipse.cdt.ui.CBrowsingPerspective"/>
+<perspective_action id="org.eclipse.jdt.ui.JavaPerspective"/>
+<perspective_action id="org.eclipse.jdt.ui.JavaBrowsingPerspective"/>
+<perspective_action id="org.eclipse.team.cvs.ui.cvsPerspective"/>
+<perspective_action id="org.eclipse.team.ui.TeamSynchronizingPerspective"/>
+<view id="org.eclipse.ui.views.ResourceNavigator"/>
+<view id="org.eclipse.ui.views.TaskList"/>
+<view id="org.eclipse.ui.console.ConsoleView"/>
+<view id="org.eclipse.ui.views.ContentOutline"/>
+<layout>
+<mainWindow>
+<info part="topLeft" folder="true">
+<folder activePageID="org.eclipse.ui.views.ResourceNavigator" expanded="2" appearance="2">
+<page label="Navigator" content="org.eclipse.ui.views.ResourceNavigator"/>
+<page label="LabelNotFound" content="org.eclipse.ui.views.BookmarkView"/>
+<page label="LabelNotFound" content="org.eclipse.team.ccvs.ui.RepositoriesView"/>
+<page label="LabelNotFound" content="org.eclipse.team.ccvs.ui.AnnotateView"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+</presentation>
+</folder>
+</info>
+<info part="org.eclipse.ui.internal.ViewStack@c3e82b" relative="topLeft" relationship="2" ratioLeft="756" ratioRight="252" ratio="0.75" folder="true">
+<folder expanded="2" appearance="2">
+<page label="LabelNotFound" content="org.eclipse.ui.cheatsheets.views.CheatSheetView"/>
+<page label="LabelNotFound" content="org.eclipse.ui.internal.introview"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+</folder>
+</info>
+<info part="org.eclipse.ui.editorss" relative="topLeft" relationship="2" ratioLeft="209" ratioRight="1378" ratio="0.13169502"/>
+<info part="org.eclipse.ui.internal.ViewStack@5c7734" relative="org.eclipse.ui.editorss" relationship="4" ratioLeft="785" ratioRight="249" ratio="0.75918764" folder="true">
+<folder activePageID="org.eclipse.ui.console.ConsoleView" expanded="2" appearance="2">
+<page label="Tasks" content="org.eclipse.ui.views.TaskList"/>
+<page label="LabelNotFound" content="org.eclipse.team.ccvs.ui.console"/>
+<page label="LabelNotFound" content="org.eclipse.team.ccvs.ui.HistoryView"/>
+<page label="Console" content="org.eclipse.ui.console.ConsoleView"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+</presentation>
+</folder>
+</info>
+<info part="org.eclipse.ant.ui.views.AntView" relative="org.eclipse.ui.internal.ViewStack@5c7734" relationship="2" ratioLeft="690" ratioRight="691" ratio="0.49963793"/>
+<info part="org.eclipse.ui.internal.ViewStack@a555cb" relative="org.eclipse.ui.editorss" relationship="2" ratioLeft="1190" ratioRight="185" ratio="0.86545455" folder="true">
+<folder activePageID="org.eclipse.ui.views.ContentOutline" expanded="2" appearance="2">
+<page label="Outline" content="org.eclipse.ui.views.ContentOutline"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+</presentation>
+</folder>
+</info>
+</mainWindow>
+</layout>
+</perspective>
+<perspective version="0.016" editorAreaVisible="1" fixed="0">
+<descriptor id="org.eclipse.cdt.ui.CPerspective" label="C/C++" class="org.eclipse.cdt.internal.ui.CPerspectiveFactory"/>
+<actionSet id="org.eclipse.search.searchActionSet"/>
+<actionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<actionSet id="org.eclipse.ui.edit.text.actionSet.openExternalFile"/>
+<actionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
+<actionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<actionSet id="org.eclipse.update.ui.softwareUpdates"/>
+<actionSet id="org.eclipse.cdt.ui.SearchActionSet"/>
+<actionSet id="org.eclipse.cdt.ui.CElementCreationActionSet"/>
+<actionSet id="org.eclipse.cdt.make.ui.makeTargetActionSet"/>
+<actionSet id="org.eclipse.debug.ui.launchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.search.searchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.openExternalFile"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<alwaysOnActionSet id="org.eclipse.update.ui.softwareUpdates"/>
+<alwaysOnActionSet id="org.eclipse.cdt.ui.SearchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.cdt.ui.CElementCreationActionSet"/>
+<alwaysOnActionSet id="org.eclipse.cdt.make.ui.makeTargetActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.launchActionSet"/>
+<show_view_action id="org.eclipse.ui.console.ConsoleView"/>
+<show_view_action id="org.eclipse.search.SearchResultView"/>
+<show_view_action id="org.eclipse.ui.views.ContentOutline"/>
+<show_view_action id="org.eclipse.ui.views.ProblemView"/>
+<show_view_action id="org.eclipse.cdt.ui.CView"/>
+<show_view_action id="org.eclipse.ui.views.ResourceNavigator"/>
+<show_view_action id="org.eclipse.ui.views.PropertySheet"/>
+<show_view_action id="org.eclipse.cdt.make.ui.views.MakeView"/>
+<new_wizard_action id="org.eclipse.cdt.managedbuilder.ui.wizards.StdCWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewMakeCProjectWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.ConvertToMakeWizard"/>
+<new_wizard_action id="org.eclipse.cdt.managedbuilder.ui.wizards.StdCCWizard"/>
+<new_wizard_action id="org.eclipse.cdt.make.ui.wizards.NewMakeCCProjectWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewSourceFolderCreationWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewFolderCreationWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewSourceFileCreationWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewHeaderFileCreationWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewFileCreationWizard"/>
+<new_wizard_action id="org.eclipse.cdt.ui.wizards.NewClassCreationWizard"/>
+<perspective_action id="org.eclipse.debug.ui.DebugPerspective"/>
+<perspective_action id="org.eclipse.vcm.ui.vcmPerspective"/>
+<perspective_action id="org.eclipse.cdt.ui.CBrowsingPerspective"/>
+<view id="org.eclipse.cdt.ui.CView"/>
+<view id="org.eclipse.ui.views.ResourceNavigator"/>
+<view id="org.eclipse.ui.views.ContentOutline"/>
+<view id="org.eclipse.cdt.make.ui.views.MakeView"/>
+<view id="org.eclipse.ui.views.ProblemView"/>
+<view id="org.eclipse.ui.console.ConsoleView"/>
+<view id="org.eclipse.ui.views.PropertySheet"/>
+<layout>
+<mainWindow>
+<info part="topLeft" folder="true">
+<folder activePageID="org.eclipse.cdt.ui.CView" expanded="2" appearance="2">
+<page label="C/C++ Projects" content="org.eclipse.cdt.ui.CView"/>
+<page label="Navigator" content="org.eclipse.ui.views.ResourceNavigator"/>
+<page label="LabelNotFound" content="org.eclipse.ui.views.BookmarkView"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+</presentation>
+</folder>
+</info>
+<info part="stickyFolderRight" relative="topLeft" relationship="2" ratioLeft="1192" ratioRight="398" ratio="0.7496855" folder="true">
+<folder expanded="2" appearance="2">
+<page label="LabelNotFound" content="org.eclipse.ui.cheatsheets.views.CheatSheetView"/>
+<page label="LabelNotFound" content="org.eclipse.ui.internal.introview"/>
+</folder>
+</info>
+<info part="org.eclipse.ui.editorss" relative="topLeft" relationship="2" ratioLeft="290" ratioRight="1297" ratio="0.18273471"/>
+<info part="topRight" relative="org.eclipse.ui.editorss" relationship="2" ratioLeft="932" ratioRight="362" ratio="0.72024727" folder="true">
+<folder activePageID="org.eclipse.ui.views.ContentOutline" expanded="2" appearance="2">
+<page label="Outline" content="org.eclipse.ui.views.ContentOutline"/>
+<page label="Make Targets" content="org.eclipse.cdt.make.ui.views.MakeView"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+</presentation>
+</folder>
+</info>
+<info part="org.eclipse.ui.internal.ViewStack@191d42" relative="org.eclipse.ui.editorss" relationship="4" ratioLeft="775" ratioRight="259" ratio="0.7495164" folder="true">
+<folder activePageID="org.eclipse.ui.views.ProblemView" expanded="2" appearance="2">
+<page label="Problems" content="org.eclipse.ui.views.ProblemView"/>
+<page label="Console" content="org.eclipse.ui.console.ConsoleView"/>
+<page label="Properties" content="org.eclipse.ui.views.PropertySheet"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+</presentation>
+</folder>
+</info>
+</mainWindow>
+</layout>
+</perspective>
+<perspective version="0.016" editorAreaVisible="1" fixed="0">
+<descriptor id="org.eclipse.debug.ui.DebugPerspective" label="Debug" class="org.eclipse.debug.internal.ui.DebugPerspectiveFactory"/>
+<actionSet id="org.eclipse.search.searchActionSet"/>
+<actionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<actionSet id="org.eclipse.ui.edit.text.actionSet.openExternalFile"/>
+<actionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
+<actionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<actionSet id="org.eclipse.update.ui.softwareUpdates"/>
+<actionSet id="org.eclipse.debug.ui.launchActionSet"/>
+<actionSet id="org.eclipse.debug.ui.debugActionSet"/>
+<actionSet id="org.eclipse.cdt.debug.ui.debugActionSet"/>
+<actionSet id="org.eclipse.ui.NavigateActionSet"/>
+<actionSet id="org.eclipse.debug.ui.breakpointActionSet"/>
+<actionSet id="org.eclipse.jdt.debug.ui.JDTDebugActionSet"/>
+<actionSet id="org.eclipse.jdt.ui.JavaActionSet"/>
+<alwaysOnActionSet id="org.eclipse.search.searchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.openExternalFile"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<alwaysOnActionSet id="org.eclipse.update.ui.softwareUpdates"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.launchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.debugActionSet"/>
+<alwaysOnActionSet id="org.eclipse.cdt.debug.ui.debugActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.NavigateActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.breakpointActionSet"/>
+<alwaysOnActionSet id="org.eclipse.jdt.debug.ui.JDTDebugActionSet"/>
+<alwaysOnActionSet id="org.eclipse.jdt.ui.JavaActionSet"/>
+<show_view_action id="org.eclipse.debug.ui.DebugView"/>
+<show_view_action id="org.eclipse.debug.ui.VariableView"/>
+<show_view_action id="org.eclipse.debug.ui.BreakpointView"/>
+<show_view_action id="org.eclipse.debug.ui.ExpressionView"/>
+<show_view_action id="org.eclipse.ui.views.ContentOutline"/>
+<show_view_action id="org.eclipse.ui.console.ConsoleView"/>
+<show_view_action id="org.eclipse.ui.views.TaskList"/>
+<show_view_action id="org.eclipse.ant.ui.views.AntView"/>
+<show_view_action id="org.eclipse.cdt.debug.ui.MemoryView"/>
+<show_view_action id="org.eclipse.cdt.debug.ui.SharedLibrariesView"/>
+<show_view_action id="org.eclipse.cdt.debug.ui.SignalsView"/>
+<show_view_action id="org.eclipse.debug.ui.RegisterView"/>
+<show_view_action id="org.eclipse.cdt.debug.ui.DisassemblyView"/>
+<show_view_action id="org.eclipse.jdt.debug.ui.DisplayView"/>
+<show_view_action id="org.eclipse.jdt.debug.ui.MonitorsView"/>
+<show_view_action id="org.eclipse.pde.runtime.LogView"/>
+<perspective_action id="org.eclipse.cdt.ui.CPerspective"/>
+<perspective_action id="org.eclipse.cdt.ui.CBrowsingPerspective"/>
+<perspective_action id="org.eclipse.jdt.ui.JavaPerspective"/>
+<perspective_action id="org.eclipse.jdt.ui.JavaBrowsingPerspective"/>
+<view id="org.eclipse.ui.console.ConsoleView"/>
+<view id="org.eclipse.ui.views.TaskList"/>
+<view id="org.eclipse.debug.ui.DebugView"/>
+<view id="org.eclipse.debug.ui.VariableView"/>
+<view id="org.eclipse.debug.ui.BreakpointView"/>
+<view id="org.eclipse.debug.ui.RegisterView"/>
+<view id="org.eclipse.cdt.debug.ui.MemoryView"/>
+<view id="org.eclipse.cdt.debug.ui.SharedLibrariesView"/>
+<view id="org.eclipse.cdt.debug.ui.SignalsView"/>
+<view id="org.eclipse.ui.views.ContentOutline"/>
+<layout>
+<mainWindow>
+<info part="org.eclipse.debug.internal.ui.NavigatorFolderView" folder="true">
+<folder activePageID="org.eclipse.debug.ui.DebugView" expanded="2" appearance="2">
+<page label="Debug" content="org.eclipse.debug.ui.DebugView"/>
+<page label="LabelNotFound" content="org.eclipse.ui.views.ResourceNavigator"/>
+<page label="LabelNotFound" content="org.eclipse.jdt.debug.ui.MonitorsView"/>
+<page label="LabelNotFound" content="org.eclipse.jdt.ui.PackageExplorer"/>
+<page label="LabelNotFound" content="org.eclipse.jdt.ui.TypeHierarchy"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+</presentation>
+</folder>
+</info>
+<info part="stickyFolderRight" relative="org.eclipse.debug.internal.ui.NavigatorFolderView" relationship="2" ratioLeft="1192" ratioRight="398" ratio="0.7496855" folder="true">
+<folder expanded="2" appearance="2">
+<page label="LabelNotFound" content="org.eclipse.ui.cheatsheets.views.CheatSheetView"/>
+<page label="LabelNotFound" content="org.eclipse.ui.internal.introview"/>
+</folder>
+</info>
+<info part="org.eclipse.debug.internal.ui.ConsoleFolderView" relative="org.eclipse.debug.internal.ui.NavigatorFolderView" relationship="4" ratioLeft="939" ratioRight="95" ratio="0.9081238" folder="true">
+<folder activePageID="org.eclipse.ui.console.ConsoleView" expanded="2" appearance="2">
+<page label="Console" content="org.eclipse.ui.console.ConsoleView"/>
+<page label="Tasks" content="org.eclipse.ui.views.TaskList"/>
+<page label="LabelNotFound" content="org.eclipse.ui.views.BookmarkView"/>
+<page label="LabelNotFound" content="org.eclipse.ui.views.PropertySheet"/>
+<page label="LabelNotFound" content="org.eclipse.jdt.debug.ui.DisplayView"/>
+<page label="LabelNotFound" content="org.eclipse.search.SearchResultView"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+</presentation>
+</folder>
+</info>
+<info part="org.eclipse.ui.editorss" relative="org.eclipse.debug.internal.ui.NavigatorFolderView" relationship="4" ratioLeft="436" ratioRight="500" ratio="0.46581197"/>
+<info part="org.eclipse.debug.internal.ui.OutlineFolderView" relative="org.eclipse.ui.editorss" relationship="2" ratioLeft="1192" ratioRight="398" ratio="0.7496855" folder="true">
+<folder activePageID="org.eclipse.ui.views.ContentOutline" expanded="2" appearance="2">
+<page label="Outline" content="org.eclipse.ui.views.ContentOutline"/>
+<page label="LabelNotFound" content="org.eclipse.ant.ui.views.AntView"/>
+<page label="LabelNotFound" content="org.eclipse.cdt.debug.ui.DisassemblyView"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+</presentation>
+</folder>
+</info>
+<info part="org.eclipse.debug.internal.ui.ToolsFolderView" relative="org.eclipse.debug.internal.ui.NavigatorFolderView" relationship="2" ratioLeft="795" ratioRight="795" ratio="0.5" folder="true">
+<folder activePageID="org.eclipse.debug.ui.VariableView" expanded="2" appearance="2">
+<page label="Variables" content="org.eclipse.debug.ui.VariableView"/>
+<page label="Breakpoints" content="org.eclipse.debug.ui.BreakpointView"/>
+<page label="LabelNotFound" content="org.eclipse.debug.ui.ExpressionView"/>
+<page label="Registers" content="org.eclipse.debug.ui.RegisterView"/>
+<page label="Memory" content="org.eclipse.cdt.debug.ui.MemoryView"/>
+<page label="Shared Libraries" content="org.eclipse.cdt.debug.ui.SharedLibrariesView"/>
+<page label="Signals" content="org.eclipse.cdt.debug.ui.SignalsView"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+<part id="4"/>
+<part id="5"/>
+</presentation>
+</folder>
+</info>
+</mainWindow>
+</layout>
+</perspective>
+</perspectives>
+<navigationHistory>
+<editors>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/binary_search_tree_dictionary_implementation/Dictionary.h"/>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/binary_search_tree_dictionary_implementation/binary_search_tree_dictionary_implementation.cc"/>
+<editor id="org.eclipse.cdt.debug.ui.editor.CDebugEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/binary_search_tree_dictionary_implementation/DatabaseWindow.cc"/>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/hash_table_dictionary_implementation/Dictionary.h"/>
+</editors>
+<item historyLabel="Dictionary.h" index="0">
+<position x="44093" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="44108" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="44152" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="5296" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8056" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8089" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8116" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8184" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8212" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8328" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="44152" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="43934" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="43936" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="43950" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="43989" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="44093" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="44108" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="44152" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8328" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8437" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8517" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8633" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="8675" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="9610" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="7234" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="binary_search_tree_dictionary_implementation.cc" index="1">
+<position x="3251" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="44152" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="binary_search_tree_dictionary_implementation.cc" index="1">
+<position x="3251" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="7234" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="binary_search_tree_dictionary_implementation.cc" index="1">
+<position x="3267" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="7234" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="49443" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="DatabaseWindow.cc" index="2">
+<position x="7234" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="49443" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="3">
+<position/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="49443" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="3">
+<position x="46377" y="28" info="not_deleted"/>
+</item>
+<item historyLabel="binary_search_tree_dictionary_implementation.cc" index="1">
+<position x="3267" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="48873" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="3">
+<position x="46377" y="28" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="48873" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="48165" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="39874" y="50" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="39948" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="48655" y="49" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="48129" y="37" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="19009" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="48651" y="2" info="not_deleted"/>
+</item>
+<item historyLabel="Dictionary.h" index="0">
+<position x="48642" y="0" info="not_deleted"/>
+</item>
+<item active="true" historyLabel="Dictionary.h" index="0">
+<position x="48655" y="49" info="not_deleted"/>
+</item>
+</navigationHistory>
+<input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
+</page>
+</window>
+<mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="Dictionary.h" tooltip="hash_table_dictionary_implementation/Dictionary.h">
+<persistable path="/hash_table_dictionary_implementation/Dictionary.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.debug.ui.editor.CDebugEditor" name="DatabaseWindow.cc" tooltip="binary_search_tree_dictionary_implementation/DatabaseWindow.cc">
+<persistable path="/binary_search_tree_dictionary_implementation/DatabaseWindow.cc"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="binary_search_tree_dictionary_implementation.cc" tooltip="binary_search_tree_dictionary_implementation/binary_search_tree_dictionary_implementation.cc">
+<persistable path="/binary_search_tree_dictionary_implementation/binary_search_tree_dictionary_implementation.cc"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="Dictionary.h" tooltip="binary_search_tree_dictionary_implementation/Dictionary.h">
+<persistable path="/binary_search_tree_dictionary_implementation/Dictionary.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="BinaryTree.h" tooltip="binary_search_tree_dictionary_implementation/BinaryTree.h">
+<persistable path="/binary_search_tree_dictionary_implementation/BinaryTree.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="DatabaseWindow.cc" tooltip="photo_database_browser/DatabaseWindow.cc">
+<persistable path="/photo_database_browser/DatabaseWindow.cc"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="DatabaseWindow.h" tooltip="photo_database_browser/DatabaseWindow.h">
+<persistable path="/photo_database_browser/DatabaseWindow.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="Tree.h" tooltip="photo_database_browser/Tree.h">
+<persistable path="/photo_database_browser/Tree.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="hash_table_dictionary_implementation.cc" tooltip="hash_table_dictionary_implementation/hash_table_dictionary_implementation.cc">
+<persistable path="/hash_table_dictionary_implementation/hash_table_dictionary_implementation.cc"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="photo_database_browser.cc" tooltip="photo_database_browser/photo_database_browser.cc">
+<persistable path="/photo_database_browser/photo_database_browser.cc"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="Tree.h" tooltip="implementing_a_general_tree/Tree.h">
+<persistable path="/implementing_a_general_tree/Tree.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="Tree.h" tooltip="binary_search_tree_dictionary_implementation/Tree.h">
+<persistable path="/binary_search_tree_dictionary_implementation/Tree.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" name="Makefile" tooltip="binary_search_tree_dictionary_implementation/Makefile">
+<persistable path="/binary_search_tree_dictionary_implementation/Makefile"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" name="Makefile" tooltip="hash_table_dictionary_implementation/Makefile">
+<persistable path="/hash_table_dictionary_implementation/Makefile"/>
+</file>
+</mruList>
+</workbench>

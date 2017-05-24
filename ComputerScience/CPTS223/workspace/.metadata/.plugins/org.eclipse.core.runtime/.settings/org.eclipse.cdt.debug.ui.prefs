@@ -1,0 +1,5 @@
+#Tue Sep 20 15:09:54 PDT 2005
+org.eclipse.cdt.debug.ui.SharedLibrariesView.org.eclipse.cdt.debug.ui.cDebug.show_full_paths=true
+eclipse.preferences.version=1
+org.eclipse.debug.ui.DebugView.org.eclipse.cdt.debug.ui.cDebug.show_full_paths=true
+org.eclipse.debug.ui.BreakpointView.org.eclipse.cdt.debug.ui.cDebug.show_full_paths=true
